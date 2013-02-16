@@ -1,0 +1,6 @@
+#add file to be ignored here 
+.classpath
+.project
+bin
+NOTICE
+project.properties
