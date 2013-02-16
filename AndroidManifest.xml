@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+  Copyright (c) 2013 Durgesh Trivedi
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.durgesh"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="10" />
+	<uses-permission android:name="android.permission.READ_CONTACTS"/>
+	<uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:process="android.process.acore"
+    	android:label="@string/application_name" 
+    	android:name=".service.SQGlobals">
+        <activity android:name=".quick.SuperQuick"
+		          android:clearTaskOnLaunch="true"
+		       	  android:stateNotNeeded="true"
+		       	  android:theme="@style/Floating"
+        		  android:launchMode="singleTask"
+                  android:label="@string/application_name">
+                  <!--  android:launchMode="singleInstance" -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER"/>
+                
+                <!-- this binds to launcher too --> 
+ 					<!-- category android:name="android.intent.category.HOME"/-->
+                   	<category android:name="android.intent.category.DEFAULT" />
+                   	<category android:name="android.intent.category.MONKEY" />
+            </intent-filter>
+
+                  
+        </activity>
+        
+    	<receiver android:name=".BootReceiver">
+		    <intent-filter>
+			    <action android:name ="android.intent.action.BOOT_COMPLETED"/>
+		    </intent-filter>
+	    </receiver>
+		
+		<service android:name="service.SQService"/>
+    </application>
+
+</manifest>
