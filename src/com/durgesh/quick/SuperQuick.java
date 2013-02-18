@@ -1,4 +1,4 @@
-/**Copyright (c) 2013 durgesh trivedi
+/**Copyright (c) 2013 Durgesh Trivedi
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import com.durgesh.service.SQGlobals;
 public class SuperQuick extends Activity {
     private static final float LENGTH_THRESHOLD = 120.0f;
 
-    // @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((SQGlobals) getApplication()).bootup();

@@ -11,27 +11,8 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int button_back=0x7f020000;
-        public static final int button_dpad_center=0x7f020001;
-        public static final int button_dpad_down=0x7f020002;
-        public static final int button_dpad_left=0x7f020003;
-        public static final int button_dpad_right=0x7f020004;
-        public static final int button_dpad_up=0x7f020005;
-        public static final int button_exit=0x7f020006;
-        public static final int button_extra_less=0x7f020007;
-        public static final int button_extra_more=0x7f020008;
-        public static final int button_home=0x7f020009;
-        public static final int button_menu=0x7f02000a;
-        public static final int button_popper=0x7f02000b;
-        public static final int button_search=0x7f02000c;
-        public static final int button_settings=0x7f02000d;
-        public static final int button_sleep=0x7f02000e;
-        public static final int button_volume_down=0x7f02000f;
-        public static final int button_volume_up=0x7f020010;
-        public static final int ic_launcher=0x7f020011;
-        public static final int icon=0x7f020012;
-        public static final int service_button_container_background=0x7f020013;
-        public static final int service_extra_button_container_background=0x7f020014;
+        public static final int ic_launcher=0x7f020000;
+        public static final int service_container_background=0x7f020001;
     }
     public static final class id {
         public static final int main_view=0x7f060000;

@@ -1,4 +1,4 @@
-/**Copyright (c) 2013 durgesh trivedi
+/**Copyright (c) 2013 Durgesh Trivedi
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,11 @@ public class SQGlobals extends Application {
         // TODO Auto-generated constructor stub
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+    
     // interface to root context class
     public RootContext getRootContext() throws Exception {
         if (mRootContext == null) {
