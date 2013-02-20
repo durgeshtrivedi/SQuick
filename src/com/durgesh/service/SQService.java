@@ -77,7 +77,7 @@ public class SQService extends Service {
     private int mScreenHeight;
     private String mOrientation;
     
-    private View sqView;
+    private View sqViewLeft,sqViewRight,sqViewLeftBottom,sqViewRightBottom;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -87,14 +87,27 @@ public class SQService extends Service {
         // Get our root 
         LayoutInflater appLayout = LayoutInflater.from( this );
         // The main view
-       sqView = appLayout.inflate( R.layout.sqservice, null );
+       sqViewLeft = appLayout.inflate( R.layout.sqservice, null );
+       sqViewRight=appLayout.inflate( R.layout.sqservice, null );
+       sqViewLeftBottom=appLayout.inflate( R.layout.sqservice, null );
+       sqViewRightBottom=appLayout.inflate( R.layout.sqservice, null );
         // insert the container
         Resources appResources =this.getResources();
-        sqView.setBackgroundDrawable( appResources.getDrawable(R.drawable.service_container_background));
-        sqView.setOnTouchListener( onTouch );
-        applyTransparency( sqView, 1);
+        sqViewLeft.setBackgroundDrawable( appResources.getDrawable(R.drawable.service_container_background));
+        sqViewLeft.setOnTouchListener( onTouch );
+        sqViewRight.setBackgroundDrawable( appResources.getDrawable(R.drawable.service_container_background));
+        sqViewRight.setOnTouchListener( onTouch );
+        sqViewLeftBottom.setBackgroundDrawable( appResources.getDrawable(R.drawable.service_container_background));
+        sqViewLeftBottom.setOnTouchListener( onTouch );
+        sqViewRightBottom.setBackgroundDrawable( appResources.getDrawable(R.drawable.service_container_background));
+        sqViewRightBottom.setOnTouchListener( onTouch );
+       // applyTransparency( sqView, 1);
         WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
-        wm.addView( sqView, makeOverlayParams() );
+        wm.addView( sqViewLeft, makeOverlayParams() );
+        wm.addView( sqViewRight, makeOverlayParams() );
+        wm.addView( sqViewLeftBottom, makeOverlayParams() );
+        wm.addView( sqViewRightBottom, makeOverlayParams() );
+        initOrientation();
         //wm.addView( mView, makeOverlayParams() );
         //wm.addView( mExtraView, makeOverlayParams() );
     }
@@ -117,7 +130,7 @@ public class SQService extends Service {
         
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            Toast.makeText(serviceCotext,"inside Ontouchlistener >>", Toast.LENGTH_LONG).show();
+            //Toast.makeText(serviceCotext,"inside Ontouchlistener >>", Toast.LENGTH_LONG).show();
             return false;
         }
     };
@@ -142,8 +155,8 @@ public class SQService extends Service {
     
     private WindowManager.LayoutParams makeOverlayParams() {
         return new WindowManager.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT,
+                20,
+                150,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 // in adjustWindowParams system overlay windows are stripped of focus/touch events
                 //WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
@@ -154,7 +167,6 @@ public class SQService extends Service {
     
     public void initOrientation() {
         // init x/y of buttons and save screen width/heigth
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( this );
         WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
         
         // save screen width/height
@@ -168,24 +180,22 @@ public class SQService extends Service {
         }
         
        
-        WindowManager.LayoutParams params = (WindowManager.LayoutParams)sqView.getLayoutParams();
-        params = (WindowManager.LayoutParams)sqView.getLayoutParams();
+        WindowManager.LayoutParams params = (WindowManager.LayoutParams)sqViewLeft.getLayoutParams();
         // bottom center default
-        params.x =( mScreenWidth - sqView.getWidth() ) / 2 ;
-        params.y = ( mScreenHeight - sqView.getHeight() ) - 30 ;
-                params.gravity = Gravity.TOP | Gravity.LEFT;
-        wm.updateViewLayout( sqView, params );
-
-       
+        //params.x =( mScreenWidth - sqView.getWidth() ) / 2 ;
+        //params.y = ( mScreenHeight - sqView.getHeight() ) - 30 ;
+        //params.x =0 ;
+       // params.y = 10;
+        params.gravity =Gravity.LEFT;
+        wm.updateViewLayout( sqViewLeft, params );
         
-//        if( mRestoreOrientation ) {
-//            String last_orientation = settings.getString( "service_last_orientation_" + mOrientation, "horizontal" );
-//            LinearLayout l = (LinearLayout)sqView.findViewById(R.layout.sqservice );
-//            if( last_orientation.equals( "vertical" ) ) {
-//                l.setOrientation( LinearLayout.VERTICAL );
-//            }else{
-//                l.setOrientation( LinearLayout.HORIZONTAL );
-//            }    
-//        }
+        params.gravity =Gravity.RIGHT;
+        wm.updateViewLayout( sqViewRight, params );
+        
+        params.gravity =Gravity.LEFT | Gravity.BOTTOM;
+        wm.updateViewLayout( sqViewLeftBottom, params );
+        
+        params.gravity =Gravity.RIGHT|Gravity.BOTTOM;
+        wm.updateViewLayout( sqViewRightBottom, params );
     }
 }

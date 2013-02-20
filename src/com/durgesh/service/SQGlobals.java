@@ -105,7 +105,7 @@ public class SQGlobals extends Application {
                 Toast.makeText(this, "Failed to initialize root context", Toast.LENGTH_LONG);
             }
 
-            // restartService();
+            restartService();
             // initNotifications();
             mBooted = true;
         }
