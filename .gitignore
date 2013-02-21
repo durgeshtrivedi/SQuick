@@ -2,6 +2,7 @@
 .classpath
 .project
 bin
+gen
 NOTICE
 project.properties
 .settings
