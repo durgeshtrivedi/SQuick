@@ -21,11 +21,13 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -35,7 +37,6 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.durgesh.R;
 
@@ -48,17 +49,17 @@ public class SQService extends Service {
     SQService serviceCotext = this;
     private final int mOffScreenMax = 20;
 
-    private int mScreenWidth;
-    private int mScreenHeight;
-    private String mOrientation;
+    private int sqScreenWidth;
+    private int sqScreenHeight;
+    private String sqOrientation;
+    
+    private OrientationEventListener sqOrientationListener;
 
     private View sqViewLeft, sqViewRight, sqViewLeftBottom, sqViewRightBottom;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        SQGlobals.error("onCreate SoftKeysService");
-        ((SQGlobals) getApplication()).bootup();
 
         // Get our root
         LayoutInflater appLayout = LayoutInflater.from(this);
@@ -67,8 +68,6 @@ public class SQService extends Service {
         sqViewRight = appLayout.inflate(R.layout.sqservice, null);
         sqViewLeftBottom = appLayout.inflate(R.layout.sqservice, null);
         sqViewRightBottom = appLayout.inflate(R.layout.sqservice, null);
-        // insert the container
-        Resources appResources = this.getResources();
 
         sqViewLeft.setBackgroundColor(Color.LTGRAY);
         sqViewLeft.setOnTouchListener(onTouch);
@@ -88,6 +87,16 @@ public class SQService extends Service {
         wm.addView(sqViewRight, makeOverlayParams());
         wm.addView(sqViewLeftBottom, makeOverlayParams());
         wm.addView(sqViewRightBottom, makeOverlayParams());
+        
+        sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                initOrientation();
+            }
+        };
+        sqOrientationListener.enable();
+
+        
         initOrientation();
         // wm.addView( mView, makeOverlayParams() );
         // wm.addView( mExtraView, makeOverlayParams() );
@@ -136,15 +145,7 @@ public class SQService extends Service {
     }
 
     private WindowManager.LayoutParams makeOverlayParams() {
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-        // save screen width/height
-        Display display = wm.getDefaultDisplay();
-        mScreenWidth = display.getWidth();
-        mScreenHeight = display.getHeight();
-        int displayHeight = mScreenHeight * 25 / 100;
-        int displayWidth=20;
-        return new WindowManager.LayoutParams(displayWidth, displayHeight, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+        return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
         // in adjustWindowParams system overlay windows are stripped of focus/touch events
         // WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
@@ -156,32 +157,47 @@ public class SQService extends Service {
 
         // save screen width/height
         Display display = wm.getDefaultDisplay();
-        mScreenWidth = display.getWidth();
-        mScreenHeight = display.getHeight();
+        sqScreenWidth = display.getWidth();
+        sqScreenHeight = display.getHeight();
 
-        mOrientation = "portrait";
-        if (mScreenWidth > mScreenHeight) {
-            mOrientation = "landscape";
+        int viewHeight=25;
+        if (sqScreenWidth > sqScreenHeight) {
+            sqOrientation = "landscape";
         }
+        int displayHeight = sqScreenHeight * viewHeight / 100;
+        int displayWidth=20;
+        
+        // Set the position of the Top left View
         WindowManager.LayoutParams params = (WindowManager.LayoutParams) sqViewLeft.getLayoutParams();
-        params.y = mScreenHeight/5;
+        params.y = sqScreenHeight/5;
         params.gravity = Gravity.LEFT | Gravity.TOP;
+        params.width=displayWidth;
+        params.height=displayHeight;
         wm.updateViewLayout(sqViewLeft, params);
 
+        // Set the position of the Bottom left View
         WindowManager.LayoutParams paramsLB = (WindowManager.LayoutParams) sqViewLeftBottom.getLayoutParams();
-        paramsLB.y = mScreenHeight/4;
+        paramsLB.y = sqScreenHeight/4;
+        paramsLB.width=displayWidth;
+        paramsLB.height=displayHeight;
         paramsLB.gravity = Gravity.LEFT;
         wm.updateViewLayout(sqViewLeftBottom, paramsLB);
 
+        // Set the position of the Top Right View
         WindowManager.LayoutParams paramsR = (WindowManager.LayoutParams) sqViewRight.getLayoutParams();
-        paramsR.x = mScreenWidth;
-        paramsR.y = mScreenHeight/5;
+        paramsR.x = sqScreenWidth;
+        paramsR.y = sqScreenHeight/5;
+        paramsR.width=displayWidth;
+        paramsR.height=displayHeight;
         paramsR.gravity = Gravity.TOP;
         wm.updateViewLayout(sqViewRight, paramsR);
 
+        // Set the position of the Bottom Right View
         WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqViewRightBottom.getLayoutParams();
-        paramsRB.x = mScreenWidth;
-        paramsRB.y = mScreenHeight/4;
+        paramsRB.x = sqScreenWidth;
+        paramsRB.y = sqScreenHeight/4;
+        paramsRB.width=displayWidth;
+        paramsRB.height=displayHeight;
         wm.updateViewLayout(sqViewRightBottom, paramsRB);
     }
 }

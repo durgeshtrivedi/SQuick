@@ -16,9 +16,11 @@
 package com.durgesh.quick;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.durgesh.service.SQGlobals;
+import com.durgesh.service.SQService;
 
 /**
  * Main class of the application to launch the SuperQuick service the purpose of the class is just to launch the service
@@ -31,8 +33,18 @@ public class SuperQuick extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((SQGlobals) getApplication()).bootup();
-
+       // ((SQGlobals) getApplication()).bootup();
+        
+        restartService();
+    }
+    public void restartService() {
+        // start the service
+        this.stopService(new Intent(this, SQService.class));
+        // SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( this );
+        // if( settings.getBoolean( "service", true ) ) {
+        // this.startService( new Intent( this, SQService.class ) );
+        // }
+        this.startService(new Intent(this, SQService.class));
     }
 
 }
