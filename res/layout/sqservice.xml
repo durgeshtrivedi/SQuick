@@ -17,9 +17,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_view"
-    android:layout_width="20dp"
-    android:layout_height="40dp"
+    android:id="@+id/sq_service"
     >
+    
+    
     </LinearLayout>
     

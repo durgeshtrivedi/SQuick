@@ -57,9 +57,8 @@ public class SQCreator {
  // this assembles a generic button_container that can be inserted into whatever layout
     public static View createView( Context context, int iconSize, float iconScale, String prefix, ViewGroup root, int[] buttons ) {
         
-        iconSize = scaledIconSize( context, iconSize, iconScale );
+         iconSize = scaledIconSize( context, iconSize, iconScale );
          Resources appResources =context.getResources();
-         root.setBackgroundDrawable( appResources.getDrawable(R.drawable.service_container_background));
          return root;
 
     }
