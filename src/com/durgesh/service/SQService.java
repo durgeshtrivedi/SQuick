@@ -18,7 +18,6 @@ package com.durgesh.service;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.SensorManager;
@@ -41,18 +40,22 @@ import android.view.animation.LayoutAnimationController;
 import com.durgesh.R;
 
 /**
- * THe main application Service which run all the time in the background and make the application live .
+ * The main application Service which run all the time in the background and make the application live .
  * 
  * @author durgesht
  */
 public class SQService extends Service {
     SQService serviceCotext = this;
-    private final int mOffScreenMax = 20;
 
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private String sqOrientation;
-    
+    private static final int SQ_VIEW_WIDTH = 20;
+    private static final int SQ_VIEW_HEIGHT = 25;
+
+    // Position TOP view LEFT and RIGHT
+    private static final int SQ_TOP_VIEW_POSITION_RATIO = 5;
+    private static final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
+
     private OrientationEventListener sqOrientationListener;
 
     private View sqViewLeft, sqViewRight, sqViewLeftBottom, sqViewRightBottom;
@@ -61,33 +64,10 @@ public class SQService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        // Get our root
-        LayoutInflater appLayout = LayoutInflater.from(this);
-        // The main view
-        sqViewLeft = appLayout.inflate(R.layout.sqservice, null);
-        sqViewRight = appLayout.inflate(R.layout.sqservice, null);
-        sqViewLeftBottom = appLayout.inflate(R.layout.sqservice, null);
-        sqViewRightBottom = appLayout.inflate(R.layout.sqservice, null);
-
-        sqViewLeft.setBackgroundColor(Color.LTGRAY);
-        sqViewLeft.setOnTouchListener(onTouch);
-
-        sqViewRight.setBackgroundColor(Color.LTGRAY);
-        sqViewRight.setOnTouchListener(onTouch);
-
-        sqViewLeftBottom.setBackgroundColor(Color.LTGRAY);
-        sqViewLeftBottom.setOnTouchListener(onTouch);
-
-        sqViewRightBottom.setBackgroundColor(Color.LTGRAY);
-        sqViewRightBottom.setOnTouchListener(onTouch);
-
-        // applyTransparency( sqView, 1);
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        wm.addView(sqViewLeft, makeOverlayParams());
-        wm.addView(sqViewRight, makeOverlayParams());
-        wm.addView(sqViewLeftBottom, makeOverlayParams());
-        wm.addView(sqViewRightBottom, makeOverlayParams());
-        
+        sqViewLeft = inflateView(sqViewLeft);
+        sqViewRight = inflateView(sqViewRight);
+        sqViewLeftBottom = inflateView(sqViewLeftBottom);
+        sqViewRightBottom = inflateView(sqViewRightBottom);
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientation) {
@@ -96,10 +76,7 @@ public class SQService extends Service {
         };
         sqOrientationListener.enable();
 
-        
         initOrientation();
-        // wm.addView( mView, makeOverlayParams() );
-        // wm.addView( mExtraView, makeOverlayParams() );
     }
 
     OnClickListener onClick = new OnClickListener() {
@@ -131,6 +108,19 @@ public class SQService extends Service {
         return null;
     }
 
+    private View inflateView(View sqView) {
+        LayoutInflater appLayout = LayoutInflater.from(this);
+        sqView = appLayout.inflate(R.layout.sqservice, null);
+        sqView.setBackgroundColor(Color.LTGRAY);
+        sqView.setOnTouchListener(onTouch);
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wm.addView(sqView, makeOverlayParams());
+        return sqView;
+    }
+
+    /**
+     * Set the Transparency for the view
+     */
     private void applyTransparency(View v, int amount) {
         // apply transparency, is there a better way?
         float transparency = amount;
@@ -144,6 +134,11 @@ public class SQService extends Service {
         ((ViewGroup) v).setLayoutAnimation(new LayoutAnimationController(alpha, 0));
     }
 
+    /**
+     * Set the layout parameter for the SQView
+     * 
+     * @return {@link WindowManager.LayoutParams}
+     */
     private WindowManager.LayoutParams makeOverlayParams() {
         return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
         // in adjustWindowParams system overlay windows are stripped of focus/touch events
@@ -151,53 +146,50 @@ public class SQService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
     }
 
+    /**
+     * Change the view size when the device Orientation is changed
+     */
     public void initOrientation() {
-        // init x/y of buttons and save screen width/heigth
+        // Set the position of the Top left View
+        updateViewParameter(sqViewLeft, 0, SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
+
+        // Set the position of the Bottom left View
+        updateViewParameter(sqViewLeftBottom, 0, SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
+
+        // Set the position of the Top Right View
+        updateViewParameter(sqViewRight, 1, SQ_TOP_VIEW_POSITION_RATIO, Gravity.TOP);
+
+        // Set the position of the Bottom Right View
+        updateViewParameter(sqViewRightBottom, 1, SQ_BOTTOM_VIEW_POSITION_RATIO, -10);
+
+    }
+
+    /**
+     * update the View with Screen orientation
+     * 
+     * @param sqView
+     *            view to display
+     * @param xAxis
+     *            position of view on xAxis in case of Gravity LEFT it is not required thats why come as 0
+     * @param ration
+     *            give a ration to display the view at particular position(height) with screen height
+     * @param gravity
+     *            Gravity of the view to display on the screen
+     */
+    private void updateViewParameter(View sqView, int xAxis, int ration, int gravity) {
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         // save screen width/height
         Display display = wm.getDefaultDisplay();
         sqScreenWidth = display.getWidth();
         sqScreenHeight = display.getHeight();
-
-        int viewHeight=25;
-        if (sqScreenWidth > sqScreenHeight) {
-            sqOrientation = "landscape";
-        }
-        int displayHeight = sqScreenHeight * viewHeight / 100;
-        int displayWidth=20;
-        
-        // Set the position of the Top left View
-        WindowManager.LayoutParams params = (WindowManager.LayoutParams) sqViewLeft.getLayoutParams();
-        params.y = sqScreenHeight/5;
-        params.gravity = Gravity.LEFT | Gravity.TOP;
-        params.width=displayWidth;
-        params.height=displayHeight;
-        wm.updateViewLayout(sqViewLeft, params);
-
-        // Set the position of the Bottom left View
-        WindowManager.LayoutParams paramsLB = (WindowManager.LayoutParams) sqViewLeftBottom.getLayoutParams();
-        paramsLB.y = sqScreenHeight/4;
-        paramsLB.width=displayWidth;
-        paramsLB.height=displayHeight;
-        paramsLB.gravity = Gravity.LEFT;
-        wm.updateViewLayout(sqViewLeftBottom, paramsLB);
-
-        // Set the position of the Top Right View
-        WindowManager.LayoutParams paramsR = (WindowManager.LayoutParams) sqViewRight.getLayoutParams();
-        paramsR.x = sqScreenWidth;
-        paramsR.y = sqScreenHeight/5;
-        paramsR.width=displayWidth;
-        paramsR.height=displayHeight;
-        paramsR.gravity = Gravity.TOP;
-        wm.updateViewLayout(sqViewRight, paramsR);
-
-        // Set the position of the Bottom Right View
-        WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqViewRightBottom.getLayoutParams();
-        paramsRB.x = sqScreenWidth;
-        paramsRB.y = sqScreenHeight/4;
-        paramsRB.width=displayWidth;
-        paramsRB.height=displayHeight;
-        wm.updateViewLayout(sqViewRightBottom, paramsRB);
+        int displayHeight = sqScreenHeight * SQ_VIEW_HEIGHT / 100;
+        WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
+        paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
+        paramsRB.y = sqScreenHeight / ration;
+        paramsRB.width = SQ_VIEW_WIDTH;
+        paramsRB.height = displayHeight;
+        paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
+        wm.updateViewLayout(sqView, paramsRB);
     }
 }
