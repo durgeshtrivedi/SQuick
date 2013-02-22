@@ -12,50 +12,52 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package com.durgesh.view;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import com.durgesh.quick.SQMainVeiw;
 
 public class BottomRightView extends SQMainVeiw {
 
-  
-  
-  public BottomRightView(Context context) {
+    public BottomRightView(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
     }
 
-@Override
-  public void onRightToLeft() {
-      Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-      mToast.show();
+    @Override
+    public void onRightToLeft() {
+        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
+        mToast.show();
 
-  }
+    }
 
-  @Override
-  public void onLeftToRight() {
-      Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-      mToast.show();
+    @Override
+    public void onLeftToRight() {
+        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
+        mToast.show();
 
-  }
+    }
 
-  @Override
-  public void onBottomToTop() {
-      Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-      mToast.show();
+    @Override
+    public void onBottomToTop() {
+        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
+        mToast.show();
 
-  }
+    }
 
-  @Override
-  public void onTopToBottom() {
-      Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-      mToast.show();
+    @Override
+    public void onTopToBottom() {
+        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
+        mToast.show();
 
-  }
+    }
 
+    @Override
+    public void updateViewParameter() {
+        updateView(1, SQ_BOTTOM_VIEW_POSITION_RATIO, -10);
+
+    }
 }

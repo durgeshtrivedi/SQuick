@@ -20,10 +20,16 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LayoutAnimationController;
 import android.view.WindowManager;
 
 import com.durgesh.R;
@@ -35,15 +41,24 @@ import com.durgesh.R;
  */
 public abstract class SQMainVeiw extends View implements OnTouchListener {
     public Context context;
-    
+    public View sqView;
+    private int sqScreenWidth;
+    private int sqScreenHeight;
+    private static final int SQ_VIEW_WIDTH = 20;
+    private static final int SQ_VIEW_HEIGHT = 25;
+
+    // Position TOP view LEFT and RIGHT
+    public final int SQ_TOP_VIEW_POSITION_RATIO = 5;
+    public final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
+
     public SQMainVeiw(Context context) {
         super(context);
-        this.context=context;
+        this.context = context;
+        inflateView();
     }
 
     private final GestureDetector gdt = new GestureDetector(new GestureListener());
 
-    
     @Override
     public boolean onTouch(final View v, final MotionEvent event) {
         gdt.onTouchEvent(event);
@@ -83,14 +98,18 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     public abstract void onTopToBottom();
 
-    public View inflateView() {
+    /**
+     * update the view position on the screen
+     */
+    public abstract void updateViewParameter();
+
+    private void inflateView() {
         LayoutInflater appLayout = LayoutInflater.from(context);
-        View sqView = appLayout.inflate(R.layout.sqservice, null);
+        sqView = appLayout.inflate(R.layout.sqservice, null);
         sqView.setBackgroundColor(Color.LTGRAY);
         sqView.setOnTouchListener(this);
-        WindowManager wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         wm.addView(sqView, makeOverlayParams());
-        return sqView;
     }
 
     /**
@@ -103,6 +122,59 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         // in adjustWindowParams system overlay windows are stripped of focus/touch events
         // WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+    }
+
+    /**
+     * update the View with Screen orientation
+     * 
+     * @param xAxis
+     *            position of view on xAxis in case of Gravity LEFT it is not required thats why come as 0
+     * @param ration
+     *            give a ration to display the view at particular position(height) with screen height
+     * @param gravity
+     *            Gravity of the view to display on the screen
+     */
+    protected void updateView(int xAxis, int ration, int gravity) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        // save screen width/height
+        Display display = wm.getDefaultDisplay();
+        sqScreenWidth = display.getWidth();
+        sqScreenHeight = display.getHeight();
+        // To give View the size according to Screen size take ration from screen size
+        int displayHeight = sqScreenHeight * SQ_VIEW_HEIGHT / 100;
+        WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
+        paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
+        paramsRB.y = sqScreenHeight / ration;
+        paramsRB.width = SQ_VIEW_WIDTH;
+        paramsRB.height = displayHeight;
+        paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
+        wm.updateViewLayout(sqView, paramsRB);
+    }
+
+    /**
+     * Set the Transparency for the view
+     */
+    private void applyTransparency(View v, int amount) {
+        // apply transparency, is there a better way?
+        float transparency = amount;
+        float finalAlpha = (100f - transparency) / 100f;
+
+        Animation alpha = new AlphaAnimation(finalAlpha, finalAlpha);
+        alpha.setDuration(0);
+        alpha.setFillAfter(true);
+
+        // need to create an animation controller since its empty by default and the animation doesn't work
+        ((ViewGroup) v).setLayoutAnimation(new LayoutAnimationController(alpha, 0));
+    }
+
+    /**
+     * return the Current view
+     * 
+     * @return
+     */
+    public View getView() {
+        return sqView;
     }
 
 }

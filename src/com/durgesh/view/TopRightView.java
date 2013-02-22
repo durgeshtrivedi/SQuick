@@ -16,15 +16,13 @@
 package com.durgesh.view;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.durgesh.quick.SQMainVeiw;
 
 public class TopRightView extends SQMainVeiw {
 
-    
-    
     public TopRightView(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
@@ -58,4 +56,9 @@ public class TopRightView extends SQMainVeiw {
 
     }
 
+    @Override
+    public void updateViewParameter() {
+        updateView(1, SQ_TOP_VIEW_POSITION_RATIO, Gravity.TOP);
+
+    }
 }

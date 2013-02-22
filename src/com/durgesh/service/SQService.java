@@ -58,18 +58,7 @@ public class SQService extends Service implements OnGestureListener {
     BottomLeftView sqBottomLeftView;
     BottomRightView sqBottomRightView;
 
-    private int sqScreenWidth;
-    private int sqScreenHeight;
-    private static final int SQ_VIEW_WIDTH = 20;
-    private static final int SQ_VIEW_HEIGHT = 25;
-
-    // Position TOP view LEFT and RIGHT
-    private static final int SQ_TOP_VIEW_POSITION_RATIO = 5;
-    private static final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
-
     private OrientationEventListener sqOrientationListener;
-
-    private View sqViewLeft, sqViewRight, sqViewLeftBottom, sqViewRightBottom;
 
     @Override
     public void onCreate() {
@@ -78,14 +67,6 @@ public class SQService extends Service implements OnGestureListener {
         sqTopRightView = new TopRightView(this);
         sqBottomLeftView = new BottomLeftView(this);
         sqBottomRightView = new BottomRightView(this);
-
-        sqViewLeft = sqTopLeftView.inflateView();
-
-        sqViewRight = sqTopRightView.inflateView();
-
-        sqViewLeftBottom = sqBottomLeftView.inflateView();
-        sqViewRightBottom = sqBottomRightView.inflateView();
-
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientation) {
@@ -97,79 +78,26 @@ public class SQService extends Service implements OnGestureListener {
         initOrientation();
     }
 
-
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    
-    /**
-     * Set the Transparency for the view
-     */
-    private void applyTransparency(View v, int amount) {
-        // apply transparency, is there a better way?
-        float transparency = amount;
-        float finalAlpha = (100f - transparency) / 100f;
-
-        Animation alpha = new AlphaAnimation(finalAlpha, finalAlpha);
-        alpha.setDuration(0);
-        alpha.setFillAfter(true);
-
-        // need to create an animation controller since its empty by default and the animation doesn't work
-        ((ViewGroup) v).setLayoutAnimation(new LayoutAnimationController(alpha, 0));
-    }
-
-   
     /**
      * Change the view size when the device Orientation is changed
      */
     public void initOrientation() {
         // Set the position of the Top left View
-        updateViewParameter(sqViewLeft, 0, SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
-
+        sqTopLeftView.updateViewParameter();
         // Set the position of the Bottom left View
-        updateViewParameter(sqViewLeftBottom, 0, SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
-
+        sqBottomLeftView.updateViewParameter();
         // Set the position of the Top Right View
-        updateViewParameter(sqViewRight, 1, SQ_TOP_VIEW_POSITION_RATIO, Gravity.TOP);
-
+        sqTopRightView.updateViewParameter();
         // Set the position of the Bottom Right View
-        updateViewParameter(sqViewRightBottom, 1, SQ_BOTTOM_VIEW_POSITION_RATIO, -10);
+        sqBottomRightView.updateViewParameter();
 
     }
-
-    /**
-     * update the View with Screen orientation
-     * 
-     * @param sqView
-     *            view to display
-     * @param xAxis
-     *            position of view on xAxis in case of Gravity LEFT it is not required thats why come as 0
-     * @param ration
-     *            give a ration to display the view at particular position(height) with screen height
-     * @param gravity
-     *            Gravity of the view to display on the screen
-     */
-    private void updateViewParameter(View sqView, int xAxis, int ration, int gravity) {
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-        // save screen width/height
-        Display display = wm.getDefaultDisplay();
-        sqScreenWidth = display.getWidth();
-        sqScreenHeight = display.getHeight();
-        // To give View the size according to Screen size take ration from screen size
-        int displayHeight = sqScreenHeight * SQ_VIEW_HEIGHT / 100;
-        WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
-        paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
-        paramsRB.y = sqScreenHeight / ration;
-        paramsRB.width = SQ_VIEW_WIDTH;
-        paramsRB.height = displayHeight;
-        paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
-        wm.updateViewLayout(sqView, paramsRB);
-    }
-
 
     @Override
     public boolean onDown(MotionEvent e) {
@@ -177,20 +105,17 @@ public class SQService extends Service implements OnGestureListener {
         return false;
     }
 
-
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         // TODO Auto-generated method stub
         return false;
     }
 
-
     @Override
     public void onLongPress(MotionEvent e) {
         // TODO Auto-generated method stub
-        
-    }
 
+    }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -198,13 +123,11 @@ public class SQService extends Service implements OnGestureListener {
         return false;
     }
 
-
     @Override
     public void onShowPress(MotionEvent e) {
         // TODO Auto-generated method stub
-        
-    }
 
+    }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
@@ -212,5 +135,4 @@ public class SQService extends Service implements OnGestureListener {
         return false;
     }
 
-    
 }
