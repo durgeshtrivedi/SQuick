@@ -23,6 +23,8 @@ import android.graphics.PixelFormat;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.view.Display;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,16 +38,25 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
 import com.durgesh.R;
+import com.durgesh.view.BottomLeftView;
+import com.durgesh.view.BottomRightView;
+import com.durgesh.view.TopLeftView;
+import com.durgesh.view.TopRightView;
 
 /**
  * The main application Service which run all the time in the background and make the application live .
  * 
  * @author durgesht
  */
-public class SQService extends Service {
+public class SQService extends Service implements OnGestureListener {
     SQService serviceCotext = this;
+    TopLeftView sqTopLeftView;
+    TopRightView sqTopRightView;
+    BottomLeftView sqBottomLeftView;
+    BottomRightView sqBottomRightView;
 
     private int sqScreenWidth;
     private int sqScreenHeight;
@@ -63,11 +74,18 @@ public class SQService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        sqTopLeftView = new TopLeftView(this);
+        sqTopRightView = new TopRightView(this);
+        sqBottomLeftView = new BottomLeftView(this);
+        sqBottomRightView = new BottomRightView(this);
 
-        sqViewLeft = inflateView(sqViewLeft);
-        sqViewRight = inflateView(sqViewRight);
-        sqViewLeftBottom = inflateView(sqViewLeftBottom);
-        sqViewRightBottom = inflateView(sqViewRightBottom);
+        sqViewLeft = sqTopLeftView.inflateView();
+
+        sqViewRight = sqTopRightView.inflateView();
+
+        sqViewLeftBottom = sqBottomLeftView.inflateView();
+        sqViewRightBottom = sqBottomRightView.inflateView();
+
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientation) {
@@ -79,28 +97,6 @@ public class SQService extends Service {
         initOrientation();
     }
 
-    OnClickListener onClick = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-        }
-    };
-
-    OnLongClickListener onlongClick = new OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            return false;
-        }
-    };
-
-    @SuppressLint("ShowToast")
-    OnTouchListener onTouch = new OnTouchListener() {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            // Toast.makeText(serviceCotext,"inside Ontouchlistener >>", Toast.LENGTH_LONG).show();
-            return false;
-        }
-    };
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -108,16 +104,7 @@ public class SQService extends Service {
         return null;
     }
 
-    private View inflateView(View sqView) {
-        LayoutInflater appLayout = LayoutInflater.from(this);
-        sqView = appLayout.inflate(R.layout.sqservice, null);
-        sqView.setBackgroundColor(Color.LTGRAY);
-        sqView.setOnTouchListener(onTouch);
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        wm.addView(sqView, makeOverlayParams());
-        return sqView;
-    }
-
+    
     /**
      * Set the Transparency for the view
      */
@@ -134,18 +121,7 @@ public class SQService extends Service {
         ((ViewGroup) v).setLayoutAnimation(new LayoutAnimationController(alpha, 0));
     }
 
-    /**
-     * Set the layout parameter for the SQView
-     * 
-     * @return {@link WindowManager.LayoutParams}
-     */
-    private WindowManager.LayoutParams makeOverlayParams() {
-        return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-        // in adjustWindowParams system overlay windows are stripped of focus/touch events
-        // WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
-    }
-
+   
     /**
      * Change the view size when the device Orientation is changed
      */
@@ -183,6 +159,7 @@ public class SQService extends Service {
         Display display = wm.getDefaultDisplay();
         sqScreenWidth = display.getWidth();
         sqScreenHeight = display.getHeight();
+        // To give View the size according to Screen size take ration from screen size
         int displayHeight = sqScreenHeight * SQ_VIEW_HEIGHT / 100;
         WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
         paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
@@ -192,4 +169,48 @@ public class SQService extends Service {
         paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
         wm.updateViewLayout(sqView, paramsRB);
     }
+
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    
 }
