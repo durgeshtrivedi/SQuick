@@ -18,7 +18,6 @@ package com.durgesh.view;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.durgesh.quick.SQMainVeiw;
 
 public class BottomRightView extends SQMainVeiw {
 

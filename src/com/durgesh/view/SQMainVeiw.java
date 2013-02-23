@@ -13,24 +13,24 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.durgesh.quick;
+package com.durgesh.view;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
-import android.view.WindowManager;
 
 import com.durgesh.R;
 
@@ -46,14 +46,16 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     private int sqScreenHeight;
     private static final int SQ_VIEW_WIDTH = 20;
     private static final int SQ_VIEW_HEIGHT = 25;
-
+    public static final String RESULT_CODE_FINISH_ACTIVITY = "FinishActivity";
+    /** Flag to finish the activity */
+    public static final int RESULT_CODE_FINISH = 0;
     // Position TOP view LEFT and RIGHT
     public final int SQ_TOP_VIEW_POSITION_RATIO = 5;
     public final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
 
     public SQMainVeiw(Context context) {
         super(context);
-        this.context = context;
+        this.context =context;
         inflateView();
     }
 
@@ -61,7 +63,16 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     @Override
     public boolean onTouch(final View v, final MotionEvent event) {
-        gdt.onTouchEvent(event);
+        if(event.getAction()==MotionEvent.ACTION_DOWN){
+            //gdt.onTouchEvent(event);
+         }else if(event.getAction()==MotionEvent.ACTION_MOVE){
+            // gdt.onTouchEvent(event);
+         }else if(event.getAction()==MotionEvent.ACTION_UP){
+
+         }
+
+       gdt.onTouchEvent(event);
+        
         return true;
     }
 

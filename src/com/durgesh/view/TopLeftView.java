@@ -1,10 +1,10 @@
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.Gravity;
-import android.widget.Toast;
 
-import com.durgesh.quick.SQMainVeiw;
+import com.durgesh.quick.squick.SQDialerActivity;
 
 /**
  * Represent the TopLeftView
@@ -19,34 +19,46 @@ public class TopLeftView extends SQMainVeiw {
 
     @Override
     public void onRightToLeft() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+       // Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
+       // mToast.show();
+        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dialerActivity);
     }
 
     @Override
     public void onLeftToRight() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
+     //   Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
+      //  mToast.show();
 
+        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dialerActivity);
     }
 
     @Override
     public void onBottomToTop() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+      //  Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
+       // mToast.show();
+        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dialerActivity);
     }
 
     @Override
     public void onTopToBottom() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+       // Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
+       // mToast.show();
+        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dialerActivity);
     }
-
+   
+    
     public void updateViewParameter() {
         updateView(0, SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
     }
+
+    
 
 }

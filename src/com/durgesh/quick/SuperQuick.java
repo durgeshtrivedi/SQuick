@@ -19,7 +19,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.durgesh.service.SQGlobals;
 import com.durgesh.service.SQService;
 
 /**
@@ -28,23 +27,20 @@ import com.durgesh.service.SQService;
  * @author durgesht
  */
 public class SuperQuick extends Activity {
-    private static final float LENGTH_THRESHOLD = 120.0f;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // ((SQGlobals) getApplication()).bootup();
-        
         restartService();
     }
     public void restartService() {
         // start the service
-        this.stopService(new Intent(this, SQService.class));
+        stopService(new Intent(this, SQService.class));
         // SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( this );
         // if( settings.getBoolean( "service", true ) ) {
         // this.startService( new Intent( this, SQService.class ) );
         // }
-        this.startService(new Intent(this, SQService.class));
+       startService(new Intent(this, SQService.class));
+       finish();
     }
 
 }

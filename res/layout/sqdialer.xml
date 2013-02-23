@@ -18,15 +18,16 @@
 -->
 
 <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sq_dialer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:columnWidth="345dp"
+    android:columnWidth="100dp"
     android:gravity="center_horizontal"
     android:horizontalSpacing="20dp"
-    android:numColumns="3"
+    android:numColumns="4"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    android:paddingTop="5dp"
+    android:paddingTop="10dp"
     android:stretchMode="columnWidth"
     android:verticalSpacing="20dp" >
 

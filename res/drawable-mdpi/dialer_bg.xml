@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+	<!--
+		An XML bitmap used as MDV view background in landscape mode. Here
+		specified additional properties for the bitmap such as dithering and
+		mirror
+	-->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+android:src="@drawable/dialer_bg_image"
+android:tileMode="mirror"
+android:dither="true" />

@@ -19,7 +19,6 @@ import android.content.Context;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.durgesh.quick.SQMainVeiw;
 
 public class TopRightView extends SQMainVeiw {
 

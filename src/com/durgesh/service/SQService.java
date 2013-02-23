@@ -15,32 +15,14 @@
  */
 package com.durgesh.service;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.view.Display;
-import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.LayoutAnimationController;
-import android.widget.Toast;
 
-import com.durgesh.R;
 import com.durgesh.view.BottomLeftView;
 import com.durgesh.view.BottomRightView;
 import com.durgesh.view.TopLeftView;
@@ -52,7 +34,6 @@ import com.durgesh.view.TopRightView;
  * @author durgesht
  */
 public class SQService extends Service implements OnGestureListener {
-    SQService serviceCotext = this;
     TopLeftView sqTopLeftView;
     TopRightView sqTopRightView;
     BottomLeftView sqBottomLeftView;

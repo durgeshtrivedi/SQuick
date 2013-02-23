@@ -50,6 +50,12 @@
                   
         </activity>
         
+       <activity android:name=".quick.squick.SQDialerActivity"
+            android:label="@string/application_name"
+             android:clearTaskOnLaunch="true"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            />	
+            
     	<receiver android:name=".BootReceiver">
 		    <intent-filter>
 			    <action android:name ="android.intent.action.BOOT_COMPLETED"/>
@@ -57,6 +63,7 @@
 	    </receiver>
 		
 		<service android:name=".service.SQService"/>
+		    
     </application>
 
 </manifest>
