@@ -27,7 +27,7 @@
     android:numColumns="4"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    android:paddingTop="10dp"
+    android:paddingTop="100dp"
     android:stretchMode="columnWidth"
     android:verticalSpacing="20dp" >
 

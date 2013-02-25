@@ -55,7 +55,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     public SQMainVeiw(Context context) {
         super(context);
-        this.context =context;
+        this.context = context.getApplicationContext();
         inflateView();
     }
 
@@ -63,16 +63,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     @Override
     public boolean onTouch(final View v, final MotionEvent event) {
-        if(event.getAction()==MotionEvent.ACTION_DOWN){
-            //gdt.onTouchEvent(event);
-         }else if(event.getAction()==MotionEvent.ACTION_MOVE){
-            // gdt.onTouchEvent(event);
-         }else if(event.getAction()==MotionEvent.ACTION_UP){
-
-         }
-
-       gdt.onTouchEvent(event);
-        
+        gdt.onTouchEvent(event);
         return true;
     }
 
@@ -97,7 +88,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
                 onTopToBottom();
                 return true;
             }
-            return false;
+            return true;
         }
     }
 
