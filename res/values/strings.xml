@@ -22,5 +22,6 @@
     <skip />
     <!-- Application name -->
     <string name="application_name">Supper Quick </string>
+    <string name="shortcut_dlg_name">ShortCuts </string>
 
 </resources>

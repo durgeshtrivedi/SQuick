@@ -26,13 +26,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -40,61 +44,49 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.durgesh.R;
 
-public class SQDialerActivity extends Activity implements OnItemClickListener, OnItemSelectedListener, OnItemLongClickListener {
-    Context context = this;
+public class SQDialerActivity extends Activity implements OnItemClickListener,OnItemLongClickListener {
+    Activity context = this;
+    GridView dialogGridView;
 
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        ShortCutAdapter sortcut = new ShortCutAdapter(getShortcutList());
-        AlertDialog dialog = new AlertDialog.Builder(context).setTitle("Short Cut").setAdapter(sortcut, new DialogInterface.OnClickListener() {
-            public void onClick(final DialogInterface dialog, int selectedNew) {
-                dialog.dismiss();
-
-            }
-
-        }).setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> view, View app, int arg2, long arg3) {
-                ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
-                Intent intent = new Intent();
-                ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
-                intent.setComponent(distantActivity);
-                intent.setAction(Intent.ACTION_MAIN);
-                context.startActivity(intent);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        }).create();
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        return true;
+        return false;
     }
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
+        ShortCutAdapter sortcut = new ShortCutAdapter(getShortcutList());
+        LayoutInflater li = LayoutInflater.from(context);
+        GridView dialogLayout = (GridView) li.inflate(R.layout.shorcutgrid, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(R.string.shortcut_dlg_name).setView(dialogLayout).create();
+        dialogLayout.setAdapter(sortcut);
+        dialogLayout.setBackgroundColor(Color.WHITE);
+        dialogLayout.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View app, int arg2, long arg3) {
+                dialog.dismiss();
+                ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
+                Intent intent = new Intent();
+                ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
+                intent.setComponent(distantActivity);
+                intent.setAction(Intent.ACTION_VIEW);
+                context.startActivityForResult(intent,0);
+                
+            }
+        });
+        
+        dialog.show();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = 450;
+        lp.height=LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(lp);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -105,10 +97,9 @@ public class SQDialerActivity extends Activity implements OnItemClickListener, O
         // Instance of ImageAdapter Class
 
         gridView.setAdapter(new SQDialerAdapter(this));
-        gridView.setOnTouchListener(new SQONDialer());
-        gridView.setOnItemSelectedListener(this);
+        // gridView.setOnTouchListener(new SQONDialer());
         gridView.setOnItemClickListener(this);
-        gridView.setOnItemLongClickListener(this);
+        // gridView.setOnItemLongClickListener(this);
     }
 
     final class SQONDialer implements OnTouchListener, OnLongClickListener {
@@ -138,25 +129,22 @@ public class SQDialerActivity extends Activity implements OnItemClickListener, O
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return sortcut.size();
         }
 
         @Override
         public Object getItem(int position) {
-            // TODO Auto-generated method stub
             return sortcut.get(position);
         }
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
             return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return getDialogView(sortcut, position);
+            return getDialogGridView(convertView, sortcut, position);
         }
 
     }
@@ -235,18 +223,17 @@ public class SQDialerActivity extends Activity implements OnItemClickListener, O
 
     }
 
-    private View getDialogView(final List<ApplicationInfo> sortcut, int position) {
+    private View getDialogGridView(View dialogLayout, final List<ApplicationInfo> sortcut, int position) {
+
         ApplicationInfo info = sortcut.get(position);
-        LinearLayout dialogLayout = new LinearLayout(context);
-        ImageView imageView = new ImageView(context);
-        // System.out.println(info.);
+        LayoutInflater li = LayoutInflater.from(context);
+        if (dialogLayout == null) {
+            dialogLayout = li.inflate(R.layout.shortcut_dlg_item, null);
+        }
+        ImageView imageView = (ImageView) dialogLayout.findViewById(R.id.app_icon);
         imageView.setImageDrawable(info.getAppIcon());
-        imageView.setPadding(5, 5, 5,5);
-        imageView.setLayoutParams(new GridView.LayoutParams(info.getAppIcon().getBounds().height(), info.getAppIcon().getBounds().height()));
-        TextView txt = new TextView(context);
-        txt.setText(info.appName);
-        dialogLayout.addView(imageView);
-        dialogLayout.addView(txt);
+        TextView textView = (TextView) dialogLayout.findViewById(R.id.app_name);
+        textView.setText(info.getAppName());
         dialogLayout.setTag(info);
         return dialogLayout;
     }
