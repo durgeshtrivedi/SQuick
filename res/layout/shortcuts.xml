@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-
   Copyright (c) 2013 Durgesh Trivedi
 
   This program is free software; you can redistribute it and/or modify
@@ -16,19 +15,27 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sq_dialer"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shortcut_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:columnWidth="100dp"
-    android:gravity="center_horizontal"
-    android:horizontalSpacing="20dp"
-    android:numColumns="4"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="100dp"
-    android:stretchMode="columnWidth"
-    android:verticalSpacing="20dp" >
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/dialer_bg">
 
-</GridView>
+    <GridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/shortcut_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:columnWidth="50dp"
+        android:numColumns="4"
+        android:stretchMode="spacingWidthUniform"
+        android:verticalSpacing="35dp"
+        android:horizontalSpacing="5dp">
+    </GridView>
+
+</LinearLayout>

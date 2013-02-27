@@ -11,7 +11,6 @@
         android:numColumns="2"
         android:padding="2dp"
         android:verticalSpacing="5dp"
-        android:minWidth="300dp" 
         >
 
         

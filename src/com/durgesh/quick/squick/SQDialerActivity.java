@@ -61,21 +61,29 @@ public class SQDialerActivity extends Activity implements OnItemClickListener,On
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         ShortCutAdapter sortcut = new ShortCutAdapter(getShortcutList());
         LayoutInflater li = LayoutInflater.from(context);
-        GridView dialogLayout = (GridView) li.inflate(R.layout.shorcutgrid, null);
+        GridView dialogLayout = (GridView) li.inflate(R.layout.shortcut_dlg_grid, null);
         final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(R.string.shortcut_dlg_name).setView(dialogLayout).create();
         dialogLayout.setAdapter(sortcut);
         dialogLayout.setBackgroundColor(Color.WHITE);
         dialogLayout.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View app, int arg2, long arg3) {
+            public void onItemClick(AdapterView<?> arg0,final  View app, int arg2, long arg3) {
                 dialog.dismiss();
-                ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
-                Intent intent = new Intent();
-                ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
-                intent.setComponent(distantActivity);
-                intent.setAction(Intent.ACTION_VIEW);
-                context.startActivityForResult(intent,0);
-                
+             Thread tt  = new Thread (new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
+                        Intent intent = new Intent();
+                        ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
+                        intent.setComponent(distantActivity);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        context.startActivityForResult(intent,0);
+                        
+                    }
+                });
+                tt.start();
+               
             }
         });
         
@@ -83,7 +91,7 @@ public class SQDialerActivity extends Activity implements OnItemClickListener,On
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = 450;
-        lp.height=LayoutParams.WRAP_CONTENT;
+        lp.height=LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(lp);
     }
 
@@ -91,15 +99,13 @@ public class SQDialerActivity extends Activity implements OnItemClickListener,On
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.sqdialer);
-        GridView gridView = (GridView) findViewById(R.id.sq_dialer);
-        gridView.setBackgroundResource(R.drawable.dialer_bg);
-        // Instance of ImageAdapter Class
-
+        setContentView(R.layout.shortcuts);
+        
+        GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
+        //gridView.setBackgroundResource(R.drawable.dialer_bg);
         gridView.setAdapter(new SQDialerAdapter(this));
         // gridView.setOnTouchListener(new SQONDialer());
         gridView.setOnItemClickListener(this);
-        // gridView.setOnItemLongClickListener(this);
     }
 
     final class SQONDialer implements OnTouchListener, OnLongClickListener {

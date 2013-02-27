@@ -16,8 +16,10 @@
 package com.durgesh.quick.squick;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -61,12 +63,17 @@ public class SQDialerAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = new ImageView(context);
+    public View getView(int position, View itemView, ViewGroup parent) {
+        
+        LayoutInflater li = LayoutInflater.from(context);
+        if (itemView == null) {
+            itemView = li.inflate(R.layout.shortcut_item, null);
+        }
+        ImageView imageView = (ImageView) itemView.findViewById(R.id.shortcut_item_img);
         imageView.setImageResource(dialerPosition[position]);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setLayoutParams(new GridView.LayoutParams(40, 40));
-        return imageView;
+       // imageView.setLayoutParams(new GridView.LayoutParams(40, 40));
+        return itemView;
     }
     
     
