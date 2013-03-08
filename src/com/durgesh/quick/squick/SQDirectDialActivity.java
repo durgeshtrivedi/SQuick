@@ -35,13 +35,15 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.durgesh.R;
+import com.durgesh.pref.SQPrefs;
 import com.durgesh.quick.squick.SQShorcutDialogAdapter.ApplicationInfo;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
+import com.durgesh.util.Constants;
 
 public class SQDirectDialActivity extends Activity implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
     GridView dialogGridView;
     View currentItem;
-    private static final int PHONE_CALL = 1;
+    private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
 
     @Override
@@ -51,18 +53,26 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
         TextView text = (TextView) currentItem.findViewById(R.id.shortcut_item_name);
         text.setText(name);
-        startActivity((Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT));
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
+        currentPosition = position;
         return createShorsutsDialog();
     }
 
     @Override
-    public void onItemClick(AdapterView<?> arg0, View item, int arg2, long arg3) {
+    public void onItemClick(AdapterView<?> arg0, View item, int position, long arg3) {
 
+        String uri = SQPrefs.getSharedPreferenceAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
+        ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, new OnShortcutIntentCreatedListener() {
+            @Override
+            public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
+                startActivity((Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT));
+            }
+        });
+        builder.createPhoneNumberShortcutIntent(Uri.parse(uri));
     }
 
     @Override
@@ -80,13 +90,14 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
-        if (requestCode == PHONE_CALL) {
+        if (requestCode == Constants.PHONE_CALL) {
+            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), ((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT))
+                    .getData().toString());
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
             builder.createPhoneNumberShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData());
         }
-    }  
-    
-   
+    }
+
     /**
      * display the DialogBox having list of shortcuts
      * 
@@ -108,18 +119,17 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
                 intent.setComponent(distantActivity);
                 intent.setAction(Intent.ACTION_PICK_ACTIVITY);
                 intent.setAction(Intent.ACTION_CREATE_SHORTCUT);
-                startActivityForResult(intent, PHONE_CALL);
+                startActivityForResult(intent, Constants.PHONE_CALL);
             }
         });
 
         dialog.show();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width =450;
+        lp.width = 450;
         lp.height = LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(lp);
         return true;
     }
 
-    
 }

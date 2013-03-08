@@ -16,17 +16,21 @@
 package com.durgesh.quick.squick;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.durgesh.R;
+import com.durgesh.pref.SQPrefs;
+import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
+import com.durgesh.util.Constants;
 
 public class SQDirectDialAdapter extends BaseAdapter {
     private Context context;
@@ -34,7 +38,6 @@ public class SQDirectDialAdapter extends BaseAdapter {
     public SQDirectDialAdapter(Context context) {
         this.context = context;
     }
-
 
     @Override
     public int getCount() {
@@ -53,14 +56,32 @@ public class SQDirectDialAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View itemView, ViewGroup parent) {
-
+        final View currentitem;
         LayoutInflater li = LayoutInflater.from(context);
         if (itemView == null) {
             itemView = li.inflate(R.layout.shortcut_item, null);
         }
-        ImageView imageView = (ImageView) itemView.findViewById(R.id.shortcut_item_img);
-        imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        currentitem = itemView;
+        String uri = SQPrefs.getSharedPreferenceAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
+        if (!uri.equals(Constants.DEFAULTURI)) {
+            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(context, new OnShortcutIntentCreatedListener() {
+
+                @Override
+                public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
+                    String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+                    ImageView image = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
+                    image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
+                    TextView text = (TextView) currentitem.findViewById(R.id.shortcut_item_name);
+                    text.setText(name);
+
+                }
+            });
+            builder.createPhoneNumberShortcutIntent(Uri.parse(uri));
+        } else {
+            ImageView imageView = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
+            imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
         return itemView;
     }
 }

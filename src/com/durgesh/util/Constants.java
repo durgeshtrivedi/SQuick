@@ -1,5 +1,7 @@
 package com.durgesh.util;
 
+import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
+
 /*
  * Copyright (C) 2009 The Android Open Source Project
  *
@@ -24,6 +26,8 @@ public class Constants {
     public static final String SCHEME_MAILTO = "mailto";
     public static final String SCHEME_IMTO = "imto";
     public static final String SCHEME_SIP = "sip";
+    public static final int PHONE_CALL = 1;
+    public static final String DEFAULTURI = "NOURI";
 
     /**
      * Log tag for performance measurement. To enable: adb shell setprop log.tag.ContactsPerf VERBOSE
