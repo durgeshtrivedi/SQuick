@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
 
-import com.durgesh.quick.squick.SQDialerActivity;
+import com.durgesh.quick.squick.SQDirectDialActivity;
 
 /**
  * Represent the TopLeftView
@@ -21,7 +21,7 @@ public class TopLeftView extends SQMainVeiw {
     public void onRightToLeft() {
        // Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
        // mToast.show();
-        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
         dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(dialerActivity);
     }
@@ -31,7 +31,7 @@ public class TopLeftView extends SQMainVeiw {
      //   Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
       //  mToast.show();
 
-        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
         dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(dialerActivity);
     }
@@ -40,7 +40,7 @@ public class TopLeftView extends SQMainVeiw {
     public void onBottomToTop() {
       //  Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
        // mToast.show();
-        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
         dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(dialerActivity);
     }
@@ -49,7 +49,7 @@ public class TopLeftView extends SQMainVeiw {
     public void onTopToBottom() {
        // Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
        // mToast.show();
-        Intent dialerActivity = new Intent(context, SQDialerActivity.class);
+        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
         dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(dialerActivity);
     }

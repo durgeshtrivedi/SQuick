@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".quick.squick.SQDialerActivity"
+            android:name="com.durgesh.quick.squick.SQDirectDialActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >

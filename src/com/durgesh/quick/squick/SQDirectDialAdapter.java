@@ -28,37 +28,26 @@ import android.widget.ImageView;
 
 import com.durgesh.R;
 
-public class SQDialerAdapter extends BaseAdapter {
+public class SQDirectDialAdapter extends BaseAdapter {
     private Context context;
 
-    public SQDialerAdapter(SQDialerActivity sqDialerActivity) {
-        // TODO Auto-generated constructor stub
-        this.context = sqDialerActivity;
-
+    public SQDirectDialAdapter(Context context) {
+        this.context = context;
     }
 
-    // Keep all Images in array
-    public Integer[] dialerPosition = { R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture,
-            R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_launcher, R.drawable.ic_contact_picture,
-            R.drawable.ic_launcher, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture,
-            R.drawable.ic_launcher, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture,
-            R.drawable.ic_contact_picture };
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
-        return dialerPosition.length;
+        return 16;
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        return dialerPosition[position];
+        return position;
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -73,17 +62,5 @@ public class SQDialerAdapter extends BaseAdapter {
         imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         return itemView;
-    }
-
-    /**
-     * Listener for close button on MDV thumbnail view to show Discard, Save dialog box before closing modified document.
-     */
-    class SQDialerListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View imageButton) {
-            imageButton.getTag();
-
-        }
     }
 }
