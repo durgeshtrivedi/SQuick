@@ -16,6 +16,8 @@
 package com.durgesh.quick.squick;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,22 +30,20 @@ import com.durgesh.R;
 
 public class SQDialerAdapter extends BaseAdapter {
     private Context context;
+
     public SQDialerAdapter(SQDialerActivity sqDialerActivity) {
         // TODO Auto-generated constructor stub
-        this.context =sqDialerActivity;
-        
+        this.context = sqDialerActivity;
+
     }
+
     // Keep all Images in array
-    public Integer[] dialerPosition = {
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher,R.drawable.ic_launcher
-    };
+    public Integer[] dialerPosition = { R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture,
+            R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_launcher, R.drawable.ic_contact_picture,
+            R.drawable.ic_launcher, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture,
+            R.drawable.ic_launcher, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture, R.drawable.ic_contact_picture,
+            R.drawable.ic_contact_picture };
+
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
@@ -64,19 +64,17 @@ public class SQDialerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View itemView, ViewGroup parent) {
-        
+
         LayoutInflater li = LayoutInflater.from(context);
         if (itemView == null) {
             itemView = li.inflate(R.layout.shortcut_item, null);
         }
         ImageView imageView = (ImageView) itemView.findViewById(R.id.shortcut_item_img);
-        imageView.setImageResource(dialerPosition[position]);
+        imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-       // imageView.setLayoutParams(new GridView.LayoutParams(40, 40));
         return itemView;
     }
-    
-    
+
     /**
      * Listener for close button on MDV thumbnail view to show Discard, Save dialog box before closing modified document.
      */
@@ -85,7 +83,6 @@ public class SQDialerAdapter extends BaseAdapter {
         @Override
         public void onClick(View imageButton) {
             imageButton.getTag();
-            
 
         }
     }

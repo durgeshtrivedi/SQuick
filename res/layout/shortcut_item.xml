@@ -2,12 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/shortcut_item"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical" >
+
+    <TextView
+        android:id="@+id/shortcut_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </TextView>
 
     <ImageView
         android:id="@+id/shortcut_item_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        
+         >
     </ImageView>
 
 </LinearLayout>

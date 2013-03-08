@@ -21,13 +21,13 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -40,72 +40,81 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.durgesh.R;
+import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 
-public class SQDialerActivity extends Activity implements OnItemClickListener,OnItemLongClickListener {
+public class SQDialerActivity extends Activity implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
     Activity context = this;
     GridView dialogGridView;
+    View currentItem;
+    Bitmap shortcutIcon;
+    private static final int PHONE_CALL = 1;
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        return false;
+    public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
+        String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        ImageView image = (ImageView) currentItem.findViewById(R.id.shortcut_item_img);
+        image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
+        // image.setImageBitmap(shortcutIcon);
+        TextView text = (TextView) currentItem.findViewById(R.id.shortcut_item_name);
+        text.setText(name);
+        startActivity((Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT));
     }
 
+    private final OnShortcutIntentCreatedListener mListener = this;
+
     @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+    public boolean onItemLongClick(AdapterView<?> arg0, View item, int arg2, long arg3) {
         ShortCutAdapter sortcut = new ShortCutAdapter(getShortcutList());
-        LayoutInflater li = LayoutInflater.from(context);
+        LayoutInflater li = LayoutInflater.from(this);
         GridView dialogLayout = (GridView) li.inflate(R.layout.shortcut_dlg_grid, null);
-        final AlertDialog dialog = new AlertDialog.Builder(context).setTitle(R.string.shortcut_dlg_name).setView(dialogLayout).create();
+        currentItem = item;
+        final AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.shortcut_dlg_name).setView(dialogLayout).create();
         dialogLayout.setAdapter(sortcut);
         dialogLayout.setBackgroundColor(Color.WHITE);
         dialogLayout.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0,final  View app, int arg2, long arg3) {
+            public void onItemClick(AdapterView<?> arg0, final View app, int arg2, long arg3) {
                 dialog.dismiss();
-             Thread tt  = new Thread (new Runnable() {
-                    
-                    @Override
-                    public void run() {
-                        ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
-                        Intent intent = new Intent();
-                        ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
-                        intent.setComponent(distantActivity);
-                        intent.setAction(Intent.ACTION_VIEW);
-                        context.startActivityForResult(intent,0);
-                        
-                    }
-                });
-                tt.start();
-               
+
+                ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
+                // Intent intent = new Intent(Intent.ACTION_PICK_ACTIVITY,ContactsContract.Contacts.CONTENT_URI);
+                ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
+                Intent intent = new Intent();
+                intent.setComponent(distantActivity);
+                intent.setAction(Intent.ACTION_PICK_ACTIVITY);
+                intent.setAction(Intent.ACTION_CREATE_SHORTCUT);
+                startActivityForResult(intent, PHONE_CALL);
             }
         });
-        
+
         dialog.show();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = 450;
-        lp.height=LayoutParams.MATCH_PARENT;
+        lp.height = LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(lp);
+        return true;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View item, int arg2, long arg3) {
+
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.shortcuts);
-        
         GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
-        //gridView.setBackgroundResource(R.drawable.dialer_bg);
         gridView.setAdapter(new SQDialerAdapter(this));
-        // gridView.setOnTouchListener(new SQONDialer());
         gridView.setOnItemClickListener(this);
+        gridView.setOnItemLongClickListener(this);
     }
 
     final class SQONDialer implements OnTouchListener, OnLongClickListener {
@@ -242,5 +251,16 @@ public class SQDialerActivity extends Activity implements OnItemClickListener,On
         textView.setText(info.getAppName());
         dialogLayout.setTag(info);
         return dialogLayout;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
+        if (requestCode == PHONE_CALL) {
+            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
+            builder.createPhoneNumberShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData());
+        }
     }
 }

@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_gravity="center_vertical"
-        android:columnWidth="50dp"
+        android:columnWidth="60dp"
         android:numColumns="4"
         android:stretchMode="spacingWidthUniform"
         android:verticalSpacing="35dp"

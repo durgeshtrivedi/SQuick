@@ -23,5 +23,8 @@
     <!-- Application name -->
     <string name="application_name">Supper Quick </string>
     <string name="shortcut_dlg_name">ShortCuts </string>
+    
+     <!-- Shown as the display name for a person when the name is missing or unknown. [CHAR LIMIT=18]-->
+    <string name="missing_name">(No name)</string>
 
 </resources>
