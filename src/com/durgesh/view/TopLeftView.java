@@ -1,10 +1,25 @@
+/**Copyright (c) 2013 Durgesh Trivedi
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.durgesh.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.Gravity;
 
-import com.durgesh.quick.squick.SQDirectDialActivity;
+import com.durgesh.util.Constants;
 
 /**
  * Represent the TopLeftView
@@ -14,51 +29,31 @@ import com.durgesh.quick.squick.SQDirectDialActivity;
 public class TopLeftView extends SQMainVeiw {
 
     public TopLeftView(Context context) {
-        super(context);
+        super(context,Constants.PHONE_CALL);
     }
 
     @Override
     public void onRightToLeft() {
-       // Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-       // mToast.show();
-        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(dialerActivity);
+        launchShorcut();
     }
 
     @Override
     public void onLeftToRight() {
-     //   Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-      //  mToast.show();
-
-        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(dialerActivity);
+        launchShorcut();
     }
 
     @Override
     public void onBottomToTop() {
-      //  Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-       // mToast.show();
-        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(dialerActivity);
+        launchShorcut();
     }
 
     @Override
     public void onTopToBottom() {
-       // Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopLeftView", Toast.LENGTH_SHORT);
-       // mToast.show();
-        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(dialerActivity);
+        launchShorcut();
     }
-   
-    
+
     public void updateViewParameter() {
         updateView(0, SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
     }
-
-    
 
 }

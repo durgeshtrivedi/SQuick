@@ -15,34 +15,33 @@
  */
 package com.durgesh.quick.squick;
 
+import java.util.List;
+
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
-import com.durgesh.quick.squick.SQShorcutDialogAdapter.ApplicationInfo;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
 
 public class SQDirectDialActivity extends Activity implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
-    GridView dialogGridView;
-    View currentItem;
+    private View currentItem;
+    public int selector;
     private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
 
@@ -59,7 +58,8 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
         currentPosition = position;
-        return createShorsutsDialog();
+        return launchContactSelector();
+
     }
 
     @Override
@@ -72,13 +72,14 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
                 startActivity((Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT));
             }
         });
-        builder.createPhoneNumberShortcutIntent(Uri.parse(uri));
+        builder.createShortcutIntent(Uri.parse(uri), selector);
     }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.shortcuts);
+        selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
         GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
         gridView.setAdapter(new SQDirectDialAdapter(this));
         gridView.setOnItemClickListener(this);
@@ -90,11 +91,36 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
-        if (requestCode == Constants.PHONE_CALL) {
+
+        switch (requestCode) {
+
+        case Constants.PHONE_CALL: {
             SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), ((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT))
                     .getData().toString());
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
-            builder.createPhoneNumberShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData());
+            builder.createShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData(), requestCode);
+            break;
+        }
+        case Constants.MESSAGE: {
+            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), ((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT))
+                    .getData().toString());
+            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
+            builder.createShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData(), requestCode);
+            break;
+        }
+        case Constants.CONTACT: {
+            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), ((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT))
+                    .getData().toString());
+            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
+            builder.createShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData(), requestCode);
+            break;
+        }
+        default: {
+//            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), ((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT))
+//                    .getData().toString());
+//            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
+//            builder.createShortcutIntent(((Intent) data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData(), requestCode);
+        }
         }
     }
 
@@ -103,33 +129,93 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
      * 
      * @param item
      */
-    private boolean createShorsutsDialog() {
-        LayoutInflater li = LayoutInflater.from(this);
-        GridView dialogLayout = (GridView) li.inflate(R.layout.shortcut_dlg_grid, null);
-        dialogLayout.setBackgroundColor(Color.WHITE);
-        dialogLayout.setAdapter(new SQShorcutDialogAdapter(this));
-        final AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.shortcut_dlg_name).setView(dialogLayout).create();
-        dialogLayout.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, final View app, int position, long arg3) {
-                dialog.dismiss();
-                ApplicationInfo appInfo = (ApplicationInfo) app.getTag();
-                ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
-                Intent intent = new Intent();
-                intent.setComponent(distantActivity);
-                intent.setAction(Intent.ACTION_PICK_ACTIVITY);
-                intent.setAction(Intent.ACTION_CREATE_SHORTCUT);
-                startActivityForResult(intent, Constants.PHONE_CALL);
-            }
-        });
-
-        dialog.show();
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = 450;
-        lp.height = LayoutParams.MATCH_PARENT;
-        dialog.getWindow().setAttributes(lp);
+    private boolean launchContactSelector() {
+        ApplicationInfo appInfo = getContactActivity();
+        ComponentName distantActivity = new ComponentName(appInfo.getPackageName(), appInfo.getClassName());
+        Intent intent = new Intent();
+        intent.setComponent(distantActivity);
+        intent.setAction(Intent.ACTION_PICK_ACTIVITY);
+        intent.setAction(Intent.ACTION_CREATE_SHORTCUT);
+        startActivityForResult(intent, selector);
         return true;
+
+    }
+
+    /**
+     * Get the list of available shortcuts for apps
+     * 
+     * @return
+     */
+    private ApplicationInfo getContactActivity() {
+        PackageManager pm = this.getPackageManager();
+        Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT, null);
+        List<ResolveInfo> list = pm.queryIntentActivities(intent, PackageManager.PERMISSION_GRANTED);
+        ApplicationInfo appInfo = new ApplicationInfo();
+        for (ResolveInfo rInfo : list) {
+            if (rInfo.activityInfo.applicationInfo.packageName!=null  && rInfo.activityInfo.applicationInfo.packageName.contains(Constants.CONTACTPACKAGE)) {
+                appInfo.setAppName(rInfo.loadLabel(pm));
+                appInfo.setPackageName(rInfo.activityInfo.packageName);
+                appInfo.setAppIcon(rInfo.loadIcon(pm));
+                appInfo.setClassName(rInfo.activityInfo.targetActivity);
+                break;
+            }
+        }
+
+        return appInfo;
+    }
+
+    /**
+     * Class to store the Appinfo like Icon, name App activity
+     * 
+     * @author durgesht
+     */
+    class ApplicationInfo {
+        private Drawable appIcon;
+        private String activityName;
+        private String packageName;
+        private CharSequence appName;
+        private String className;
+
+        public Drawable getAppIcon() {
+            return appIcon;
+        }
+
+        public void setAppIcon(Drawable appIcon) {
+            this.appIcon = appIcon;
+        }
+
+        public String getActivityName() {
+            return activityName;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public void setClassName(String class1) {
+            this.className = class1;
+        }
+
+        public void setActivityName(String activityName) {
+            this.activityName = activityName;
+        }
+
+        public CharSequence getAppName() {
+            return appName;
+        }
+
+        public void setAppName(CharSequence charSequence) {
+            this.appName = charSequence;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public void setPackageName(String packageName) {
+            this.packageName = packageName;
+        }
+
     }
 
 }

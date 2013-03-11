@@ -16,6 +16,7 @@
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.view.Display;
@@ -33,6 +34,8 @@ import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
 
 import com.durgesh.R;
+import com.durgesh.quick.squick.SQDirectDialActivity;
+import com.durgesh.util.Constants;
 
 /**
  * Abstract Class to create the View of the app and to detect the fling on the View
@@ -52,10 +55,12 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     // Position TOP view LEFT and RIGHT
     public final int SQ_TOP_VIEW_POSITION_RATIO = 5;
     public final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
+    int shortcutSelector;
 
-    public SQMainVeiw(Context context) {
+    public SQMainVeiw(Context context,int shortcut) {
         super(context);
         this.context = context.getApplicationContext();
+        shortcutSelector=shortcut;
         inflateView();
     }
 
@@ -104,6 +109,16 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * update the view position on the screen
      */
     public abstract void updateViewParameter();
+
+    /**
+     * Launch the shortcut selector base on the view on which the finger is swap
+     */
+    void launchShorcut() {
+        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
+        context.startActivity(dialerActivity);
+    }
 
     private void inflateView() {
         LayoutInflater appLayout = LayoutInflater.from(context);

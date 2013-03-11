@@ -33,9 +33,9 @@ import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedLis
 import com.durgesh.util.Constants;
 
 public class SQDirectDialAdapter extends BaseAdapter {
-    private Context context;
+    private SQDirectDialActivity context;
 
-    public SQDirectDialAdapter(Context context) {
+    public SQDirectDialAdapter(SQDirectDialActivity context) {
         this.context = context;
     }
 
@@ -76,7 +76,7 @@ public class SQDirectDialAdapter extends BaseAdapter {
 
                 }
             });
-            builder.createPhoneNumberShortcutIntent(Uri.parse(uri));
+            builder.createShortcutIntent(Uri.parse(uri),context.selector);
         } else {
             ImageView imageView = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
             imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());

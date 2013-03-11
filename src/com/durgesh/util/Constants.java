@@ -1,22 +1,20 @@
-package com.durgesh.util;
+/**Copyright (c) 2013 Durgesh Trivedi
 
-import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
 
-/*
- * Copyright (C) 2009 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+package com.durgesh.util;
 
 public class Constants {
     public static final String MIME_TYPE_VIDEO_CHAT = "vnd.android.cursor.item/video-chat-address";
@@ -26,8 +24,14 @@ public class Constants {
     public static final String SCHEME_MAILTO = "mailto";
     public static final String SCHEME_IMTO = "imto";
     public static final String SCHEME_SIP = "sip";
+    public static final int DO_NOTHING = 0;
     public static final int PHONE_CALL = 1;
+    public static final int MESSAGE = 2;
+    public static final int CONTACT = 3;
+    public static final int APP = 4;
+    public static final String SUPERQUICK="superquick";
     public static final String DEFAULTURI = "NOURI";
+    public static final String CONTACTPACKAGE="com.android.contact";
 
     /**
      * Log tag for performance measurement. To enable: adb shell setprop log.tag.ContactsPerf VERBOSE

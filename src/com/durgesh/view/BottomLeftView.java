@@ -15,6 +15,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.durgesh.view;
 
+import com.durgesh.util.Constants;
+
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -23,8 +25,7 @@ import android.widget.Toast;
 public class BottomLeftView extends SQMainVeiw {
 
     public BottomLeftView(Context context) {
-        super(context);
-        // TODO Auto-generated constructor stub
+        super(context,Constants.APP);
     }
 
     @Override

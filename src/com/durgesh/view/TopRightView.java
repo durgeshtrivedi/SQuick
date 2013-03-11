@@ -17,41 +17,35 @@ package com.durgesh.view;
 
 import android.content.Context;
 import android.view.Gravity;
-import android.widget.Toast;
 
+import com.durgesh.util.Constants;
 
 public class TopRightView extends SQMainVeiw {
 
     public TopRightView(Context context) {
-        super(context);
-        // TODO Auto-generated constructor stub
+        super(context, Constants.MESSAGE);
     }
 
     @Override
     public void onRightToLeft() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopRightView", Toast.LENGTH_SHORT);
-        mToast.show();
+        launchShorcut();
 
     }
 
     @Override
     public void onLeftToRight() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopRightView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onBottomToTop() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopRightView", Toast.LENGTH_SHORT);
-        mToast.show();
+        launchShorcut();
 
     }
 
     @Override
     public void onTopToBottom() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press TopRightView", Toast.LENGTH_SHORT);
-        mToast.show();
+        launchShorcut();
 
     }
 
