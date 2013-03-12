@@ -90,10 +90,6 @@ public class ShortcutIntentBuilder {
         mBorderColor = r.getColor(R.color.shortcut_overlay_text_background);
     }
 
-    public void createContactShortcutIntent(Uri contactUri) {
-        new ContactLoadingAsyncTask(contactUri).execute();
-    }
-
     public void createShortcutIntent(Uri dataUri, int shortcutSelector) {
         switch (shortcutSelector) {
         case Constants.PHONE_CALL:
@@ -103,7 +99,7 @@ public class ShortcutIntentBuilder {
             new PhoneNumberLoadingAsyncTask(dataUri, shortcutSelector).execute();
             break;
         case Constants.CONTACT:
-            new ContactLoadingAsyncTask(dataUri);
+            new ContactLoadingAsyncTask(dataUri, shortcutSelector).execute();
             break;
         case Constants.APP:
             break;
@@ -118,9 +114,11 @@ public class ShortcutIntentBuilder {
         protected String mDisplayName;
         protected byte[] mBitmapData;
         protected long mPhotoId;
+        int directCallorMessage;
 
-        public LoadingAsyncTask(Uri uri) {
+        public LoadingAsyncTask(Uri uri, int callorMessage) {
             mUri = uri;
+            directCallorMessage = callorMessage;
         }
 
         @Override
@@ -152,8 +150,8 @@ public class ShortcutIntentBuilder {
     }
 
     private final class ContactLoadingAsyncTask extends LoadingAsyncTask {
-        public ContactLoadingAsyncTask(Uri uri) {
-            super(uri);
+        public ContactLoadingAsyncTask(Uri uri, int callorMessage) {
+            super(uri, callorMessage);
         }
 
         @Override
@@ -174,7 +172,7 @@ public class ShortcutIntentBuilder {
 
         @Override
         protected void onPostExecute(Void result) {
-            createContactShortcutIntent(mUri, mDisplayName, mBitmapData);
+            createContactShortcutIntent(mUri, mDisplayName, mBitmapData, 1, "Mobile", Intent.ACTION_CALL);
         }
     }
 
@@ -182,12 +180,9 @@ public class ShortcutIntentBuilder {
         private String mPhoneNumber;
         private int mPhoneType;
         private String mPhoneLabel;
-        int directCallorMessage;
 
-        public PhoneNumberLoadingAsyncTask(Uri uri, int direct) {
-            super(uri);
-            mUri = uri;
-            directCallorMessage = direct;
+        public PhoneNumberLoadingAsyncTask(Uri uri, int callorMessage) {
+            super(uri, callorMessage);
         }
 
         @Override
@@ -206,8 +201,9 @@ public class ShortcutIntentBuilder {
                     phones.close();
                     break;
                 }
+                cursor.close();
+                break;
             }
-            cursor.close();
         }
 
         @Override
@@ -220,42 +216,38 @@ public class ShortcutIntentBuilder {
         }
     }
 
-    private Bitmap getPhotoBitmap(byte[] bitmapData) {
+    private Bitmap getPhotoBitmap(byte[] bitmapData, String shortcutAction) {
         Bitmap bitmap;
         if (bitmapData != null) {
             bitmap = BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length, null);
-        } else {
+        } else if (shortcutAction.equals(Intent.ACTION_CALL)) {
             bitmap = ((BitmapDrawable) mContext.getResources().getDrawable(R.drawable.contact_picture_call)).getBitmap();
+        } else {
+            bitmap = ((BitmapDrawable) mContext.getResources().getDrawable(R.drawable.contact_picture_msg)).getBitmap();
         }
         return bitmap;
     }
 
-    private void createContactShortcutIntent(Uri contactUri, String displayName, byte[] bitmapData) {
-        Bitmap bitmap = getPhotoBitmap(bitmapData);
-
-        Intent shortcutIntent = new Intent();
-        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Tell the launcher to not do its animation, because we are doing our own
-        shortcutIntent.putExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
-
-        shortcutIntent.setData(contactUri);
-        final Bitmap icon = generateQuickContactIcon(bitmap);
-        Intent intent = new Intent();
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        if (TextUtils.isEmpty(displayName)) {
-            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, mContext.getResources().getString(R.string.missing_name));
+    public void createContactShortcutIntent(Uri contactUri, String displayName, byte[] bitmapData, int phoneType, String phoneLabel,
+            String shortcutAction) {
+        Bitmap bitmap = getPhotoBitmap(bitmapData, shortcutAction);
+        if (Intent.ACTION_CALL.equals(shortcutAction)) {
+            // Make the URI a direct tel: URI so that it will always continue to work
+            bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_call);
         } else {
-            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, displayName);
+            bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_sms);
         }
 
+
+        Intent intent = new Intent();
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, displayName);
         mListener.onShortcutIntentCreated(contactUri, intent);
     }
 
     private void createPhoneNumberShortcutIntent(Uri uri, String displayName, byte[] bitmapData, String phoneNumber, int phoneType,
             String phoneLabel, String shortcutAction) {
-        Bitmap bitmap = getPhotoBitmap(bitmapData);
+        Bitmap bitmap = getPhotoBitmap(bitmapData, shortcutAction);
 
         Uri phoneUri;
         Intent shortcutIntent;
@@ -289,26 +281,6 @@ public class ShortcutIntentBuilder {
         // bounds, we need to double the width for it to appear as intended.
         workPaint.setStrokeWidth(mBorderWidth * 2);
         canvas.drawRect(dst, workPaint);
-    }
-
-    private Bitmap generateQuickContactIcon(Bitmap photo) {
-
-        // Setup the drawing classes
-        Bitmap icon = Bitmap.createBitmap(photo.getWidth(), photo.getWidth(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(icon);
-
-        // Copy in the photo
-        Paint photoPaint = new Paint();
-        photoPaint.setDither(true);
-        photoPaint.setFilterBitmap(true);
-        Rect src = new Rect(0, 0, photo.getWidth(), photo.getHeight());
-        Rect dst = new Rect(0, 0, photo.getWidth(), photo.getWidth());
-        canvas.drawBitmap(photo, src, dst, photoPaint);
-        drawBorder(canvas, dst);
-        Drawable overlay = mContext.getResources().getDrawable(R.drawable.contact_picture_call);
-        overlay.setBounds(dst);
-        overlay.draw(canvas);
-        return icon;
     }
 
     /**

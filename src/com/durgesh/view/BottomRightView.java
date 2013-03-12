@@ -24,35 +24,27 @@ import android.widget.Toast;
 public class BottomRightView extends SQMainVeiw {
 
     public BottomRightView(Context context) {
-        super(context,Constants.CONTACT);
+        super(context,Constants.APP);
     }
 
     @Override
     public void onRightToLeft() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onLeftToRight() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onBottomToTop() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onTopToBottom() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomRightView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override

@@ -58,6 +58,17 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
         currentPosition = position;
+        if(Constants.APP ==selector)
+        {
+            Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);            
+            Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
+            pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);   
+            //rename Main to your class or activity
+            startActivityForResult(pickIntent, selector);
+            return true;
+        }
+        else 
         return launchContactSelector();
 
     }
@@ -136,7 +147,7 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         intent.setComponent(distantActivity);
         intent.setAction(Intent.ACTION_PICK_ACTIVITY);
         intent.setAction(Intent.ACTION_CREATE_SHORTCUT);
-        startActivityForResult(intent, selector);
+        startActivityForResult(intent, Constants.CONTACT);
         return true;
 
     }

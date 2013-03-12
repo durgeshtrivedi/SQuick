@@ -15,45 +15,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.durgesh.view;
 
-import com.durgesh.util.Constants;
-
 import android.content.Context;
 import android.view.Gravity;
-import android.widget.Toast;
 
+import com.durgesh.util.Constants;
 
 public class BottomLeftView extends SQMainVeiw {
 
     public BottomLeftView(Context context) {
-        super(context,Constants.APP);
+        super(context, Constants.CONTACT);
     }
 
     @Override
     public void onRightToLeft() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onLeftToRight() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onBottomToTop() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
-
+        launchShorcut();
     }
 
     @Override
     public void onTopToBottom() {
-        Toast mToast = Toast.makeText(context.getApplicationContext(), "Long Press BottomLeftView", Toast.LENGTH_SHORT);
-        mToast.show();
 
+        launchShorcut();
     }
 
     @Override
