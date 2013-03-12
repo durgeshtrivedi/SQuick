@@ -15,9 +15,13 @@
  */
 package com.durgesh.quick.squick;
 
+import java.net.URISyntaxException;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,7 +31,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
@@ -102,10 +105,13 @@ public class ShortcutIntentBuilder {
             new ContactLoadingAsyncTask(dataUri, shortcutSelector).execute();
             break;
         case Constants.APP:
+              
             break;
         }
     }
-
+  
+   
+    
     /**
      * An asynchronous task that loads name, photo and other data from the database.
      */

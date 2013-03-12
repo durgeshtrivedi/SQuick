@@ -15,6 +15,7 @@
  */
 package com.durgesh.quick.squick;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -84,6 +85,8 @@ public class SQDirectDialAdapter extends BaseAdapter {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
         } else {
+           String appPKG = SQPrefs.getSharedPrefAppAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
+          // context.getAppIntent(new ComponentName(appPKG, null));
             ImageView imageView = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
             imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

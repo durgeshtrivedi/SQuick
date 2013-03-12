@@ -20,10 +20,17 @@ import android.content.SharedPreferences;
 
 public final class SQPrefs {
     private static final int MODE_PRIVATE = Context.MODE_PRIVATE;
-    private static final int MODE_MULTI_PROCESS = 4; // since API9 Context.MODE_MULTI_PROCESS;
 
     private static final String PREFERENCES_KEY = "SQPreference";
+    private static final String PREFERENCES_APP = "SQPreferenceAPP";
 
+    
+    /**
+     * Return SharedPreferences
+     */
+    public static SharedPreferences getSharedPrefApplication(final Context context) {
+        return getSharedPreferences(context, PREFERENCES_APP);
+    }
     /**
      * Return SharedPreferences
      */
@@ -59,6 +66,15 @@ public final class SQPrefs {
     /**
      * Set a String value in the preferences
      **/
+    public static void setSharedPreferenceApp(final Context context, final String key, final String val) {
+        final SharedPreferences.Editor editor = getSharedPrefApplication(context).edit();
+        editor.putString(key, val);
+        editor.commit();
+    }
+    
+    /**
+     * Set a String value in the preferences
+     **/
     public static void setSharedPreference(final Context context, final String key, final String val) {
         final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putString(key, val);
@@ -86,4 +102,11 @@ public final class SQPrefs {
         return getSharedPreferences(context).getString(key, defaultValue);
     }
 
+    /**
+     * Return a String value from the preferences.
+     **/
+    public static String getSharedPrefAppAsStr(final Context context, final String key, final String defaultValue) {
+        return getSharedPrefApplication(context).getString(key, defaultValue);
+    }
+    
 }

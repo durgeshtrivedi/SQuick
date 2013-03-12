@@ -16,6 +16,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.Gravity;
 
 import com.durgesh.util.Constants;
@@ -51,5 +54,14 @@ public class BottomLeftView extends SQMainVeiw {
     public void updateViewParameter() {
         updateView(0, SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
 
+    }
+    
+    public void  launchShorcut()
+    {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("content://contacts/people/"));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }
