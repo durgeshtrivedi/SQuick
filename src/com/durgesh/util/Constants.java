@@ -31,7 +31,8 @@ public class Constants {
     public static final int APP = 4;
     public static final String SUPERQUICK="superquick";
     public static final String DEFAULTURI = "NOURI";
-    public static final String CONTACTPACKAGE="com.android.contact";
+    public static final String TRANSPARENCY = "transparency";
+    public static final int TRANSPARENCY_DEFAULT = 100;
 
     /**
      * Log tag for performance measurement. To enable: adb shell setprop log.tag.ContactsPerf VERBOSE

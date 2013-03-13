@@ -23,10 +23,43 @@
     <!-- Application name -->
     <string name="application_name">Super Quick </string>
     <string name="shortcut_dlg_name">ShortCuts </string>
-    
-     <!-- Shown as the display name for a person when the name is missing or unknown. [CHAR LIMIT=18]-->
+
+    <!-- Shown as the display name for a person when the name is missing or unknown. -->
     <string name="missing_name">No name</string>
     <string name="phoneno_missing">Phone no missing</string>
     <string name="cancel">Cancel</string>
+    <string name="pref_category_service_title">SuperQuick</string>
+    <string name="pref_category_service_summary">Configure the On Screen Bar Size</string>
+    <string name="pref_service_title">Run Service</string>
+    <string name="pref_service_summary_on">Run SuperQuick Service</string>
+
+    <!--
+    <string name="pref_service_boot_title">Run Service at Boot</string>
+    <string name="pref_service_boot_summary_on">Run SuperQuick Service at Boot </string>
+    <string name="pref_service_boot_summary_off">Do Not Run SuperQuick Service at Boot </string>
+    -->
+
+    <string name="pref_service_size_title">Size</string>
+    <string name="pref_service_size_summary">Size of Bars</string>
+    
+    <string name="pref_service_transparency_title">Bar Transparency</string>
+    <string name="pref_service_transparency_summary">Set Transparency of Bars</string>
+    
+    <string name="pref_category_info_title">About SuperQuick</string>
+    <string name="pref_version_title">Version</string>
+    <string name="pref_version_summary">%s</string>
+    <string name="pref_author_title">Author</string>
+    <string name="pref_author_summary">Durgesh Trivedi&lt;durgeshtrivedi@gmail.com&gt;</string>
+    <string name="pref_help_title">Help</string>
+    <string name="pref_help_summary">View Included Help</string>
+    <string name="pref_screen_reorder_title">Change SuperQuick Bar Behaviour</string>
+    <string name="pref_order_lefbar_title">Left Bar </string>
+    <string name="pref_order_leftbar_summary">Left Bar </string>
+    <string name="pref_order_rightbare_title">Right Bar </string>
+    <string name="pref_order_rightbar_summary">Right Bar </string>
+    <string name="pref_order_leftbottombar_title">Left Bottom Bar </string>
+    <string name="pref_order_leftbottombar_summary">Left Bottom Bar </string>
+    <string name="pref_order_rightbottombar_title">Right Bottom Bar </string>
+    <string name="pref_order_rightbottombar_summary">Right Bottom Bar </string>
 
 </resources>

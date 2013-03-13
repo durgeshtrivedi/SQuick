@@ -56,7 +56,7 @@ public class BottomRightView extends SQMainVeiw {
     
     void launchShorcut() {
         Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
         context.startActivity(dialerActivity);
     }

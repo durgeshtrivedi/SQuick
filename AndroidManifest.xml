@@ -57,6 +57,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+			android:name=".pref.SQPreference"
+			android:label="@string/application_name">
+		</activity>
          <activity
             android:name="com.durgesh.quick.squick.SQDirectAppActivity"
             android:clearTaskOnLaunch="true"

@@ -15,10 +15,7 @@
  */
 package com.durgesh.quick.squick;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -26,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
@@ -69,11 +65,6 @@ public class SQDirectDialAdapter extends BaseAdapter {
 
                 @Override
                 public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-//                    String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-//                    ImageView image = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
-//                    image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
-//                    TextView text = (TextView) currentitem.findViewById(R.id.shortcut_item_name);
-//                    text.setText(name);
                     if (shortcutIntent == null) {
                         context.setContactImageDefault(currentitem);
 

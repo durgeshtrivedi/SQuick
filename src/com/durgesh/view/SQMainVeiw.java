@@ -17,8 +17,10 @@ package com.durgesh.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -47,9 +49,9 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public View sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private static final int SQ_VIEW_WIDTH = 15;
+    private int viewtranparency;
+    private static  float barSize =15;
     private static final int SQ_VIEW_HEIGHT = 25;
-    public static final String RESULT_CODE_FINISH_ACTIVITY = "FinishActivity";
     /** Flag to finish the activity */
     public static final int RESULT_CODE_FINISH = 0;
     // Position TOP view LEFT and RIGHT
@@ -74,7 +76,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     private final class GestureListener extends SimpleOnGestureListener {
 
-        private static final int SWIPE_MIN_DISTANCE = 6;
+        private static final int SWIPE_MIN_DISTANCE = 4;
         private static final int SWIPE_THRESHOLD_VELOCITY = 100;
 
         @Override
@@ -115,7 +117,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      */
     void launchShorcut() {
         Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
         context.startActivity(dialerActivity);
     }
@@ -163,10 +165,33 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
         paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
         paramsRB.y = sqScreenHeight / ration;
-        paramsRB.width = SQ_VIEW_WIDTH;
+        
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // set back/auto hide stuff
+
+        // get button sizes
+        String size = settings.getString("service_size", "medium");
+        float buttonMult = 1;
+        if (size.equals("huge")) {
+            buttonMult = 2f;
+        } else if (size.equals("large")) {
+            buttonMult = 1.5f;
+        } else if (size.equals("medium")) {
+            // regular size for the system
+            buttonMult = 1;
+        } else if (size.equals("small")) {
+            buttonMult = 0.75f;
+        } else if (size.equals("tiny")) {
+            buttonMult = 0.5f;
+        }
+        
+        paramsRB.width = (int) (barSize * buttonMult);
         paramsRB.height = displayHeight;
         paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
+        applyTransparency(sqView,settings.getInt("service_transparency", 0));
         wm.updateViewLayout(sqView, paramsRB);
+        
     }
 
     /**

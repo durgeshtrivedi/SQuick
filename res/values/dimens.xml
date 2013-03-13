@@ -28,6 +28,4 @@
 
     <!-- Extra vertical padding for darkened background behind shortcut icon overlay text -->
     <dimen name="shortcut_overlay_text_background_padding">1dp</dimen>
-   <!--   <dimen name="shortcutlist_dialog_width">200</dimen>
- -->
 </resources>
