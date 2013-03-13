@@ -68,6 +68,7 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
                 intent.setComponent(distantActivity);
                 intent.setAction(Intent.ACTION_MAIN);
                 startActivity(intent);
+                finish();
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }

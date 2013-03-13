@@ -65,6 +65,7 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
             @Override
             public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
                 startActivity((Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT));
+                finish();
             }
         });
         builder.createShortcutIntent(Uri.parse(uri), selector);
