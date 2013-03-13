@@ -59,7 +59,7 @@ public class SQDirectAppAdapter extends BaseAdapter {
             context.getAppIntent(apppkg, itemView);
         } else {
             ImageView imageView = (ImageView) itemView.findViewById(R.id.shortcut_item_img);
-            imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_launcher)).getBitmap());
+            imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.superquick)).getBitmap());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 

@@ -31,7 +31,7 @@
 
     <application
         android:name=".service.SQGlobals"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/superquick"
         android:label="@string/application_name"
         android:process="android.process.acore" >
         <activity
