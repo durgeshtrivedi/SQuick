@@ -16,8 +16,11 @@
 package com.durgesh.quick.squick;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -37,16 +40,18 @@ import com.durgesh.util.Constants;
 public class SQDirectDialActivity extends Activity implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
     private View currentItem;
     public int selector;
+    public String contactUri;
     private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
 
     @Override
     public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-        String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        ImageView image = (ImageView) currentItem.findViewById(R.id.shortcut_item_img);
-        image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
-        TextView text = (TextView) currentItem.findViewById(R.id.shortcut_item_name);
-        text.setText(name);
+        if (shortcutIntent == null) {
+            noNumberAlert();
+        } else {
+            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), contactUri);
+            setContactImage(currentItem, shortcutIntent);
+        }
     }
 
     @Override
@@ -61,14 +66,18 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
     public void onItemClick(AdapterView<?> arg0, View item, int position, long arg3) {
 
         String uri = SQPrefs.getSharedPreferenceAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
-        ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, new OnShortcutIntentCreatedListener() {
-            @Override
-            public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-                startActivity((Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT));
-                finish();
-            }
-        });
-        builder.createShortcutIntent(Uri.parse(uri), selector);
+        if (!uri.equals(Constants.DEFAULTURI)) {
+            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, new OnShortcutIntentCreatedListener() {
+                @Override
+                public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
+                    Intent intent = (Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+                    intent.getData();
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            builder.createShortcutIntent(Uri.parse(uri), selector);
+        }
     }
 
     @Override
@@ -84,20 +93,57 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
         switch (requestCode) {
         case Constants.PHONE_CALL:
-        case Constants.MESSAGE:
-        {
-            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), data.getData().toString());
+        case Constants.MESSAGE: {
+            contactUri = data.getData().toString();
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
             builder.createShortcutIntent(data.getData(), requestCode);
             break;
         }
 
         }
+    }
+
+    /**
+     * Alert Dialog to show Phone number is missing
+     */
+    private void noNumberAlert() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.phoneno_missing).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        // Create the AlertDialog object and return it
+        builder.show();
+        setContactImageDefault(currentItem);
+    }
+
+    /**
+     * Set Default Image for Empty Contact
+     * 
+     * @param view
+     */
+    public void setContactImageDefault(View view) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.shortcut_item_img);
+        imageView.setImageBitmap(((BitmapDrawable) this.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    }
+
+    /**
+     * Set Image for Contact
+     * 
+     * @param view
+     */
+    public void setContactImage(View view, Intent intent) {
+        String name = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        ImageView image = (ImageView) view.findViewById(R.id.shortcut_item_img);
+        image.setImageBitmap((Bitmap) intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
+        TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
+        text.setText(name);
     }
 
     /**
@@ -112,4 +158,5 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         return true;
 
     }
+
 }

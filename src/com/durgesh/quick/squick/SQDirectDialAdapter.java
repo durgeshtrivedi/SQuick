@@ -64,17 +64,22 @@ public class SQDirectDialAdapter extends BaseAdapter {
         }
         currentitem = itemView;
         String uri = SQPrefs.getSharedPreferenceAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
-        if (!uri.equals(Constants.DEFAULTURI)) {
+        if (!uri.equals(Constants.DEFAULTURI )) {
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(context, new OnShortcutIntentCreatedListener() {
 
                 @Override
                 public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-                    String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-                    ImageView image = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
-                    image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
-                    TextView text = (TextView) currentitem.findViewById(R.id.shortcut_item_name);
-                    text.setText(name);
+//                    String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+//                    ImageView image = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
+//                    image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
+//                    TextView text = (TextView) currentitem.findViewById(R.id.shortcut_item_name);
+//                    text.setText(name);
+                    if (shortcutIntent == null) {
+                        context.setContactImageDefault(currentitem);
 
+                    } else {
+                        context.setContactImage(currentitem, shortcutIntent);
+                    }
                 }
             });
             builder.createShortcutIntent(Uri.parse(uri), context.selector);

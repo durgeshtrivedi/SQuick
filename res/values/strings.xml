@@ -25,6 +25,8 @@
     <string name="shortcut_dlg_name">ShortCuts </string>
     
      <!-- Shown as the display name for a person when the name is missing or unknown. [CHAR LIMIT=18]-->
-    <string name="missing_name">(No name)</string>
+    <string name="missing_name">No name</string>
+    <string name="phoneno_missing">Phone no missing</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

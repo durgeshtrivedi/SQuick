@@ -47,7 +47,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public View sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private static final int SQ_VIEW_WIDTH = 20;
+    private static final int SQ_VIEW_WIDTH = 15;
     private static final int SQ_VIEW_HEIGHT = 25;
     public static final String RESULT_CODE_FINISH_ACTIVITY = "FinishActivity";
     /** Flag to finish the activity */

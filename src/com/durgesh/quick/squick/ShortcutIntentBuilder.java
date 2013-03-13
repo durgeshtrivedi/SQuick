@@ -15,13 +15,11 @@
  */
 package com.durgesh.quick.squick;
 
-import java.net.URISyntaxException;
-
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -179,6 +177,11 @@ public class ShortcutIntentBuilder {
 
         @Override
         protected void onPostExecute(Void result) {
+            if (mPhoneNumber == null) {
+                mListener.onShortcutIntentCreated(null, null);
+                return;
+            }
+
             if (directCallorMessage == Constants.PHONE_CALL)
                 createPhoneNumberShortcutIntent(mUri, mDisplayName, mBitmapData, mPhoneNumber, mPhoneType, mPhoneLabel, Intent.ACTION_CALL);
             else {
@@ -216,6 +219,7 @@ public class ShortcutIntentBuilder {
             shortcutIntent = new Intent(shortcutAction, phoneUri);
         }
 
+        
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         Intent intent = new Intent();
