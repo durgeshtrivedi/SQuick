@@ -45,24 +45,7 @@ public final class SQPrefs {
         return context.getSharedPreferences(key, MODE_PRIVATE);
     }
 
-    /**
-     * Set a Integer value in the preferences
-     **/
-    public static void setSharedPreference(final Context context, final String key, final int val) {
-        final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putInt(key, val);
-        editor.commit();
-    }
-
-    /**
-     * Set a Boolean value in the preferences
-     **/
-    public static void setSharedPreference(final Context context, final String key, final boolean val) {
-        final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putBoolean(key, val);
-        editor.commit();
-    }
-
+   
     /**
      * Set a String value in the preferences
      **/
@@ -81,19 +64,6 @@ public final class SQPrefs {
         editor.commit();
     }
 
-    /**
-     * Return a Integer value from the preferences.
-     **/
-    public static int getSharedPreferenceAsInt(final Context context, final String key, final int defaultValue) {
-        return getSharedPreferences(context).getInt(key, defaultValue);
-    }
-
-    /**
-     * Return a Boolean value from the preferences.
-     **/
-    public static boolean getSharedPreferenceAsBool(final Context context, final String key, final boolean defaultValue) {
-        return getSharedPreferences(context).getBoolean(key, defaultValue);
-    }
 
     /**
      * Return a String value from the preferences.

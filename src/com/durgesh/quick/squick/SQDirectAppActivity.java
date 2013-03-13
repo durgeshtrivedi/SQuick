@@ -60,19 +60,8 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
         String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
             PackageManager pm = getPackageManager();
-            ApplicationInfo appInfo;
-            try {
-                appInfo = pm.getApplicationInfo(apppkg, PackageManager.PERMISSION_GRANTED);
-                ComponentName distantActivity = new ComponentName(appInfo.packageName, appInfo.name);
-                Intent intent = new Intent();
-                intent.setComponent(distantActivity);
-                intent.setAction(Intent.ACTION_MAIN);
-                startActivity(intent);
-                finish();
-            } catch (NameNotFoundException e) {
-                e.printStackTrace();
-            }
-
+            startActivity(pm.getLaunchIntentForPackage(apppkg));
+            finish();
         }
     }
 
@@ -89,16 +78,21 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
         if (requestCode == Constants.APP) {
             SQPrefs.setSharedPreferenceApp(this, String.valueOf(currentPosition), data.getComponent().getPackageName());
-            getAppIntent(data.getComponent().getPackageName(), currentItem);
+            setAppShortCuts(data.getComponent().getPackageName(), currentItem);
         }
     }
 
-    public void getAppIntent(String info, View view) {
+    /**
+     * Set the Shortcut for the Application and update the app image
+     * 
+     * @param info
+     * @param view
+     */
+    public void setAppShortCuts(String info, View view) {
         PackageManager pm = getPackageManager();
         ApplicationInfo appInfo;
         try {
@@ -112,7 +106,6 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        // return new Intent().setComponent(info).setAction(Intent.ACTION_MAIN);
     }
 
     /**

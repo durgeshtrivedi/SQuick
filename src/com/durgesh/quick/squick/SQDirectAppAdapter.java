@@ -56,7 +56,7 @@ public class SQDirectAppAdapter extends BaseAdapter {
         }
         String apppkg = SQPrefs.getSharedPrefAppAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
-            context.getAppIntent(apppkg, itemView);
+            context.setAppShortCuts(apppkg, itemView);
         } else {
             ImageView imageView = (ImageView) itemView.findViewById(R.id.shortcut_item_img);
             imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.superquick)).getBitmap());

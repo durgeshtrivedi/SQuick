@@ -101,17 +101,9 @@ public class ShortcutIntentBuilder {
         case Constants.MESSAGE:
             new PhoneNumberLoadingAsyncTask(dataUri, shortcutSelector).execute();
             break;
-        case Constants.CONTACT:
-            new ContactLoadingAsyncTask(dataUri, shortcutSelector).execute();
-            break;
-        case Constants.APP:
-              
-            break;
         }
     }
-  
-   
-    
+
     /**
      * An asynchronous task that loads name, photo and other data from the database.
      */
@@ -152,33 +144,6 @@ public class ShortcutIntentBuilder {
                     cursor.close();
                 }
             }
-        }
-    }
-
-    private final class ContactLoadingAsyncTask extends LoadingAsyncTask {
-        public ContactLoadingAsyncTask(Uri uri, int callorMessage) {
-            super(uri, callorMessage);
-        }
-
-        @Override
-        protected void loadData() {
-            ContentResolver resolver = mContext.getContentResolver();
-            Cursor cursor = resolver.query(mUri, CONTACT_COLUMNS, null, null, null);
-            if (cursor != null) {
-                try {
-                    if (cursor.moveToFirst()) {
-                        mDisplayName = cursor.getString(CONTACT_DISPLAY_NAME_COLUMN_INDEX);
-                        mPhotoId = cursor.getLong(CONTACT_PHOTO_ID_COLUMN_INDEX);
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            createContactShortcutIntent(mUri, mDisplayName, mBitmapData, 1, "Mobile", Intent.ACTION_CALL);
         }
     }
 
@@ -232,23 +197,6 @@ public class ShortcutIntentBuilder {
             bitmap = ((BitmapDrawable) mContext.getResources().getDrawable(R.drawable.contact_picture_msg)).getBitmap();
         }
         return bitmap;
-    }
-
-    public void createContactShortcutIntent(Uri contactUri, String displayName, byte[] bitmapData, int phoneType, String phoneLabel,
-            String shortcutAction) {
-        Bitmap bitmap = getPhotoBitmap(bitmapData, shortcutAction);
-        if (Intent.ACTION_CALL.equals(shortcutAction)) {
-            // Make the URI a direct tel: URI so that it will always continue to work
-            bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_call);
-        } else {
-            bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_sms);
-        }
-
-
-        Intent intent = new Intent();
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, displayName);
-        mListener.onShortcutIntentCreated(contactUri, intent);
     }
 
     private void createPhoneNumberShortcutIntent(Uri uri, String displayName, byte[] bitmapData, String phoneNumber, int phoneType,

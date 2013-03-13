@@ -63,35 +63,26 @@ public class SQDirectDialAdapter extends BaseAdapter {
             itemView = li.inflate(R.layout.shortcut_item, null);
         }
         currentitem = itemView;
-        if (context.selector == Constants.PHONE_CALL || context.selector == Constants.MESSAGE) {
-            String uri = SQPrefs.getSharedPreferenceAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
-            if (!uri.equals(Constants.DEFAULTURI)) {
-                ShortcutIntentBuilder builder = new ShortcutIntentBuilder(context, new OnShortcutIntentCreatedListener() {
+        String uri = SQPrefs.getSharedPreferenceAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
+        if (!uri.equals(Constants.DEFAULTURI)) {
+            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(context, new OnShortcutIntentCreatedListener() {
 
-                    @Override
-                    public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-                        String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-                        ImageView image = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
-                        image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
-                        TextView text = (TextView) currentitem.findViewById(R.id.shortcut_item_name);
-                        text.setText(name);
+                @Override
+                public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
+                    String name = shortcutIntent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+                    ImageView image = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
+                    image.setImageBitmap((Bitmap) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
+                    TextView text = (TextView) currentitem.findViewById(R.id.shortcut_item_name);
+                    text.setText(name);
 
-                    }
-                });
-                builder.createShortcutIntent(Uri.parse(uri), context.selector);
-            } else {
-                ImageView imageView = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
-                imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            }
+                }
+            });
+            builder.createShortcutIntent(Uri.parse(uri), context.selector);
         } else {
-           String appPKG = SQPrefs.getSharedPrefAppAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
-          // context.getAppIntent(new ComponentName(appPKG, null));
             ImageView imageView = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
             imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
-
         return itemView;
     }
 }

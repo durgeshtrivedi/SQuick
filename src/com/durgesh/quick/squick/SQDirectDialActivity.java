@@ -87,12 +87,10 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
-
         switch (requestCode) {
-
         case Constants.PHONE_CALL:
         case Constants.MESSAGE:
-        case Constants.CONTACT: {
+        {
             SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), data.getData().toString());
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, mListener);
             builder.createShortcutIntent(data.getData(), requestCode);
