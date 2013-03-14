@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -46,6 +47,7 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
     private View currentItem;
     public int selector;
     private static int currentPosition;
+    private SQTapListener sqTapListener;
 
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
@@ -74,6 +76,7 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
         gridView.setAdapter(new SQDirectAppAdapter(this));
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
+        sqTapListener = new SQTapListener(this);
     }
 
     @Override
@@ -121,6 +124,11 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
         // rename Main to your class or activity
         startActivityForResult(pickIntent, selector);
         return true;
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        return sqTapListener.gestureDetector.onTouchEvent(event);
     }
 }

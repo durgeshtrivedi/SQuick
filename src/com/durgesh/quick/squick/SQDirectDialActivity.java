@@ -24,6 +24,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -43,6 +45,7 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
     public String contactUri;
     private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
+    SQTapListener sqTapListener;
 
     @Override
     public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
@@ -89,6 +92,8 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         gridView.setAdapter(new SQDirectDialAdapter(this));
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
+        sqTapListener = new SQTapListener(this);
+
     }
 
     @Override
@@ -157,6 +162,11 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
         startActivityForResult(intent, selector);
         return true;
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return sqTapListener.gestureDetector.onTouchEvent(event);
     }
 
 }
