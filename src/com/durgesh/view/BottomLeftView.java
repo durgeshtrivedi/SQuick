@@ -17,16 +17,22 @@ package com.durgesh.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.view.Gravity;
 
+import com.durgesh.R;
 import com.durgesh.util.Constants;
 
 public class BottomLeftView extends SQMainVeiw {
 
     public BottomLeftView(Context context) {
-        super(context, Constants.CONTACT);
+        super(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        String selector = settings.getString("left_bottom_bar", context.getResources().getString(R.string.pref_leftbottombar_title));
+        viewSelector(selector);
     }
 
     @Override
@@ -56,12 +62,4 @@ public class BottomLeftView extends SQMainVeiw {
 
     }
     
-    public void  launchShorcut()
-    {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("content://contacts/people/"));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        context.startActivity(intent);
-    }
 }

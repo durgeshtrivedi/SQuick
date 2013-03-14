@@ -17,8 +17,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 
+import com.durgesh.R;
 import com.durgesh.util.Constants;
 
 /**
@@ -29,7 +32,10 @@ import com.durgesh.util.Constants;
 public class TopLeftView extends SQMainVeiw {
 
     public TopLeftView(Context context) {
-        super(context,Constants.PHONE_CALL);
+        super(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        String selector = settings.getString("left_bar", context.getResources().getString(R.string.pref_lefbar_title));
+        viewSelector(selector);
     }
 
     @Override

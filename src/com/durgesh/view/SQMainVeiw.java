@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -36,6 +37,7 @@ import android.view.animation.Animation;
 import android.view.animation.LayoutAnimationController;
 
 import com.durgesh.R;
+import com.durgesh.quick.squick.SQDirectAppActivity;
 import com.durgesh.quick.squick.SQDirectDialActivity;
 import com.durgesh.util.Constants;
 
@@ -58,11 +60,9 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
     int shortcutSelector;
 
-    public SQMainVeiw(Context context, int shortcut) {
+    public SQMainVeiw(Context context) {
         super(context);
-        this.context = context.getApplicationContext();
-        shortcutSelector = shortcut;
-
+        this.context = context;
         inflateView();
     }
 
@@ -116,10 +116,33 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * Launch the shortcut selector base on the view on which the finger is swap
      */
     void launchShorcut() {
-        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-        context.startActivity(dialerActivity);
+        switch (shortcutSelector) {
+        case Constants.PHONE_CALL:
+        case Constants.MESSAGE: {
+            Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
+            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
+            context.startActivity(dialerActivity);
+            break;
+        }
+
+        case Constants.CONTACT: {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("content://contacts/people/"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            context.startActivity(intent);
+        }
+            break;
+        case Constants.APP: {
+            Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
+            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
+            context.startActivity(dialerActivity);
+            break;
+        }
+        }
+
     }
 
     private void inflateView() {
@@ -206,6 +229,18 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
             buttonMult = 0.5f;
         }
         params.width = (int) (barSize * buttonMult);
+    }
+
+    public void viewSelector(String selector) {
+        if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
+            shortcutSelector = Constants.PHONE_CALL;
+        } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
+            shortcutSelector = Constants.MESSAGE;
+        } else if (selector.equals(context.getResources().getString(R.string.pref_leftbottombar_title))) {
+            shortcutSelector = Constants.CONTACT;
+        } else if (selector.equals(context.getResources().getString(R.string.pref_rightbottombar_title))) {
+            shortcutSelector = Constants.APP;
+        }
     }
 
     /**

@@ -44,10 +44,10 @@ public class SQService extends Service implements OnGestureListener {
     @Override
     public void onCreate() {
         super.onCreate();
-        sqTopLeftView = new TopLeftView(this);
-        sqTopRightView = new TopRightView(this);
-        sqBottomLeftView = new BottomLeftView(this);
-        sqBottomRightView = new BottomRightView(this);
+        sqTopLeftView = new TopLeftView(getApplicationContext());
+        sqTopRightView = new TopRightView(getApplicationContext());
+        sqBottomLeftView = new BottomLeftView(getApplicationContext());
+        sqBottomRightView = new BottomRightView(getApplicationContext());
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientation) {

@@ -55,12 +55,20 @@
     <string name="pref_help_title">Help</string>
     <string name="pref_help_summary">View Included Help</string>
     <string name="pref_screen_reorder_title">Change SuperQuick Bar Behaviour</string>
+    
+    <string name="pref_lefbar_title">Direct Dial</string>
     <string name="pref_order_lefbar_title">Left Bar </string>
     <string name="pref_order_leftbar_summary">Left Bar </string>
+    
+    <string name="pref_rightbare_title">Direct Message</string>
     <string name="pref_order_rightbare_title">Right Bar </string>
     <string name="pref_order_rightbar_summary">Right Bar </string>
+    
+    <string name="pref_leftbottombar_title">Contact</string>
     <string name="pref_order_leftbottombar_title">Left Bottom Bar </string>
     <string name="pref_order_leftbottombar_summary">Left Bottom Bar </string>
+    
+    <string name="pref_rightbottombar_title">Application</string>
     <string name="pref_order_rightbottombar_title">Right Bottom Bar </string>
     <string name="pref_order_rightbottombar_summary">Right Bottom Bar </string>
 

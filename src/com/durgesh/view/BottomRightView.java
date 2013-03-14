@@ -17,7 +17,10 @@ package com.durgesh.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import com.durgesh.R;
 import com.durgesh.quick.squick.SQDirectAppActivity;
 import com.durgesh.util.Constants;
 
@@ -25,7 +28,10 @@ import com.durgesh.util.Constants;
 public class BottomRightView extends SQMainVeiw {
 
     public BottomRightView(Context context) {
-        super(context,Constants.APP);
+        super(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        String selector = settings.getString("right_bottom_bar", context.getResources().getString(R.string.pref_rightbottombar_title));
+        viewSelector(selector);
     }
 
     @Override
@@ -54,10 +60,4 @@ public class BottomRightView extends SQMainVeiw {
 
     }
     
-    void launchShorcut() {
-        Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-        context.startActivity(dialerActivity);
-    }
 }

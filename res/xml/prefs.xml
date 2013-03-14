@@ -35,31 +35,31 @@
 
     <PreferenceScreen android:title="@string/pref_screen_reorder_title" >
         <ListPreference
-            android:defaultValue="Direct Dial"
+             android:key="left_bar"
+            android:defaultValue="@string/pref_lefbar_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:key="order_back"
             android:summary="@string/pref_order_leftbar_summary"
             android:title="@string/pref_order_lefbar_title" />
         <ListPreference
-            android:defaultValue="Direct Message"
+             android:key="right_bar"
+            android:defaultValue="@string/pref_rightbare_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:key="order_home"
             android:summary="@string/pref_order_leftbottombar_summary"
             android:title="@string/pref_order_leftbottombar_title" />
         <ListPreference
-            android:defaultValue="Contact"
+            android:key="left_bottom_bar"
+            android:defaultValue="@string/pref_leftbottombar_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:key="order_menu"
             android:summary="@string/pref_order_rightbar_summary"
             android:title="@string/pref_order_rightbare_title" />
         <ListPreference
-            android:defaultValue="Application"
+            android:key="right_bottom_bar"
+            android:defaultValue="@string/pref_rightbottombar_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:key="order_search"
             android:summary="@string/pref_order_rightbottombar_summary"
             android:title="@string/pref_order_rightbottombar_title" />
     </PreferenceScreen>

@@ -16,14 +16,20 @@
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 
+import com.durgesh.R;
 import com.durgesh.util.Constants;
 
 public class TopRightView extends SQMainVeiw {
 
     public TopRightView(Context context) {
-        super(context, Constants.MESSAGE);
+        super(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        String selector = settings.getString("right_bar", context.getResources().getString(R.string.pref_rightbare_title));
+        viewSelector(selector);
     }
 
     @Override
