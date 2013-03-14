@@ -56,7 +56,7 @@ public class BottomRightView extends SQMainVeiw {
 
     @Override
     public void updateViewParameter() {
-        updateView(1, SQ_BOTTOM_VIEW_POSITION_RATIO, -10);
+        updateView(1, Constants.SQ_BOTTOM_VIEW_POSITION_RATIO, -10);
 
     }
     

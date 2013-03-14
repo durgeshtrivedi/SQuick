@@ -33,7 +33,7 @@ import com.durgesh.view.TopRightView;
  * 
  * @author durgesht
  */
-public class SQService extends Service implements OnGestureListener {
+public class SQService extends Service {
     TopLeftView sqTopLeftView;
     TopRightView sqTopRightView;
     BottomLeftView sqBottomLeftView;
@@ -55,14 +55,7 @@ public class SQService extends Service implements OnGestureListener {
             }
         };
         sqOrientationListener.enable();
-
         initOrientation();
-    }
-
-    @Override
-    public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**
@@ -81,39 +74,8 @@ public class SQService extends Service implements OnGestureListener {
     }
 
     @Override
-    public boolean onDown(MotionEvent e) {
+    public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
-        return false;
+        return null;
     }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
 }

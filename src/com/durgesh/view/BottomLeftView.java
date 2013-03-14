@@ -58,7 +58,7 @@ public class BottomLeftView extends SQMainVeiw {
 
     @Override
     public void updateViewParameter() {
-        updateView(0, SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
+        updateView(0, Constants.SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
 
     }
     

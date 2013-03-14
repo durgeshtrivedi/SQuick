@@ -17,7 +17,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.util;
 
 public class Constants {
-    public static final String MIME_TYPE_VIDEO_CHAT = "vnd.android.cursor.item/video-chat-address";
 
     public static final String SCHEME_TEL = "tel";
     public static final String SCHEME_SMSTO = "smsto";
@@ -33,14 +32,11 @@ public class Constants {
     public static final String DEFAULTURI = "NOURI";
     public static final String TRANSPARENCY = "transparency";
     public static final int TRANSPARENCY_DEFAULT = 100;
+    // Position TOP view LEFT and RIGHT
+    public final static int SQ_TOP_VIEW_POSITION_RATIO = 5;
+    public final static int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
 
-    /**
-     * Log tag for performance measurement. To enable: adb shell setprop log.tag.ContactsPerf VERBOSE
-     */
     public static final String PERFORMANCE_TAG = "ContactsPerf";
 
-    /**
-     * Log tag for enabling/disabling StrictMode violation log. To enable: adb shell setprop log.tag.ContactsStrictMode DEBUG
-     */
     public static final String STRICT_MODE_TAG = "ContactsStrictMode";
 }

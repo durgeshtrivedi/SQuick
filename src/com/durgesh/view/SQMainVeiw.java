@@ -53,11 +53,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     private int sqScreenHeight;
     private static float barSize = 15;
     private static final int SQ_VIEW_HEIGHT = 25;
-    /** Flag to finish the activity */
-    public static final int RESULT_CODE_FINISH = 0;
-    // Position TOP view LEFT and RIGHT
-    public final int SQ_TOP_VIEW_POSITION_RATIO = 5;
-    public final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
+   
     int shortcutSelector;
 
     public SQMainVeiw(Context context) {
@@ -161,10 +157,8 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * @return {@link WindowManager.LayoutParams}
      */
     private WindowManager.LayoutParams makeOverlayParams() {
-        return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-        // in adjustWindowParams system overlay windows are stripped of focus/touch events
-        // WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+        return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
     }
 
     /**
