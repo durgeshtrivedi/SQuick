@@ -49,8 +49,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public View sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private int viewtranparency;
-    private static  float barSize =15;
+    private static float barSize = 15;
     private static final int SQ_VIEW_HEIGHT = 25;
     /** Flag to finish the activity */
     public static final int RESULT_CODE_FINISH = 0;
@@ -59,10 +58,11 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public final int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
     int shortcutSelector;
 
-    public SQMainVeiw(Context context,int shortcut) {
+    public SQMainVeiw(Context context, int shortcut) {
         super(context);
         this.context = context.getApplicationContext();
-        shortcutSelector=shortcut;
+        shortcutSelector = shortcut;
+
         inflateView();
     }
 
@@ -128,11 +128,12 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         sqView.setBackgroundColor(Color.LTGRAY);
         sqView.setOnTouchListener(this);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
         wm.addView(sqView, makeOverlayParams());
     }
 
     /**
-     * Set the layout parameter for the SQView
+     * Set the layout parameter for the View
      * 
      * @return {@link WindowManager.LayoutParams}
      */
@@ -144,7 +145,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     }
 
     /**
-     * update the View with Screen orientation
+     * Update the View with Screen orientation
      * 
      * @param xAxis
      *            position of view on xAxis in case of Gravity LEFT it is not required thats why come as 0
@@ -165,12 +166,31 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
         paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
         paramsRB.y = sqScreenHeight / ration;
-        
+        applyScaling(paramsRB);
+        paramsRB.height = displayHeight;
+        paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
+        applyTransparency(paramsRB);
+        wm.updateViewLayout(sqView, paramsRB);
+
+    }
+
+    /**
+     * Set the Transparency for the view
+     */
+    private void applyTransparency(WindowManager.LayoutParams params) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        int transparency = settings.getInt("service_transparency", 0);
+        float finalAlpha = (100f - transparency) / 100f;
+        params.alpha = finalAlpha;
+    }
 
-        // set back/auto hide stuff
-
-        // get button sizes
+    /**
+     * Apply the scaling on the Bar
+     * 
+     * @param params
+     */
+    private void applyScaling(WindowManager.LayoutParams params) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         String size = settings.getString("service_size", "medium");
         float buttonMult = 1;
         if (size.equals("huge")) {
@@ -185,33 +205,11 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         } else if (size.equals("tiny")) {
             buttonMult = 0.5f;
         }
-        
-        paramsRB.width = (int) (barSize * buttonMult);
-        paramsRB.height = displayHeight;
-        paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
-        applyTransparency(sqView,settings.getInt("service_transparency", 0));
-        wm.updateViewLayout(sqView, paramsRB);
-        
+        params.width = (int) (barSize * buttonMult);
     }
 
     /**
-     * Set the Transparency for the view
-     */
-    private void applyTransparency(View v, int amount) {
-        // apply transparency, is there a better way?
-        float transparency = amount;
-        float finalAlpha = (100f - transparency) / 100f;
-
-        Animation alpha = new AlphaAnimation(finalAlpha, finalAlpha);
-        alpha.setDuration(0);
-        alpha.setFillAfter(true);
-
-        // need to create an animation controller since its empty by default and the animation doesn't work
-        ((ViewGroup) v).setLayoutAnimation(new LayoutAnimationController(alpha, 0));
-    }
-
-    /**
-     * return the Current view
+     * Return the Current view
      * 
      * @return
      */

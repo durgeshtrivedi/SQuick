@@ -77,6 +77,9 @@
             android:key="pref_author"
             android:summary="@string/pref_author_summary"
             android:title="@string/pref_author_title" />
+        <Preference
+            android:key="pref_url"
+            android:summary="@string/pref_url_summary"
+            android:title="@string/pref_url_title" />
     </PreferenceCategory>
-
 </PreferenceScreen>

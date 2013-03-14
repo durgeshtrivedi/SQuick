@@ -50,6 +50,8 @@
     <string name="pref_version_summary">%s</string>
     <string name="pref_author_title">Author</string>
     <string name="pref_author_summary">Durgesh Trivedi&lt;durgeshtrivedi@gmail.com&gt;</string>
+    <string name="pref_url_title">Logo Design By</string>
+    <string name="pref_url_summary">http://www.reyesdesigntemple.com/</string>
     <string name="pref_help_title">Help</string>
     <string name="pref_help_summary">View Included Help</string>
     <string name="pref_screen_reorder_title">Change SuperQuick Bar Behaviour</string>
