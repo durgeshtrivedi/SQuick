@@ -44,10 +44,6 @@ public class SQPreference extends PreferenceActivity {
         } catch (Exception e) {
         }
 
-        final Preference sqservice = findPreference("service_size");
-        final Preference tranparency = findPreference("service_transparency");
-        final Preference orderSize = findPreference("bar_order_size");
-
         Preference version = findPreference("pref_version");
         version.setSummary(getString(R.string.pref_version_summary, ver));
         findPreference("pref_help").setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -58,9 +54,26 @@ public class SQPreference extends PreferenceActivity {
             }
         });
 
+        final Preference sqservice = findPreference("service_size");
+        sqservice.setDependency("superquick_service");
+        final Preference tranparency = findPreference("service_transparency");
+        tranparency.setDependency("superquick_service");
+        final Preference orderSize = findPreference("bar_order_size");
+        orderSize.setDependency("superquick_service");
+
+        CheckBoxPreference checkboxservice = (CheckBoxPreference) findPreference("superquick_service");
+        CheckBoxPreference checkboxleftbar = (CheckBoxPreference) findPreference("checkbox_leftbar");
+        CheckBoxPreference checkboxrightbar = (CheckBoxPreference) findPreference("checkbox_rightbar");
+        CheckBoxPreference checkboxleftbottombar = (CheckBoxPreference) findPreference("checkbox_leftbottombar");
+        CheckBoxPreference checkboxrightbottombar = (CheckBoxPreference) findPreference("checkbox_rightbottombar");
+        if (!checkboxleftbar.isChecked() && !checkboxrightbar.isChecked() && !checkboxleftbottombar.isChecked()
+                && !checkboxrightbottombar.isChecked()) {
+            checkboxservice.setChecked(false);
+        }
+
         final Preference leftbar = findPreference("left_bar");
         leftbar.setTitle(leftbar.getSharedPreferences().getString("left_bar", getResources().getString(R.string.pref_lefbar_title)));
-
+        leftbar.setDependency("checkbox_leftbar");
         leftbar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
             @Override
@@ -75,7 +88,7 @@ public class SQPreference extends PreferenceActivity {
 
         final Preference rightbar = findPreference("right_bar");
         rightbar.setTitle(rightbar.getSharedPreferences().getString("right_bar", getResources().getString(R.string.pref_rightbare_title)));
-
+        rightbar.setDependency("checkbox_rightbar");
         rightbar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
             @Override
@@ -89,6 +102,7 @@ public class SQPreference extends PreferenceActivity {
         });
 
         final Preference leftbottombar = findPreference("left_bottom_bar");
+        leftbottombar.setDependency("checkbox_leftbottombar");
         leftbottombar.setTitle(leftbottombar.getSharedPreferences().getString("left_bottom_bar",
                 getResources().getString(R.string.pref_leftbottombar_title)));
 
@@ -105,6 +119,7 @@ public class SQPreference extends PreferenceActivity {
         });
 
         final Preference rightbottombar = findPreference("right_bottom_bar");
+        rightbottombar.setDependency("checkbox_rightbottombar");
         rightbottombar.setTitle(rightbottombar.getSharedPreferences().getString("right_bottom_bar",
                 getResources().getString(R.string.pref_rightbottombar_title)));
 
@@ -115,86 +130,6 @@ public class SQPreference extends PreferenceActivity {
                 if (newValue instanceof String) {
                     String title = (String) newValue;
                     rightbottombar.setTitle(title);
-                }
-                return true;
-            }
-        });
-
-        // Handle  enable disable  behavior of Leftbar checkbox
-        final CheckBoxPreference checkboxLeftbar = (CheckBoxPreference) getPreferenceManager().findPreference("checkbox_leftbar");
-        leftbar.setEnabled(checkboxLeftbar.isChecked());
-        checkboxLeftbar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue instanceof Boolean) {
-                    Boolean boolVal = (Boolean) newValue;
-                    // checkboxLeftbar.setChecked(boolVal);
-                    leftbar.setEnabled(boolVal);
-                }
-                return true;
-            }
-        });
-
-        // Handle  enable disable  behavior of Rightbar checkbox
-        final CheckBoxPreference checkboxRightbar = (CheckBoxPreference) getPreferenceManager().findPreference("checkbox_rightbar");
-        rightbar.setEnabled(checkboxRightbar.isChecked());
-        checkboxRightbar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue instanceof Boolean) {
-                    Boolean boolVal = (Boolean) newValue;
-                    // checkboxRightbar.setChecked(boolVal);
-                    rightbar.setEnabled(boolVal);
-                }
-                return true;
-            }
-        });
-
-        // Handle  enable disable  behavior of LeftBottombar checkbox
-        final CheckBoxPreference checkboxLeftBottombar = (CheckBoxPreference) getPreferenceManager().findPreference("checkbox_leftbottombar");
-        leftbottombar.setEnabled(checkboxLeftBottombar.isChecked());
-        checkboxLeftBottombar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue instanceof Boolean) {
-                    Boolean boolVal = (Boolean) newValue;
-                    // checkboxLeftBottombar.setChecked(boolVal);
-                    leftbottombar.setEnabled(boolVal);
-                }
-                return true;
-            }
-        });
-
-        // Handle  enable disable  behavior of RightBottombar checkbox
-        final CheckBoxPreference checkboxRightBottombar = (CheckBoxPreference) getPreferenceManager().findPreference("checkbox_rightbottombar");
-        rightbottombar.setEnabled(checkboxRightBottombar.isChecked());
-        checkboxRightBottombar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue instanceof Boolean) {
-                    Boolean boolVal = (Boolean) newValue;
-                    // checkboxRightBottombar.setChecked(boolVal);
-                    rightbottombar.setEnabled(boolVal);
-                }
-                return true;
-            }
-        });
-
-        
-        // Handle  enable disable  behavior of Super Quick service checkbox
-        final CheckBoxPreference sqServiceCheckBox = (CheckBoxPreference) getPreferenceManager().findPreference("superquick_service");
-        sqservice.setEnabled(sqServiceCheckBox.isChecked());
-        tranparency.setEnabled(sqServiceCheckBox.isChecked());
-        orderSize.setEnabled(sqServiceCheckBox.isChecked());
-        if (!checkboxLeftbar.isChecked() && !checkboxRightbar.isChecked() && !checkboxLeftBottombar.isChecked()
-                && !checkboxRightBottombar.isChecked()) {
-            sqServiceCheckBox.setChecked(false);
-        }
-        sqServiceCheckBox.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue instanceof Boolean) {
-                    Boolean boolVal = (Boolean) newValue;
-                    sqservice.setEnabled(boolVal);
-                    orderSize.setEnabled(boolVal);
-                    tranparency.setEnabled(boolVal);
-                    // checkboxRightBottombar.setChecked(boolVal);
-
                 }
                 return true;
             }
