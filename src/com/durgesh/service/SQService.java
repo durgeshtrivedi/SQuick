@@ -16,15 +16,19 @@
 package com.durgesh.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent;
+import android.preference.PreferenceManager;
 import android.view.OrientationEventListener;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.durgesh.view.BottomLeftView;
 import com.durgesh.view.BottomRightView;
+import com.durgesh.view.SQMainVeiw;
 import com.durgesh.view.TopLeftView;
 import com.durgesh.view.TopRightView;
 
@@ -38,16 +42,36 @@ public class SQService extends Service {
     TopRightView sqTopRightView;
     BottomLeftView sqBottomLeftView;
     BottomRightView sqBottomRightView;
-
+    boolean leftView, rightView, leftBottomView, rightBottomView;
+    Context context;
     private OrientationEventListener sqOrientationListener;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        sqTopLeftView = new TopLeftView(getApplicationContext());
-        sqTopRightView = new TopRightView(getApplicationContext());
-        sqBottomLeftView = new BottomLeftView(getApplicationContext());
-        sqBottomRightView = new BottomRightView(getApplicationContext());
+        context = getApplicationContext();
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        leftView = settings.getBoolean("checkbox_leftbar", true);
+        if (leftView && sqTopLeftView == null) {
+            sqTopLeftView = new TopLeftView(context);
+        }
+
+        rightView = settings.getBoolean("checkbox_rightbar", true);
+        if (rightView && sqTopRightView == null) {
+            sqTopRightView = new TopRightView(context);
+        }
+
+        leftBottomView = settings.getBoolean("checkbox_leftbottombar", true);
+        if (leftBottomView && sqBottomLeftView == null) {
+            sqBottomLeftView = new BottomLeftView(context);
+        }
+
+        rightBottomView = settings.getBoolean("checkbox_rightbottombar", true);
+        if (rightBottomView && sqBottomRightView == null) {
+            sqBottomRightView = new BottomRightView(context);
+        }
+
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientation) {
@@ -63,14 +87,44 @@ public class SQService extends Service {
      */
     public void initOrientation() {
         // Set the position of the Top left View
-        sqTopLeftView.updateViewParameter();
-        // Set the position of the Bottom left View
-        sqBottomLeftView.updateViewParameter();
-        // Set the position of the Top Right View
-        sqTopRightView.updateViewParameter();
-        // Set the position of the Bottom Right View
-        sqBottomRightView.updateViewParameter();
+        if (leftView && sqTopLeftView != null) sqTopLeftView.updateViewParameter();
 
+        // Set the position of the Bottom left View
+        if (leftBottomView && sqBottomLeftView != null) sqBottomLeftView.updateViewParameter();
+
+        // Set the position of the Top Right View
+        if (rightView && sqTopRightView != null) sqTopRightView.updateViewParameter();
+
+        // Set the position of the Bottom Right View
+        if (rightBottomView && sqBottomRightView != null) sqBottomRightView.updateViewParameter();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        /*
+         * TODO Should not remove all the view from the service need to improve the logic here . The better way is to create a service for each view ,
+         * so when we disable a particular view only that service is stop and only that view is removed from windows manager all other are unchanged
+         * .So need to implement 4 services here
+         */
+        removeBar(sqTopLeftView);
+        removeBar(sqTopRightView);
+        removeBar(sqBottomLeftView);
+        removeBar(sqBottomRightView);
+
+        sqTopLeftView = null;
+        sqTopRightView = null;
+        sqBottomLeftView = null;
+        sqBottomRightView = null;
+
+    }
+
+    private void removeBar(SQMainVeiw view) {
+        if (view != null) {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            wm.removeView(view);
+        }
     }
 
     @Override

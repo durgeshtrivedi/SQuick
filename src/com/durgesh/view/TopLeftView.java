@@ -31,6 +31,7 @@ import com.durgesh.util.Constants;
  */
 public class TopLeftView extends SQMainVeiw {
 
+    
     public TopLeftView(Context context) {
         super(context);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);

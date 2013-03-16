@@ -17,8 +17,17 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="superquick_service"
+        android:selectable="true"
+        android:summaryOff="@string/pref_bar_disabled"
+        android:summaryOn="@string/pref_bar_enabled"
+        android:title="@string/pref_superquick_service_title" >
+    </CheckBoxPreference>
+
     <ListPreference
-        android:defaultValue="medium"
+        android:defaultValue="large"
         android:entries="@array/serviceSizeNames"
         android:entryValues="@array/serviceSizeValues"
         android:key="service_size"
@@ -33,35 +42,64 @@
         android:summary="@string/pref_service_transparency_summary"
         android:title="@string/pref_service_transparency_title" />
 
-    <PreferenceScreen android:title="@string/pref_screen_reorder_title" >
+    <PreferenceScreen
+        android:key="bar_order_size"
+        android:title="@string/pref_screen_reorder_title" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="checkbox_leftbar"
+            android:summaryOff="@string/pref_bar_disabled"
+            android:summaryOn="@string/pref_bar_enabled"
+            android:title="@string/pref_order_lefbar_title" >
+        </CheckBoxPreference>
+
         <ListPreference
-             android:key="left_bar"
             android:defaultValue="@string/pref_lefbar_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:summary="@string/pref_order_leftbar_summary"
-            android:title="@string/pref_order_lefbar_title" />
+            android:key="left_bar" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="checkbox_rightbar"
+            android:summaryOff="@string/pref_bar_disabled"
+            android:summaryOn="@string/pref_bar_enabled"
+            android:title="@string/pref_order_rightbare_title" >
+        </CheckBoxPreference>
+
         <ListPreference
-             android:key="right_bar"
             android:defaultValue="@string/pref_rightbare_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:summary="@string/pref_order_leftbottombar_summary"
-            android:title="@string/pref_order_leftbottombar_title" />
+            android:key="right_bar" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="checkbox_leftbottombar"
+            android:summaryOff="@string/pref_bar_disabled"
+            android:summaryOn="@string/pref_bar_enabled"
+            android:title="@string/pref_order_leftbottombar_title" >
+        </CheckBoxPreference>
+
         <ListPreference
-            android:key="left_bottom_bar"
             android:defaultValue="@string/pref_leftbottombar_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:summary="@string/pref_order_rightbar_summary"
-            android:title="@string/pref_order_rightbare_title" />
+            android:key="left_bottom_bar" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="checkbox_rightbottombar"
+            android:summaryOff="@string/pref_bar_disabled"
+            android:summaryOn="@string/pref_bar_enabled"
+            android:title="@string/pref_order_rightbottombar_title" >
+        </CheckBoxPreference>
+
         <ListPreference
-            android:key="right_bottom_bar"
             android:defaultValue="@string/pref_rightbottombar_title"
             android:entries="@array/orderValues"
             android:entryValues="@array/orderValues"
-            android:summary="@string/pref_order_rightbottombar_summary"
-            android:title="@string/pref_order_rightbottombar_title" />
+            android:key="right_bottom_bar" />
     </PreferenceScreen>
 
     <PreferenceCategory android:title="@string/pref_category_info_title" >
@@ -82,4 +120,5 @@
             android:summary="@string/pref_url_summary"
             android:title="@string/pref_url_title" />
     </PreferenceCategory>
+
 </PreferenceScreen>

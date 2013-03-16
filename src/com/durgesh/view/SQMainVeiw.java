@@ -26,15 +26,10 @@ import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.LayoutAnimationController;
 
 import com.durgesh.R;
 import com.durgesh.quick.squick.SQDirectAppActivity;
@@ -48,18 +43,20 @@ import com.durgesh.util.Constants;
  */
 public abstract class SQMainVeiw extends View implements OnTouchListener {
     public Context context;
-    public View sqView;
+    public SQMainVeiw sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
     private static float barSize = 15;
     private static final int SQ_VIEW_HEIGHT = 25;
-   
+
     int shortcutSelector;
+    WindowManager windowsmanger;
 
     public SQMainVeiw(Context context) {
         super(context);
         this.context = context;
         inflateView();
+
     }
 
     private final GestureDetector gdt = new GestureDetector(new GestureListener());
@@ -142,13 +139,11 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     }
 
     private void inflateView() {
-        LayoutInflater appLayout = LayoutInflater.from(context);
-        sqView = appLayout.inflate(R.layout.sqservice, null);
+        windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        sqView = this;
         sqView.setBackgroundColor(Color.LTGRAY);
         sqView.setOnTouchListener(this);
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-
-        wm.addView(sqView, makeOverlayParams());
+        windowsmanger.addView(sqView, makeOverlayParams());
     }
 
     /**
@@ -172,10 +167,8 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      *            Gravity of the view to display on the screen
      */
     protected void updateView(int xAxis, int ration, int gravity) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-
         // save screen width/height
-        Display display = wm.getDefaultDisplay();
+        Display display = windowsmanger.getDefaultDisplay();
         sqScreenWidth = display.getWidth();
         sqScreenHeight = display.getHeight();
         // To give View the size according to Screen size take ration from screen size
@@ -187,7 +180,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         paramsRB.height = displayHeight;
         paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
         applyTransparency(paramsRB);
-        wm.updateViewLayout(sqView, paramsRB);
+        windowsmanger.updateViewLayout(sqView, paramsRB);
 
     }
 
@@ -242,8 +235,16 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * 
      * @return
      */
-    public View getView() {
-        return sqView;
+    public SQMainVeiw getView() {
+        return this;
     }
 
+    /**
+     * Return the Current view
+     * 
+     * @return
+     */
+    public SQMainVeiw setViewNull() {
+        return sqView = null;
+    }
 }

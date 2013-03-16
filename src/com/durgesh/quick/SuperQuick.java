@@ -17,11 +17,12 @@ package com.durgesh.quick;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import com.durgesh.pref.SQPreference;
 import com.durgesh.service.SQService;
-import com.durgesh.util.Constants;
 
 /**
  * Main class of the application to launch the SuperQuick service the purpose of the class is just to launch the service
@@ -29,30 +30,32 @@ import com.durgesh.util.Constants;
  * @author durgesht
  */
 public class SuperQuick extends Activity {
+
+    private final static int PREFERENCE = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivityForResult(new Intent(this, SQPreference.class), 0);
-        restartService(0);
+        restartService();
+        startActivityForResult(new Intent(this, SQPreference.class), PREFERENCE);
+
     }
 
-    public void restartService(int trancparency) {
+    public void restartService() {
         // start the service
         stopService(new Intent(this, SQService.class));
-        // SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences( this );
-        // if( settings.getBoolean( "service", true ) ) {
-        // this.startService( new Intent( this, SQService.class ) );
-        // }
-        Intent intent = new Intent(this, SQService.class);
-        intent.putExtra(Constants.TRANSPARENCY, trancparency);
-        startService(intent);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        if (settings.getBoolean("superquick_service", true)) {
+            startService(new Intent(this, SQService.class));
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        restartService(0);
-        finish();
-        // startActivity(new Intent(this, SuperQuick.class));
+        if (requestCode == PREFERENCE) {
+            restartService();
+            finish();
+        }
     }
 
 }
