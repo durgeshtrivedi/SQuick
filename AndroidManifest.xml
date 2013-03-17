@@ -71,6 +71,13 @@
             </intent-filter>
         </activity>
         
+          <activity
+            android:name="com.durgesh.util.SuperQuickHelp"
+            android:label="@string/application_name"
+			 android:configChanges="orientation|keyboardHidden"
+			 android:theme="@android:style/Theme.Dialog">
+        </activity>
+        
         <receiver android:name=".BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

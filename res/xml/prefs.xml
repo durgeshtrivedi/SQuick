@@ -27,7 +27,7 @@
     </CheckBoxPreference>
 
     <ListPreference
-        android:defaultValue="large"
+        android:defaultValue="medium"
         android:entries="@array/serviceSizeNames"
         android:entryValues="@array/serviceSizeValues"
         android:key="service_size"

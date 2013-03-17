@@ -38,6 +38,8 @@
     <string name="pref_service_boot_summary_on">Run SuperQuick Service at Boot </string>
     <string name="pref_service_boot_summary_off">Do Not Run SuperQuick Service at Boot </string>
     -->
+    
+    <string name="quickdoc_exit">Close</string>
     <string name="pref_superquick_service_title">Run Service</string>
     <string name="pref_service_size_title">Size</string>
     <string name="pref_service_size_summary">Size of Bars</string>

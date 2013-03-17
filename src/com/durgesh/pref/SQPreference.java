@@ -15,15 +15,20 @@
  */
 package com.durgesh.pref;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 
 import com.durgesh.R;
+import com.durgesh.util.SuperQuickHelp;
 
 /**
  * Display Preference Screen of the App
@@ -135,13 +140,51 @@ public class SQPreference extends PreferenceActivity {
             }
         });
 
+        final Preference siteName = findPreference("pref_url");
+        final String siteUrl = siteName.getSummary().toString();
+
+        siteName.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(siteUrl));
+                startActivity(i);
+                return false;
+            }
+        });
+
+        appFirstRun();
+
     }
 
     private void triggerHelp() {
-        // Intent intent = new Intent(this, HelpDoc.class);
-        // intent.putExtra("type", "help");
+        Intent intent = new Intent(this, SuperQuickHelp.class);
+        intent.putExtra("type", "sqhelp");
+        startActivity(intent);
+    }
 
-        // startActivity(intent);
+    private void appFirstRun() {
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int app_version = 0;
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            app_version = info.versionCode;
+        } catch (Exception e) {
+
+        }
+
+        // d( "Updating last version code: " + force_level );
+        if (settings.getInt("last_version_num", 0) < app_version) {
+            Intent intent = new Intent(this, SuperQuickHelp.class);
+            intent.putExtra("type", "disclaimer");
+            startActivity(intent);
+            SharedPreferences.Editor e = settings.edit();
+            e.putInt("last_version_num", app_version);
+            e.commit();
+        }
+
     }
 
 }

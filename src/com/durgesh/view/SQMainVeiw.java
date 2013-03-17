@@ -46,7 +46,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public SQMainVeiw sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private static float barSize = 15;
+    private static float barSize = 18;
     private static final int SQ_VIEW_HEIGHT = 25;
 
     int shortcutSelector;
