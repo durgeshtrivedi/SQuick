@@ -69,7 +69,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     private final class GestureListener extends SimpleOnGestureListener {
 
-        private static final int SWIPE_MIN_DISTANCE = 3;
+        private static final int SWIPE_MIN_DISTANCE = 4;
         private static final int SWIPE_THRESHOLD_VELOCITY = 10;
 
         @Override
