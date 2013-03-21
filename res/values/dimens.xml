@@ -17,6 +17,8 @@
 -->
 <resources>
 
+     <!-- Size of the shortcut icon. 48dip means: use the system default -->
+    <dimen name="center_menu_size">1dip</dimen>
     <!-- Size of the shortcut icon. 48dip means: use the system default -->
     <dimen name="shortcut_icon_size">48dip</dimen>
 

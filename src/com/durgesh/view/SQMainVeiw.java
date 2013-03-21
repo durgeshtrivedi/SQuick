@@ -44,8 +44,8 @@ import com.durgesh.util.Constants;
 public abstract class SQMainVeiw extends View implements OnTouchListener {
     public Context context;
     public SQMainVeiw sqView;
-    private int sqScreenWidth;
-    private int sqScreenHeight;
+    protected int sqScreenWidth;
+    protected int sqScreenHeight;
     private static float barSize = 18;
     private static final int SQ_VIEW_HEIGHT = 25;
 
@@ -138,7 +138,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
 
     }
 
-    private void inflateView() {
+    protected void inflateView() {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         sqView = this;
         sqView.setBackgroundColor(Color.LTGRAY);
@@ -151,7 +151,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * 
      * @return {@link WindowManager.LayoutParams}
      */
-    private WindowManager.LayoutParams makeOverlayParams() {
+    protected WindowManager.LayoutParams makeOverlayParams() {
         return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
     }
@@ -187,7 +187,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     /**
      * Set the Transparency for the view
      */
-    private void applyTransparency(WindowManager.LayoutParams params) {
+    protected void applyTransparency(WindowManager.LayoutParams params) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         int transparency = settings.getInt("service_transparency", 0);
         float finalAlpha = (100f - transparency) / 100f;
@@ -199,7 +199,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * 
      * @param params
      */
-    private void applyScaling(WindowManager.LayoutParams params) {
+    protected void applyScaling(WindowManager.LayoutParams params) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         String size = settings.getString("service_size", "medium");
         float buttonMult = 1;
@@ -227,7 +227,8 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
             shortcutSelector = Constants.CONTACT;
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbottombar_title))) {
             shortcutSelector = Constants.APP;
-        }
+        }else if (selector.equals("center"))
+            shortcutSelector = Constants.APP;
     }
 
     /**

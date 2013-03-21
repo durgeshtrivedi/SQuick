@@ -28,6 +28,7 @@ import android.view.WindowManager;
 
 import com.durgesh.view.BottomLeftView;
 import com.durgesh.view.BottomRightView;
+import com.durgesh.view.SQCenterView;
 import com.durgesh.view.SQMainVeiw;
 import com.durgesh.view.TopLeftView;
 import com.durgesh.view.TopRightView;
@@ -42,6 +43,7 @@ public class SQService extends Service {
     TopRightView sqTopRightView;
     BottomLeftView sqBottomLeftView;
     BottomRightView sqBottomRightView;
+    SQCenterView   centerView;
     boolean leftView, rightView, leftBottomView, rightBottomView;
     Context context;
     private OrientationEventListener sqOrientationListener;
@@ -72,6 +74,8 @@ public class SQService extends Service {
             sqBottomRightView = new BottomRightView(context);
         }
 
+        centerView =new SQCenterView(context);
+        
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientation) {
@@ -97,6 +101,8 @@ public class SQService extends Service {
 
         // Set the position of the Bottom Right View
         if (rightBottomView && sqBottomRightView != null) sqBottomRightView.updateViewParameter();
+        
+        centerView.updateViewParameter();
 
     }
 

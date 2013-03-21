@@ -28,6 +28,7 @@ public class Constants {
     public static final int MESSAGE = 2;
     public static final int CONTACT = 3;
     public static final int APP = 4;
+    public static final int CENTER=19;
     public static final String SUPERQUICK="superquick";
     public static final String DEFAULTURI = "NOURI";
     public static final String TRANSPARENCY = "transparency";
