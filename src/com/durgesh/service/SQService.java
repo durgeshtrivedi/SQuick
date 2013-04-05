@@ -23,7 +23,6 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.OrientationEventListener;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.durgesh.view.BottomLeftView;
@@ -31,6 +30,7 @@ import com.durgesh.view.BottomRightView;
 import com.durgesh.view.SQMainVeiw;
 import com.durgesh.view.TopLeftView;
 import com.durgesh.view.TopRightView;
+import com.sileria.android.Kit;
 
 /**
  * The main application Service which run all the time in the background and make the application live .
@@ -45,12 +45,13 @@ public class SQService extends Service {
     boolean leftView, rightView, leftBottomView, rightBottomView;
     Context context;
     private OrientationEventListener sqOrientationListener;
+    
 
     @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-
+        Kit.init(context);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         leftView = settings.getBoolean("checkbox_leftbar", true);
         if (leftView && sqTopLeftView == null) {
@@ -80,6 +81,7 @@ public class SQService extends Service {
         };
         sqOrientationListener.enable();
         initOrientation();
+        
     }
 
     /**
@@ -112,7 +114,6 @@ public class SQService extends Service {
         removeBar(sqTopRightView);
         removeBar(sqBottomLeftView);
         removeBar(sqBottomRightView);
-
         sqTopLeftView = null;
         sqTopRightView = null;
         sqBottomLeftView = null;

@@ -20,16 +20,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.LinearLayout;
 
 import com.durgesh.R;
 import com.durgesh.quick.squick.SQDirectAppActivity;
@@ -56,7 +59,6 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         super(context);
         this.context = context;
         inflateView();
-
     }
 
     private final GestureDetector gdt = new GestureDetector(new GestureListener());
@@ -120,11 +122,12 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         }
 
         case Constants.CONTACT: {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("content://contacts/people/"));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            context.startActivity(intent);
+            // Intent intent = new Intent();
+            // intent.setAction(Intent.ACTION_VIEW);
+            // intent.setData(Uri.parse("content://contacts/people/"));
+            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            // context.startActivity(intent);
+            leftDrawer();
         }
             break;
         case Constants.APP: {
@@ -151,7 +154,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * 
      * @return {@link WindowManager.LayoutParams}
      */
-    private WindowManager.LayoutParams makeOverlayParams() {
+    protected WindowManager.LayoutParams makeOverlayParams() {
         return new WindowManager.LayoutParams(0, 0, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
     }
@@ -247,4 +250,14 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public SQMainVeiw setViewNull() {
         return sqView = null;
     }
+
+    public void leftDrawer() {
+
+         Intent intent = new Intent(context, SlidingDrawerActivity.class);
+         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+         context.startActivity(intent);
+
+    }
+
+   
 }

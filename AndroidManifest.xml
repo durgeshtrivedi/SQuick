@@ -32,7 +32,8 @@
     <application
         android:icon="@drawable/superquick"
         android:label="@string/application_name"
-        android:process="android.superquick" >
+        android:process="android.superquick" 
+        >
         <activity
             android:name=".quick.SuperQuick"
             android:clearTaskOnLaunch="true"
@@ -65,7 +66,7 @@
             android:name="com.durgesh.quick.squick.SQDirectAppActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Translucent" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -76,6 +77,12 @@
             android:label="@string/application_name"
 			 android:configChanges="orientation|keyboardHidden"
 			 android:theme="@android:style/Theme.Dialog">
+        </activity>
+        
+          <activity
+            android:name="com.durgesh.view.SlidingDrawerActivity"
+            android:label="@string/application_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
         
         <receiver android:name=".BootReceiver" >

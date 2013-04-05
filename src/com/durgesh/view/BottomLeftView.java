@@ -16,12 +16,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.widget.ViewAnimator;
 
 import com.durgesh.R;
 import com.durgesh.util.Constants;
@@ -42,18 +45,19 @@ public class BottomLeftView extends SQMainVeiw {
 
     @Override
     public void onLeftToRight() {
-        launchShorcut();
+      launchShorcut();
     }
 
     @Override
     public void onBottomToTop() {
-        launchShorcut();
+     launchShorcut();
     }
 
     @Override
     public void onTopToBottom() {
 
-        launchShorcut();
+      launchShorcut();
+       
     }
 
     @Override
@@ -61,5 +65,27 @@ public class BottomLeftView extends SQMainVeiw {
         updateView(0, Constants.SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
 
     }
+    
+//    public void showDrawer()
+//    {
+//        View  newView;
+//        LayoutInflater li = LayoutInflater.from(context);
+//            newView = li.inflate(R.layout.sqleftdrawer, null);
+//        windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        newView.setBackgroundColor(Color.LTGRAY);
+//      //  newView.setOnTouchListener(this);
+//        ViewAnimator mViewAnimator;
+//        mViewAnimator = new ViewAnimator(context);
+//       
+//        mViewAnimator.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.pull_in_from_left));
+//        mViewAnimator.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.push_out_to_left));            
+//        mViewAnimator.addView(newView);
+//        mViewAnimator.showNext();
+//        // bringToFront(mViewAnimator);
+//       
+//        windowsmanger.addView(mViewAnimator, makeOverlayParams());
+//       // overridePendingTransition(R.anim.pull_in_from_left, R.anim.hold);
+//        
+//    }
     
 }
