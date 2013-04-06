@@ -16,28 +16,35 @@
 
 package com.sileria.android;
 
+import static android.provider.Settings.Secure.ANDROID_ID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
-import android.content.*;
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.location.LocationManager;
-import android.net.*;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.*;
-import android.view.inputmethod.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.Display;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.sileria.util.Utils;
-
-import static android.provider.Settings.Secure.ANDROID_ID;
 
 /**
  * Factory class for getting <code>Context</code> based utility class instances.

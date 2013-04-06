@@ -20,17 +20,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Path.FillType;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,13 +38,13 @@ import com.durgesh.pref.SQPrefs;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
 
-public class SQDirectDialActivity extends Activity implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
+public class SQDirectDialActivity extends SQDrawers implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
     private View currentItem;
-    public int selector;
     public String contactUri;
+    
+
     private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
-    SQTapListener sqTapListener;
 
     @Override
     public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
@@ -86,13 +85,17 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.shortcuts);
-        selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
-        GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
-        gridView.setAdapter(new SQDirectDialAdapter(this));
-        gridView.setOnItemClickListener(this);
-        gridView.setOnItemLongClickListener(this);
-        sqTapListener = new SQTapListener(this);
+        SQDirectDialAdapter adapter = new SQDirectDialAdapter(this);
+        for(int index=0;index<adapter.getCount();index++)
+        {
+            itemList.add(adapter.getView(index, null, null));
+        }
+        
+        fillDrawerItem(itemList);
+        // GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
+        // gridView.setAdapter(new SQDirectDialAdapter(this));
+        // gridView.setOnItemClickListener(this);
+        // gridView.setOnItemLongClickListener(this);
 
     }
 
@@ -152,7 +155,7 @@ public class SQDirectDialActivity extends Activity implements OnItemClickListene
     }
 
     /**
-     * display the DialogBox having list of shortcuts
+     * Display the DialogBox having list of shortcuts
      * 
      * @param item
      */

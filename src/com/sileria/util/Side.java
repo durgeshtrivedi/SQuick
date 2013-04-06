@@ -16,6 +16,8 @@
 
 package com.sileria.util;
 
+import android.graphics.drawable.GradientDrawable.Orientation;
+
 /**
  * Side constants for a 2D or 3D space.
  *
@@ -26,5 +28,5 @@ package com.sileria.util;
  * @see Orientation
  */
 public enum Side {
-	TOP, LEFT, BOTTOM, RIGHT, FRONT, BACK, CENTER
+	LEFT, BOTTOM, RIGHT,TOP, FRONT, BACK, CENTER
 }

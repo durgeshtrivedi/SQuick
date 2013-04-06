@@ -25,18 +25,12 @@ import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.widget.LinearLayout;
 
 import com.durgesh.R;
-import com.durgesh.quick.squick.SQDirectAppActivity;
-import com.durgesh.quick.squick.SQDirectDialActivity;
 import com.durgesh.util.Constants;
 
 /**
@@ -51,7 +45,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     private int sqScreenHeight;
     private static float barSize = 18;
     private static final int SQ_VIEW_HEIGHT = 25;
-
+    // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
     int shortcutSelector;
     WindowManager windowsmanger;
 
@@ -110,36 +104,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     /**
      * Launch the shortcut selector base on the view on which the finger is swap
      */
-    void launchShorcut() {
-        switch (shortcutSelector) {
-        case Constants.PHONE_CALL:
-        case Constants.MESSAGE: {
-            Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-            context.startActivity(dialerActivity);
-            break;
-        }
-
-        case Constants.CONTACT: {
-            // Intent intent = new Intent();
-            // intent.setAction(Intent.ACTION_VIEW);
-            // intent.setData(Uri.parse("content://contacts/people/"));
-            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            // context.startActivity(intent);
-            leftDrawer();
-        }
-            break;
-        case Constants.APP: {
-            Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
-            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-            context.startActivity(dialerActivity);
-            break;
-        }
-        }
-
-    }
+    public abstract void launchShorcut();
 
     private void inflateView() {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -188,7 +153,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     }
 
     /**
-     * Set the Transparency for the view
+     * Set the Transparency for the Bar
      */
     private void applyTransparency(WindowManager.LayoutParams params) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -251,13 +216,4 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         return sqView = null;
     }
 
-    public void leftDrawer() {
-
-         Intent intent = new Intent(context, SlidingDrawerActivity.class);
-         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-         context.startActivity(intent);
-
-    }
-
-   
 }

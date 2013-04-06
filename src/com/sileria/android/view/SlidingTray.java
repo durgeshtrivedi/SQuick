@@ -17,7 +17,9 @@
 package com.sileria.android.view;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -207,7 +209,20 @@ public class SlidingTray extends ViewGroup {
         if (handle == null) throw new NullPointerException("Handle cannot be null.");
         addView(mHandle = handle);
         mHandle.setOnClickListener(new DrawerToggler());
-
+        switch (orientation) {
+        case LEFT:
+            setHandlePosition(Side.LEFT);
+            break;
+        case BOTTOM:
+            setHandlePosition(Side.BOTTOM);
+            break;
+        case RIGHT:
+            setHandlePosition(Side.RIGHT);
+            break;
+        case TOP:
+            setHandlePosition(Side.TOP);
+            break;
+        }
         // content
         if (content == null) throw new IllegalArgumentException("Content cannot be null.");
         addView(mContent = content);

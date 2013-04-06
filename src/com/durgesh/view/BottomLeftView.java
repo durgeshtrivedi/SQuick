@@ -16,15 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.widget.ViewAnimator;
 
 import com.durgesh.R;
 import com.durgesh.util.Constants;
@@ -66,26 +62,13 @@ public class BottomLeftView extends SQMainVeiw {
 
     }
     
-//    public void showDrawer()
-//    {
-//        View  newView;
-//        LayoutInflater li = LayoutInflater.from(context);
-//            newView = li.inflate(R.layout.sqleftdrawer, null);
-//        windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//        newView.setBackgroundColor(Color.LTGRAY);
-//      //  newView.setOnTouchListener(this);
-//        ViewAnimator mViewAnimator;
-//        mViewAnimator = new ViewAnimator(context);
-//       
-//        mViewAnimator.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.pull_in_from_left));
-//        mViewAnimator.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.push_out_to_left));            
-//        mViewAnimator.addView(newView);
-//        mViewAnimator.showNext();
-//        // bringToFront(mViewAnimator);
-//       
-//        windowsmanger.addView(mViewAnimator, makeOverlayParams());
-//       // overridePendingTransition(R.anim.pull_in_from_left, R.anim.hold);
-//        
-//    }
+    public void launchShorcut()
+    {
+         Intent intent = new Intent();
+         intent.setAction(Intent.ACTION_VIEW);
+         intent.setData(Uri.parse("content://contacts/people/"));
+         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+         context.startActivity(intent);
+    }
     
 }

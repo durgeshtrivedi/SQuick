@@ -52,7 +52,7 @@
             android:name="com.durgesh.quick.squick.SQDirectDialActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

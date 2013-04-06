@@ -16,11 +16,13 @@
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
 
 import com.durgesh.R;
+import com.durgesh.quick.squick.SQDirectDialActivity;
 import com.durgesh.util.Constants;
 
 public class TopRightView extends SQMainVeiw {
@@ -58,6 +60,13 @@ public class TopRightView extends SQMainVeiw {
     @Override
     public void updateViewParameter() {
         updateView(1, Constants.SQ_TOP_VIEW_POSITION_RATIO, Gravity.TOP);
-
+    }
+    
+    public void launchShorcut()
+    {
+        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
+        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
+        context.startActivity(dialerActivity);
     }
 }
