@@ -17,12 +17,12 @@
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer"
+    android:id="@+id/drawer_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
+    <!-- <FrameLayout
         android:id="@+id/left_drawer"
         android:layout_width="60dip"
         android:layout_height="400dip"
@@ -45,5 +45,5 @@
         android:layout_width="400dip"
         android:layout_height="60dip"
         android:layout_gravity="bottom|center_horizontal" />
-
+ -->
 </FrameLayout>

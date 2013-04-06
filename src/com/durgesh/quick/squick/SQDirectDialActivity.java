@@ -86,12 +86,13 @@ public class SQDirectDialActivity extends SQDrawers implements OnItemClickListen
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         SQDirectDialAdapter adapter = new SQDirectDialAdapter(this);
-        for(int index=0;index<adapter.getCount();index++)
-        {
-            itemList.add(adapter.getView(index, null, null));
-        }
+//        for(int index=0;index<adapter.getCount();index++)
+//        {
+//            itemList.add(adapter.getView(index, null, null));
+//        }
         
-        fillDrawerItem(itemList);
+        fillDrawerItem(adapter);
+        layoutDrawers();
         // GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
         // gridView.setAdapter(new SQDirectDialAdapter(this));
         // gridView.setOnItemClickListener(this);

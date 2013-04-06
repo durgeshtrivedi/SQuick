@@ -16,10 +16,8 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/content_drawer"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/drawerbg"
-    android:orientation="horizontal" >
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/right_drawer_container"
+    android:layout_width="60dip"
+    android:layout_height="400dip"
+    android:layout_gravity="center_vertical|right" />
