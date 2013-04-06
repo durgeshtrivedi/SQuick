@@ -39,14 +39,14 @@ public class SQDrawers extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sqdrawers);
+        setContentView(R.layout.drawerscontainer);
         itemList = new ArrayList<View>();
         selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
         sqTapListener = new SQTapListener(this);
-        leftDrawer = layoutDrawer(R.id.left_drawer, SlidingTray.LEFT, R.layout.leftright_drawer_content);
-        bottomDrawer = layoutDrawer(R.id.bottom_drawer, SlidingTray.BOTTOM, R.layout.topbottom_drawer_content);
-        rightDrawer = layoutDrawer(R.id.right_drawer, SlidingTray.RIGHT, R.layout.leftright_drawer_content);
-        topDrawer = layoutDrawer(R.id.top_drawer, SlidingTray.TOP, R.layout.topbottom_drawer_content);
+        leftDrawer = layoutDrawer(R.id.left_drawer_container, SlidingTray.LEFT, R.layout.leftright_drawer_content);
+        bottomDrawer = layoutDrawer(R.id.bottom_drawer_container, SlidingTray.BOTTOM, R.layout.topbottom_drawer_content);
+        rightDrawer = layoutDrawer(R.id.right_drawer_container, SlidingTray.RIGHT, R.layout.leftright_drawer_content);
+        topDrawer = layoutDrawer(R.id.top_drawer_container, SlidingTray.TOP, R.layout.topbottom_drawer_content);
 
     }
 
@@ -59,41 +59,45 @@ public class SQDrawers extends Activity {
      *            content layout for the drawer items
      */
     private SlidingTray layoutDrawer(int drawer, int position, int conten) {
-        LinearLayout content = (LinearLayout) LayoutInflater.from(this).inflate(conten, null);
+        LinearLayout drawerContent = (LinearLayout) LayoutInflater.from(this).inflate(conten, null);
         LinearLayout drawerhandle = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.drawerhandle, null);
-        FrameLayout parent = (FrameLayout) findViewById(drawer);
-        SlidingTray slidedrawer = new SlidingTray(this, drawerhandle, content, position);
-        parent.addView(slidedrawer);
-        slidedrawer.setVisibility(View.INVISIBLE);
+        FrameLayout drawerContainer = (FrameLayout) findViewById(drawer);
+        SlidingTray slidedrawer = new SlidingTray(this, drawerhandle, drawerContent, position);
+        drawerContainer.addView(slidedrawer);
+        slidedrawer.setVisibility(View.GONE);
         return slidedrawer;
-        // historico.animateOpen();
     }
 
-    protected void fillDrawerItem(List<View> list) {
-        int size = list.size();
-        LinearLayout leftDrawerContent = (LinearLayout) leftDrawer.getChildAt(0);
+    protected void fillDrawerItem(BaseAdapter drawerItemList) {
+        int size = drawerItemList.getCount();
+        LayoutInflater li = LayoutInflater.from(context);
+
+        LinearLayout leftDrawerContent = (LinearLayout) leftDrawer.getChildAt(1);
         leftDrawer.setVisibility(View.VISIBLE);
-        leftDrawer.animateOpen();
-        LinearLayout bottomDrawerContent = (LinearLayout) bottomDrawer.getChildAt(0);
-        LinearLayout rightDrawerContent = (LinearLayout) rightDrawer.getChildAt(0);
-        LinearLayout topDrawerContent = (LinearLayout) topDrawer.getChildAt(0);
+        LinearLayout bottomDrawerContent = (LinearLayout) bottomDrawer.getChildAt(1);
+        LinearLayout rightDrawerContent = (LinearLayout) rightDrawer.getChildAt(1);
+        LinearLayout topDrawerContent = (LinearLayout) topDrawer.getChildAt(1);
         for (int listItem = 0; listItem < size; listItem++) {
             if (listItem < 6) {
-                leftDrawerContent.addView((View) list.get(listItem));
+                leftDrawerContent.addView((View) drawerItemList.getView(listItem,li.inflate(R.layout.leftright_drawer_item, null), null));
             } else if (listItem >= 6 && listItem <= 11) {
-                bottomDrawerContent.addView((View) list.get(listItem));
-                bottomDrawer.setVisibility(View.VISIBLE);
-                bottomDrawer.animateOpen();
+                bottomDrawerContent.addView((View) drawerItemList.getView(listItem,li.inflate(R.layout.topbottom_drawer_item, null), null));
+                if (bottomDrawer.getVisibility() == View.GONE) bottomDrawer.setVisibility(View.VISIBLE);
             } else if (listItem > 11 && listItem <= 17) {
-                rightDrawerContent.addView((View) list.get(listItem));
-                rightDrawer.setVisibility(View.VISIBLE);
-                rightDrawer.animateOpen();
+                rightDrawerContent.addView((View) drawerItemList.getView(listItem,li.inflate(R.layout.leftright_drawer_item, null), null));
+                if (rightDrawer.getVisibility() == View.GONE) rightDrawer.setVisibility(View.VISIBLE);
             } else if (listItem > 17 && listItem <= 21) {
-                topDrawerContent.addView((View) list.get(listItem));
-                topDrawer.setVisibility(View.VISIBLE);
-                topDrawer.animateOpen();
+                topDrawerContent.addView((View) drawerItemList.getView(listItem, li.inflate(R.layout.topbottom_drawer_item, null), null));
+                if (topDrawer.getVisibility() == View.GONE) topDrawer.setVisibility(View.VISIBLE);
             }
         }
 
+    }
+
+    protected void openDrawer() {
+        leftDrawer.animateOpen();
+        rightDrawer.animateOpen();
+        topDrawer.animateOpen();
+        bottomDrawer.animateOpen();
     }
 }

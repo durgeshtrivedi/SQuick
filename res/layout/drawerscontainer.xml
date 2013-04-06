@@ -23,25 +23,25 @@
     android:orientation="vertical" >
 
     <FrameLayout
-        android:id="@+id/left_drawer"
+        android:id="@+id/left_drawer_container"
         android:layout_width="60dip"
         android:layout_height="400dip"
         android:layout_gravity="left|center_vertical" />
 
     <FrameLayout
-        android:id="@+id/right_drawer"
+        android:id="@+id/right_drawer_container"
         android:layout_width="60dip"
         android:layout_height="400dip"
         android:layout_gravity="center_vertical|right" />
 
     <FrameLayout
-        android:id="@+id/top_drawer"
+        android:id="@+id/top_drawer_container"
         android:layout_width="400dip"
         android:layout_height="60dip"
         android:layout_gravity="top|center_horizontal" />
 
     <FrameLayout
-        android:id="@+id/bottom_drawer"
+        android:id="@+id/bottom_drawer_container"
         android:layout_width="400dip"
         android:layout_height="60dip"
         android:layout_gravity="bottom|center_horizontal" />

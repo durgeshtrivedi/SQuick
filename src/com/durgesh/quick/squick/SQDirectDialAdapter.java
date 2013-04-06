@@ -54,10 +54,6 @@ public class SQDirectDialAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View itemView, ViewGroup parent) {
         final View currentitem;
-        LayoutInflater li = LayoutInflater.from(context);
-        if (itemView == null) {
-            itemView = li.inflate(R.layout.shortcut_item, null);
-        }
         currentitem = itemView;
         String uri = SQPrefs.getSharedPreferenceAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
         if (!uri.equals(Constants.DEFAULTURI )) {
