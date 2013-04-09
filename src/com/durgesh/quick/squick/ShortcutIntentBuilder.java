@@ -41,6 +41,7 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 
 import com.durgesh.R;
+import com.durgesh.pref.SQPrefs;
 import com.durgesh.util.Constants;
 
 /**
@@ -59,6 +60,7 @@ public class ShortcutIntentBuilder {
     private int mIconSize;
     private final int mBorderWidth;
     private final int mBorderColor;
+    private final String PREFIX = "CONTACT";
 
     /**
      * This is a hidden API of the launcher in JellyBean that allows us to disable the animation that it would usually do, because it interferes with
@@ -156,22 +158,25 @@ public class ShortcutIntentBuilder {
 
         @Override
         protected void loadData() {
-            Cursor cursor = mContext.getContentResolver().query(mUri, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1", null, null);
-            while (cursor.moveToNext()) {
-                String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                Cursor phones = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                while (phones.moveToNext()) {
-                    mDisplayName = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    mPhotoId = phones.getLong(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_ID));
-                    mPhoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    mPhoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                    mPhoneLabel = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
-                    phones.close();
+            if (!readContactFromPref()) {
+                Cursor cursor = mContext.getContentResolver().query(mUri, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1", null, null);
+                while (cursor.moveToNext()) {
+                    String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    Cursor phones = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                    while (phones.moveToNext()) {
+                        mDisplayName = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        mPhotoId = phones.getLong(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_ID));
+                        mPhoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        mPhoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                        mPhoneLabel = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+                        phones.close();
+                        break;
+                    }
+                    cursor.close();
                     break;
                 }
-                cursor.close();
-                break;
+                SQPrefs.setSharedPreference(mContext, mUri.toString(), mDisplayName + ',' + mPhoneNumber + ',' + mPhotoId);
             }
         }
 
@@ -187,6 +192,24 @@ public class ShortcutIntentBuilder {
             else {
                 createPhoneNumberShortcutIntent(mUri, mDisplayName, mBitmapData, mPhoneNumber, mPhoneType, mPhoneLabel, Intent.ACTION_SENDTO);
             }
+        }
+
+        /**
+         * Store the contact info in the shared preference else the drawer view display as shaky because of the time taken to read the contact every
+         * time
+         * 
+         * @return
+         */
+        boolean readContactFromPref() {
+            String contactdata = SQPrefs.getSharedPreferenceAsStr(mContext, mUri.toString(), Constants.DEFAULTURI);
+            if (contactdata != Constants.DEFAULTURI) {
+                String[] contactinfo = contactdata.split(",");
+                mDisplayName = contactinfo[0];
+                mPhoneNumber = contactinfo[1];
+                mPhotoId = Long.valueOf(contactinfo[2]);
+                return true;
+            }
+            return false;
         }
     }
 
@@ -211,19 +234,18 @@ public class ShortcutIntentBuilder {
         if (Intent.ACTION_CALL.equals(shortcutAction)) {
             // Make the URI a direct tel: URI so that it will always continue to work
             phoneUri = Uri.fromParts(Constants.SCHEME_TEL, phoneNumber, null);
-           // bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_call);
-            //setting display name in place for phonelabel
+            // bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_call);
+            // setting display name in place for phonelabel
             bitmap = generatePhoneNumberIcon(bitmap, phoneType, displayName, R.drawable.badge_action_call);
             shortcutIntent = new Intent(shortcutAction, phoneUri);
         } else {
             phoneUri = Uri.fromParts(Constants.SCHEME_SMSTO, phoneNumber, null);
-            //bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_sms);
-            //setting display name in place for phonelabel
+            // bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_sms);
+            // setting display name in place for phonelabel
             bitmap = generatePhoneNumberIcon(bitmap, phoneType, displayName, R.drawable.badge_action_sms);
             shortcutIntent = new Intent(shortcutAction, phoneUri);
         }
 
-        
         shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         Intent intent = new Intent();
@@ -270,7 +292,7 @@ public class ShortcutIntentBuilder {
 
         // Create an overlay for the phone number type
         // CharSequence overlay = Phone.getTypeLabel(r, phoneType, phoneLabel);
-         CharSequence overlay =phoneLabel;
+        CharSequence overlay = phoneLabel;
 
         if (overlay != null) {
             TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
@@ -303,4 +325,5 @@ public class ShortcutIntentBuilder {
         canvas.drawBitmap(phoneIcon, src, dst, photoPaint);
         return icon;
     }
+
 }
