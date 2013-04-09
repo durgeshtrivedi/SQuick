@@ -54,6 +54,8 @@ public class SQDirectAppAdapter extends BaseAdapter {
         if (itemView == null) {
             itemView = li.inflate(R.layout.shortcut_item, null);
         }
+        // Setting position of item from the main list 
+        itemView.setTag(String.valueOf(position));
         String apppkg = SQPrefs.getSharedPrefAppAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
             context.setAppShortCuts(apppkg, itemView);

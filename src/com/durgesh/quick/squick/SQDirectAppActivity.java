@@ -23,18 +23,17 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
+import com.durgesh.quick.squick.SQDrawers.ItemClickListener;
 import com.durgesh.util.Constants;
 
 /**
@@ -42,12 +41,12 @@ import com.durgesh.util.Constants;
  * 
  * @author durgesht
  */
-public class SQDirectAppActivity extends Activity implements OnItemClickListener, OnItemLongClickListener {
+public class SQDirectAppActivity extends SQDrawers implements ItemClickListener {
     private View currentItem;
     public int selector;
     private static int currentPosition;
-    private SQTapListener sqTapListener;
-
+    
+    
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
@@ -69,13 +68,10 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.shortcuts);
-        selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
-        GridView gridView = (GridView) findViewById(R.id.shortcut_grid);
-        gridView.setAdapter(new SQDirectAppAdapter(this));
-        gridView.setOnItemClickListener(this);
-        gridView.setOnItemLongClickListener(this);
-        sqTapListener = new SQTapListener(this);
+        SQDirectAppAdapter adapter = new SQDirectAppAdapter(this);
+        fillAllDrawerItem(adapter);
+        setOnItemListener(this);
+        openDrawer();
     }
 
     @Override
@@ -127,7 +123,6 @@ public class SQDirectAppActivity extends Activity implements OnItemClickListener
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         return sqTapListener.gestureDetector.onTouchEvent(event);
     }
 }

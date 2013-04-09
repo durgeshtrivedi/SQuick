@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Path.FillType;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,20 +27,17 @@ import android.provider.ContactsContract;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
+import com.durgesh.quick.squick.SQDrawers.ItemClickListener;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
 
-public class SQDirectDialActivity extends SQDrawers implements OnItemClickListener, OnItemLongClickListener, OnShortcutIntentCreatedListener {
+public class SQDirectDialActivity extends SQDrawers implements ItemClickListener, OnShortcutIntentCreatedListener {
     private View currentItem;
     public String contactUri;
-    
 
     private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
@@ -59,7 +55,7 @@ public class SQDirectDialActivity extends SQDrawers implements OnItemClickListen
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
-        currentPosition = position;
+        currentPosition = Integer.parseInt((String) item.getTag());
         return launchContactSelector();
 
     }
@@ -86,7 +82,8 @@ public class SQDirectDialActivity extends SQDrawers implements OnItemClickListen
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         SQDirectDialAdapter adapter = new SQDirectDialAdapter(this);
-        fillDrawerItem(adapter);
+        fillAllDrawerItem(adapter);
+        setOnItemListener(this);
         openDrawer();
 
     }
@@ -142,8 +139,8 @@ public class SQDirectDialActivity extends SQDrawers implements OnItemClickListen
         String name = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         ImageView image = (ImageView) view.findViewById(R.id.shortcut_item_img);
         image.setImageBitmap((Bitmap) intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
-        TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
-        text.setText(name);
+        // TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
+        // text.setText(name);
     }
 
     /**
