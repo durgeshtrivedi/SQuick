@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
@@ -138,7 +140,7 @@ public class SQDrawers extends Activity {
         leftDrawerAdapter = new CustomAdapter(this, R.layout.leftright_drawer_item, leftAdapterList);
         leftDraweritemList = (ListView) leftDrawerContent.findViewById(R.id.leftright_drawer_list);
         leftDraweritemList.setAdapter(leftDrawerAdapter);
-
+       
     }
 
     /**
@@ -150,7 +152,6 @@ public class SQDrawers extends Activity {
         rightDrawerAdapter = new CustomAdapter(this, R.layout.leftright_drawer_item, rightAdapterList);
         rightDraweritemList = (ListView) rightDrawerContent.findViewById(R.id.leftright_drawer_list);
         rightDraweritemList.setAdapter(rightDrawerAdapter);
-
     }
 
     /**
@@ -162,7 +163,6 @@ public class SQDrawers extends Activity {
         topDrawerAdapter = new CustomAdapter(this, R.layout.topbottom_drawer_item, topAdapterList);
         topDraweritemList = (HorzListView) topDrawerContent.findViewById(R.id.topbottom_drawer_list);
         topDraweritemList.setAdapter(topDrawerAdapter);
-
     }
 
     /**
@@ -174,7 +174,6 @@ public class SQDrawers extends Activity {
         bottomDrawerAdapter = new CustomAdapter(this, R.layout.topbottom_drawer_item, bottomAdapterList);
         bottomDraweritemList = (HorzListView) bottomDrawerContent.findViewById(R.id.topbottom_drawer_list);
         bottomDraweritemList.setAdapter(bottomDrawerAdapter);
-
     }
 
     /**

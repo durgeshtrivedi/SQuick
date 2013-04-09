@@ -211,11 +211,15 @@ public class ShortcutIntentBuilder {
         if (Intent.ACTION_CALL.equals(shortcutAction)) {
             // Make the URI a direct tel: URI so that it will always continue to work
             phoneUri = Uri.fromParts(Constants.SCHEME_TEL, phoneNumber, null);
-            bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_call);
+           // bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_call);
+            //setting display name in place for phonelabel
+            bitmap = generatePhoneNumberIcon(bitmap, phoneType, displayName, R.drawable.badge_action_call);
             shortcutIntent = new Intent(shortcutAction, phoneUri);
         } else {
             phoneUri = Uri.fromParts(Constants.SCHEME_SMSTO, phoneNumber, null);
-            bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_sms);
+            //bitmap = generatePhoneNumberIcon(bitmap, phoneType, phoneLabel, R.drawable.badge_action_sms);
+            //setting display name in place for phonelabel
+            bitmap = generatePhoneNumberIcon(bitmap, phoneType, displayName, R.drawable.badge_action_sms);
             shortcutIntent = new Intent(shortcutAction, phoneUri);
         }
 
@@ -265,7 +269,8 @@ public class ShortcutIntentBuilder {
         drawBorder(canvas, dst);
 
         // Create an overlay for the phone number type
-        CharSequence overlay = Phone.getTypeLabel(r, phoneType, phoneLabel);
+        // CharSequence overlay = Phone.getTypeLabel(r, phoneType, phoneLabel);
+         CharSequence overlay =phoneLabel;
 
         if (overlay != null) {
             TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);

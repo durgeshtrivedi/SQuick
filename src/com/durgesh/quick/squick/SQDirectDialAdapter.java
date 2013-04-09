@@ -21,6 +21,9 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -28,13 +31,15 @@ import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
+
 /**
- * Adapter to hold the list of Direct dial and direct message 
+ * Adapter to hold the list of Direct dial and direct message
+ * 
  * @author durgesht
- *
  */
 public class SQDirectDialAdapter extends BaseAdapter {
     private SQDirectDialActivity context;
+    private Animation animation;
 
     public SQDirectDialAdapter(SQDirectDialActivity context) {
         this.context = context;
@@ -62,7 +67,7 @@ public class SQDirectDialAdapter extends BaseAdapter {
         if (itemView == null) {
             itemView = li.inflate(R.layout.shortcut_item, null);
         }
-        // Setting position of item from the main list 
+        // Setting position of item from the main list
         itemView.setTag(String.valueOf(position));
         currentitem = itemView;
         String uri = SQPrefs.getSharedPreferenceAsStr(context, String.valueOf(position), Constants.DEFAULTURI);
@@ -85,6 +90,11 @@ public class SQDirectDialAdapter extends BaseAdapter {
             imageView.setImageBitmap(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
+        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        anim.setDuration(1500);
+        itemView.startAnimation(anim);
+        
         return itemView;
     }
 }
