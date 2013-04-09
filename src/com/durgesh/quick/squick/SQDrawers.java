@@ -1,3 +1,18 @@
+/**Copyright (c) 2013 Durgesh Trivedi
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.durgesh.quick.squick;
 
 import java.util.ArrayList;
@@ -5,6 +20,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.durgesh.R;
-import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
+import com.durgesh.service.SQService;
 import com.durgesh.util.Constants;
 import com.sileria.android.view.HorzListView;
 import com.sileria.android.view.SlidingTray;
@@ -40,7 +56,8 @@ public class SQDrawers extends Activity {
     private SlidingTray leftDrawer, bottomDrawer, rightDrawer, topDrawer;
     protected ListView leftDraweritemList, rightDraweritemList;
     protected HorzListView topDraweritemList, bottomDraweritemList;
-
+    // Position of the item in the main list which is represent by adapter passed from subclass
+    protected View currentItem;
     protected List<View> itemList;
 
     @Override
@@ -51,11 +68,23 @@ public class SQDrawers extends Activity {
         selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
         sqTapListener = new SQTapListener(this);
         init();
+        stopService(new Intent(this, SQService.class));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        startService(new Intent(this, SQService.class));
+    }
+
+    /**
+     * Fill the drawers from the item of main list
+     * 
+     * @param drawerItemList
+     *            Main list to hold all the shortcuts
+     */
     protected void fillAllDrawerItem(BaseAdapter drawerItemList) {
         int size = drawerItemList.getCount();
-        LayoutInflater li = LayoutInflater.from(this);
         for (int listItem = 0; listItem < size; listItem++) {
             if (listItem < 6) {
                 if (leftDrawerContent == null) {
@@ -90,6 +119,9 @@ public class SQDrawers extends Activity {
         initDrawerContainer();
     }
 
+    /**
+     * Initialize the Container for left,right ,top and bottom drawer
+     */
     private void initDrawerContainer() {
         leftDrawerContainer = (FrameLayout) findViewById(R.id.left_drawer_container);
         rightDrawerContainer = (FrameLayout) findViewById(R.id.right_drawer_container);
@@ -97,6 +129,9 @@ public class SQDrawers extends Activity {
         bottomDrawerContainer = (FrameLayout) findViewById(R.id.bottom_drawer_container);
     }
 
+    /**
+     * Initialize the content of the left drawer
+     */
     private void initLeftDrawerContent() {
         leftDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.leftright_drawer_content, null);
         leftAdapterList = new ArrayList<View>();
@@ -106,6 +141,9 @@ public class SQDrawers extends Activity {
 
     }
 
+    /**
+     * Initialize the content of the right drawer
+     */
     private void initRightDrawerContent() {
         rightDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.leftright_drawer_content, null);
         rightAdapterList = new ArrayList<View>();
@@ -115,6 +153,9 @@ public class SQDrawers extends Activity {
 
     }
 
+    /**
+     * Initialize the content of the top drawer
+     */
     private void initTopDrawerContent() {
         topDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.topbottom_drawer_content, null);
         topAdapterList = new ArrayList<View>();
@@ -124,6 +165,9 @@ public class SQDrawers extends Activity {
 
     }
 
+    /**
+     * Initialize the content of the bottom drawer
+     */
     private void initBottomDrawerContent() {
         bottomDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.topbottom_drawer_content, null);
         bottomAdapterList = new ArrayList<View>();
@@ -154,22 +198,31 @@ public class SQDrawers extends Activity {
             leftDrawer.animateOpen();
         }
         if (rightDrawerContent != null) {
-            rightDrawer = initDrawer(SlidingTray.RIGHT, rightDrawerContent);
+            // Currently the drawer not open right to left need some changes to be made in SlidingTray
+            // so keeping the drawer direction as LEFT in place of right
+            rightDrawer = initDrawer(SlidingTray.LEFT, rightDrawerContent);
             rightDrawerContainer.addView(rightDrawer);
             rightDrawer.animateOpen();
         }
         if (bottomDrawerContent != null) {
-            bottomDrawer = initDrawer(SlidingTray.BOTTOM, bottomDrawerContent);
+            bottomDrawer = initDrawer(SlidingTray.TOP, bottomDrawerContent);
             bottomDrawerContainer.addView(bottomDrawer);
             bottomDrawer.animateOpen();
         }
         if (topDrawerContent != null) {
+            // Currently the drawer not open bottom to top need some changes to be made in SlidingTray
+            // so keeping the drawer direction as TOP in place of bottom
             topDrawer = initDrawer(SlidingTray.TOP, topDrawerContent);
             topDrawerContainer.addView(topDrawer);
             topDrawer.animateOpen();
         }
     }
 
+    /**
+     * Custom adapter class to represent an item in a drawer
+     * 
+     * @author durgesht
+     */
     class CustomAdapter extends ArrayAdapter<View> {
         Context context;
         int layoutResourceId;
@@ -188,6 +241,11 @@ public class SQDrawers extends Activity {
         }
     }
 
+    /**
+     * Set the listener for all the list items
+     * 
+     * @param itemClick
+     */
     protected void setOnItemListener(ItemClickListener itemClick) {
         if (leftDraweritemList != null) {
             leftDraweritemList.setOnItemClickListener(itemClick);
@@ -208,7 +266,12 @@ public class SQDrawers extends Activity {
 
     }
 
-    interface ItemClickListener extends OnItemLongClickListener, OnItemClickListener{
+    /**
+     * Interface to be implemented for OnItemLongClickListener and OnItemClickListener
+     * 
+     * @author durgesht
+     */
+    interface ItemClickListener extends OnItemLongClickListener, OnItemClickListener {
 
     }
 }

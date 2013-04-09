@@ -26,6 +26,11 @@ import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
 import com.durgesh.util.Constants;
 
+/**
+ * Adapter to hold the list all the applications shortcuts 
+ * @author durgesht
+ *
+ */
 public class SQDirectAppAdapter extends BaseAdapter {
     private SQDirectAppActivity context;
 

@@ -35,11 +35,13 @@ import com.durgesh.quick.squick.SQDrawers.ItemClickListener;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
 
+/**
+ * Class to represent Direct Dial and Direct Message activity 
+ * @author durgesht
+ *
+ */
 public class SQDirectDialActivity extends SQDrawers implements ItemClickListener, OnShortcutIntentCreatedListener {
-    private View currentItem;
     public String contactUri;
-
-    private static int currentPosition;
     private final OnShortcutIntentCreatedListener mListener = this;
 
     @Override
@@ -47,7 +49,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
         if (shortcutIntent == null) {
             noNumberAlert();
         } else {
-            SQPrefs.setSharedPreference(this, String.valueOf(currentPosition), contactUri);
+            SQPrefs.setSharedPreference(this, String.valueOf(currentItem.getTag()), contactUri);
             setContactImage(currentItem, shortcutIntent);
         }
     }
@@ -55,7 +57,6 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
-        currentPosition = Integer.parseInt((String) item.getTag());
         return launchContactSelector();
 
     }
@@ -63,7 +64,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
     @Override
     public void onItemClick(AdapterView<?> arg0, View item, int position, long arg3) {
 
-        String uri = SQPrefs.getSharedPreferenceAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
+        String uri = SQPrefs.getSharedPreferenceAsStr(this, String.valueOf(item.getTag()), Constants.DEFAULTURI);
         if (!uri.equals(Constants.DEFAULTURI)) {
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, new OnShortcutIntentCreatedListener() {
                 @Override

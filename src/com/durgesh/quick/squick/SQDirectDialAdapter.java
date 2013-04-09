@@ -28,7 +28,11 @@ import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
 import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
-
+/**
+ * Adapter to hold the list of Direct dial and direct message 
+ * @author durgesht
+ *
+ */
 public class SQDirectDialAdapter extends BaseAdapter {
     private SQDirectDialActivity context;
 

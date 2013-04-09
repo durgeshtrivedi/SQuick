@@ -23,13 +23,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.durgesh.R;
 import com.durgesh.pref.SQPrefs;
@@ -42,22 +40,19 @@ import com.durgesh.util.Constants;
  * @author durgesht
  */
 public class SQDirectAppActivity extends SQDrawers implements ItemClickListener {
-    private View currentItem;
-    public int selector;
     private static int currentPosition;
-    
     
     @Override
     public boolean onItemLongClick(AdapterView<?> arg0, View item, int position, long arg3) {
         currentItem = item;
-        currentPosition = position;
+        currentPosition = Integer.parseInt((String) item.getTag());;
         return launchAppSelector();
 
     }
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View item, int position, long arg3) {
-        String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
+        String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(item.getTag()), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
             PackageManager pm = getPackageManager();
             startActivity(pm.getLaunchIntentForPackage(apppkg));
@@ -99,8 +94,8 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
             Drawable icon = pm.getApplicationIcon(info);
             Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
             image.setImageBitmap(bitmap);
-            TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
-            text.setText(appInfo.loadLabel(pm));
+           // TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
+           // text.setText(appInfo.loadLabel(pm));
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
