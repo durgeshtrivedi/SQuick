@@ -5,21 +5,11 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:orientation="vertical" 
-    android:padding="5dip">
-
-   
+    android:padding="@dimen/drawer_item_padding">
     <ImageView
         android:id="@+id/shortcut_item_img"
-        android:layout_width="48dp"
-        android:layout_height="48dp" >
+        android:layout_width="@dimen/drawer_item_size"
+        android:layout_height="@dimen/drawer_item_size"
+        android:background="@drawable/addshortcuts">
     </ImageView>
- <!-- <TextView
-        android:id="@+id/shortcut_item_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLength="8"
-        android:maxLines="1"
-        android:background="#111111" >
-    </TextView> -->
-    
 </LinearLayout>

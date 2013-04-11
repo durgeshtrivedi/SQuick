@@ -52,7 +52,7 @@
             android:name="com.durgesh.quick.squick.SQDirectDialActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -66,7 +66,7 @@
             android:name="com.durgesh.quick.squick.SQDirectAppActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
-            android:theme="@android:style/Theme.Translucent" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -77,12 +77,6 @@
             android:label="@string/application_name"
 			 android:configChanges="orientation|keyboardHidden"
 			 android:theme="@android:style/Theme.Dialog">
-        </activity>
-        
-          <activity
-            android:name="com.durgesh.view.SlidingDrawerActivity"
-            android:label="@string/application_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
         
         <receiver android:name=".BootReceiver" >

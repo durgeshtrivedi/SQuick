@@ -85,7 +85,7 @@ public class ShortcutIntentBuilder {
         mContext = context;
         mListener = listener;
         final Resources r = context.getResources();
-        mIconSize = r.getDimensionPixelSize(R.dimen.shortcut_icon_size);
+        mIconSize = r.getDimensionPixelSize(R.dimen.drawer_item_size);
         mBorderWidth = r.getDimensionPixelOffset(R.dimen.shortcut_icon_border_width);
         mBorderColor = r.getColor(R.color.shortcut_overlay_text_background);
     }

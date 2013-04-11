@@ -21,10 +21,14 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView.OnItemClickListener;
@@ -42,7 +46,7 @@ import com.sileria.android.view.HorzListView;
 import com.sileria.android.view.SlidingTray;
 
 /**
- * Create the LEFT ,BOTTOM, RIGHT and TOP drawer
+ * Create the LEFT ,BOTTOM, RIGHT and TOP drawer all drawer must be in the same XML file
  * 
  * @author durgesht
  */
@@ -50,7 +54,6 @@ public abstract class SQDrawers extends Activity {
     // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
     public int selector;
     protected SQTapListener sqTapListener;
-    final Context context = this;
     private LinearLayout leftDrawerContent, rightDrawerContent, topDrawerContent, bottomDrawerContent;
     private CustomAdapter leftDrawerAdapter, rightDrawerAdapter, topDrawerAdapter, bottomDrawerAdapter;
     private List<View> leftAdapterList, rightAdapterList, topAdapterList, bottomAdapterList;
@@ -60,9 +63,12 @@ public abstract class SQDrawers extends Activity {
     protected HorzListView topDraweritemList, bottomDraweritemList;
     // Position of the item in the main list which is represent by adapter passed from subclass
     protected View currentItem;
-    protected List<View> itemList;
     protected String PREFIX;
     protected int shortcutCount;
+    private int tbDrawerWidth;
+    private int tbDrawerHeight;
+    private int lrDrawerHeight;
+    private int lrDrawerWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +99,6 @@ public abstract class SQDrawers extends Activity {
                 if (bottomDrawerContent == null) {
                     initBottomDrawerContent();
                 }
-
                 setItem(getView(Tag(listItem, bottomAdapterList, bottomDrawerAdapter)));
             } else if (listItem > 11 && listItem <= 17) {
                 if (rightDrawerContent == null) {
@@ -113,10 +118,13 @@ public abstract class SQDrawers extends Activity {
     }
 
     private void init() {
-        itemList = new ArrayList<View>();
         selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
         sqTapListener = new SQTapListener(this);
         getShortCutsCount();
+        lrDrawerHeight = (int) getDrawerHeighWidth(Constants.NOLRDRAWERITEM);
+        tbDrawerWidth = (int) getDrawerHeighWidth(Constants.NOLRDRAWERITEM);
+        tbDrawerHeight = lrDrawerWidth = getResources().getDimensionPixelSize(R.dimen.drawer_item_size) + 2
+                * getResources().getDimensionPixelSize(R.dimen.drawer_item_padding);
     }
 
     /**
@@ -125,9 +133,10 @@ public abstract class SQDrawers extends Activity {
     private void initLeftDrawerContent() {
         leftDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.leftright_drawer_content, null);
         leftAdapterList = new ArrayList<View>();
-        leftDrawerAdapter = new CustomAdapter(this, R.layout.leftright_drawer_item, leftAdapterList);
+        leftDrawerAdapter = new CustomAdapter(this, R.layout.drawer_item, leftAdapterList);
         leftDraweritemList = (ListView) leftDrawerContent.findViewById(R.id.leftright_drawer_list);
         leftDraweritemList.setAdapter(leftDrawerAdapter);
+        leftDraweritemList.setScrollContainer(false);
 
     }
 
@@ -137,7 +146,7 @@ public abstract class SQDrawers extends Activity {
     private void initRightDrawerContent() {
         rightDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.leftright_drawer_content, null);
         rightAdapterList = new ArrayList<View>();
-        rightDrawerAdapter = new CustomAdapter(this, R.layout.leftright_drawer_item, rightAdapterList);
+        rightDrawerAdapter = new CustomAdapter(this, R.layout.drawer_item, rightAdapterList);
         rightDraweritemList = (ListView) rightDrawerContent.findViewById(R.id.leftright_drawer_list);
         rightDraweritemList.setAdapter(rightDrawerAdapter);
     }
@@ -148,7 +157,7 @@ public abstract class SQDrawers extends Activity {
     private void initTopDrawerContent() {
         topDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.topbottom_drawer_content, null);
         topAdapterList = new ArrayList<View>();
-        topDrawerAdapter = new CustomAdapter(this, R.layout.topbottom_drawer_item, topAdapterList);
+        topDrawerAdapter = new CustomAdapter(this, R.layout.drawer_item, topAdapterList);
         topDraweritemList = (HorzListView) topDrawerContent.findViewById(R.id.topbottom_drawer_list);
         topDraweritemList.setAdapter(topDrawerAdapter);
     }
@@ -159,7 +168,7 @@ public abstract class SQDrawers extends Activity {
     private void initBottomDrawerContent() {
         bottomDrawerContent = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.topbottom_drawer_content, null);
         bottomAdapterList = new ArrayList<View>();
-        bottomDrawerAdapter = new CustomAdapter(this, R.layout.topbottom_drawer_item, bottomAdapterList);
+        bottomDrawerAdapter = new CustomAdapter(this, R.layout.drawer_item, bottomAdapterList);
         bottomDraweritemList = (HorzListView) bottomDrawerContent.findViewById(R.id.topbottom_drawer_list);
         bottomDraweritemList.setAdapter(bottomDrawerAdapter);
     }
@@ -191,6 +200,9 @@ public abstract class SQDrawers extends Activity {
     private void openLefDrawer() {
         if (leftDrawerContainer == null && leftDrawerContent != null) {
             leftDrawerContainer = (FrameLayout) findViewById(R.id.left_drawer_container);
+            FrameLayout.LayoutParams pram = new FrameLayout.LayoutParams(lrDrawerWidth, lrDrawerHeight);
+            pram.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
+            leftDrawerContainer.setLayoutParams(pram);
             leftDrawer = initDrawer(SlidingTray.LEFT, leftDrawerContent);
             leftDrawerContainer.addView(leftDrawer);
             leftDrawer.animateOpen();
@@ -201,6 +213,9 @@ public abstract class SQDrawers extends Activity {
     private void openRightDrawer() {
         if (rightDrawerContainer == null && rightDrawerContent != null) {
             rightDrawerContainer = (FrameLayout) findViewById(R.id.right_drawer_container);
+            FrameLayout.LayoutParams pram = new FrameLayout.LayoutParams(lrDrawerWidth, lrDrawerHeight);
+            pram.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+            rightDrawerContainer.setLayoutParams(pram);
             // Currently the drawer not open right to left need some changes to be made in SlidingTray
             // so keeping the drawer direction as LEFT in place of right
             rightDrawer = initDrawer(SlidingTray.LEFT, rightDrawerContent);
@@ -214,6 +229,9 @@ public abstract class SQDrawers extends Activity {
     private void openBottomDrawer() {
         if (bottomDrawerContainer == null && bottomDrawerContent != null) {
             bottomDrawerContainer = (FrameLayout) findViewById(R.id.bottom_drawer_container);
+            FrameLayout.LayoutParams pram = new FrameLayout.LayoutParams(tbDrawerWidth, tbDrawerHeight);
+            pram.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+            bottomDrawerContainer.setLayoutParams(pram);
             bottomDrawer = initDrawer(SlidingTray.TOP, bottomDrawerContent);
             bottomDrawerContainer.addView(bottomDrawer);
             bottomDrawer.animateOpen();
@@ -224,6 +242,9 @@ public abstract class SQDrawers extends Activity {
     private void openTopDrawer() {
         if (topDrawerContainer == null && topDrawerContent != null) {
             topDrawerContainer = (FrameLayout) findViewById(R.id.top_drawer_container);
+            FrameLayout.LayoutParams pram = new FrameLayout.LayoutParams(tbDrawerWidth, tbDrawerHeight);
+            pram.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+            topDrawerContainer.setLayoutParams(pram);
             // Currently the drawer not open bottom to top need some changes to be made in SlidingTray
             // so keeping the drawer direction as TOP in place of bottom
             topDrawer = initDrawer(SlidingTray.TOP, topDrawerContent);
@@ -283,7 +304,7 @@ public abstract class SQDrawers extends Activity {
     protected abstract View getView(Object[] tag);
 
     /**
-     * Represent a object[] which is stored as a tag to a list view item.Store information of its position,list and adapter for its drawer
+     * Represent a object[] which is stored as a tag to a drawer view item.Store information of its position,list and adapter for its drawer
      * 
      * @param itemno
      *            position of item in the list
@@ -302,7 +323,7 @@ public abstract class SQDrawers extends Activity {
     }
 
     /**
-     * Set the item in to the list
+     * Set the item into the list
      * 
      * @param view
      */
@@ -316,7 +337,7 @@ public abstract class SQDrawers extends Activity {
     }
 
     /**
-     * Get the current position of item in the list
+     * Get the current position of item in the drawer
      * 
      * @param view
      * @return postion of item
@@ -344,7 +365,7 @@ public abstract class SQDrawers extends Activity {
      * @return count
      */
     private int getShortCutsCount() {
-        shortcutCount = SQPrefs.getSharedPreferenceAsInt(context, PREFIX, 1);
+        shortcutCount = SQPrefs.getSharedPreferenceAsInt(this, PREFIX, 1);
         return shortcutCount;
     }
 
@@ -359,4 +380,24 @@ public abstract class SQDrawers extends Activity {
         anim.setDuration(1500);
         view.startAnimation(anim);
     }
+
+    private float getDrawerHeighWidth(int noofItem) {
+        WindowManager windowsmanger = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowsmanger.getDefaultDisplay();
+        float lrDrawerHeight = 0;
+        int sqScreenHeight = display.getHeight();
+        LayoutInflater ll = LayoutInflater.from(this);
+        float itemHeighWidth = 0;
+        Resources res = getResources();
+        if (noofItem == Constants.NOLRDRAWERITEM) {
+            itemHeighWidth = res.getDimensionPixelSize(R.dimen.drawer_item_size) + 3 * res.getDimensionPixelSize(R.dimen.drawer_item_padding);
+        } else itemHeighWidth = res.getDimensionPixelSize(R.dimen.drawer_item_size) + 3 * res.getDimensionPixelSize(R.dimen.drawer_item_padding);
+        for (int item = 0; item < noofItem; item++) {
+            if (lrDrawerHeight < sqScreenHeight) {
+                lrDrawerHeight += itemHeighWidth;
+            }
+        }
+        return lrDrawerHeight;
+    }
+
 }

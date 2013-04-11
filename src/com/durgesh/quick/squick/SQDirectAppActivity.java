@@ -111,7 +111,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
 
     public View getView(Object[] tag) {
         LayoutInflater li = LayoutInflater.from(this);
-        View itemView = li.inflate(R.layout.shortcut_item, null);
+        View itemView = li.inflate(R.layout.drawer_item, null);
         Integer position = (Integer) tag[0];
         itemView.setTag(tag);
         String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(position), Constants.DEFAULTURI);

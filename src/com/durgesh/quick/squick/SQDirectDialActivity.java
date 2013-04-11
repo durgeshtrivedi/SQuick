@@ -172,7 +172,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
     public View getView(Object[] tag) {
         final View currentitem;
         LayoutInflater li = LayoutInflater.from(this);
-        View itemView = li.inflate(R.layout.shortcut_item, null);
+        View itemView = li.inflate(R.layout.drawer_item, null);
         Integer position = (Integer) tag[0];
         itemView.setTag(tag);
         currentitem = itemView;

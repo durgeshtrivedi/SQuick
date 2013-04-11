@@ -28,6 +28,6 @@
         android:id="@+id/leftright_drawer_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"/>
 
 </LinearLayout>

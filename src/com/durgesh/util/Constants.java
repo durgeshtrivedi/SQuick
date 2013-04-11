@@ -40,7 +40,9 @@ public class Constants {
 
     public static final String STRICT_MODE_TAG = "ContactsStrictMode";
     
-    public static final int MAXCOUNT=21;
+    public static final int MAXCOUNT=22;
     public static final String APPSHORTCUT="APPSHORTCUT";
     public static final String DIRECTCALLMSG="DIRECTCALLMSGDIAL";
+    public static final int NOLRDRAWERITEM  =6;
+    public static final int NOTBDRAWERITEM  =5;
 }
