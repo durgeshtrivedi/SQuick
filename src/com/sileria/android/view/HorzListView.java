@@ -20,8 +20,18 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
+import android.view.ContextMenu;
+import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
+import android.view.View;
+import android.view.ViewDebug;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
+import android.widget.Scroller;
 
 import com.sileria.android.Kit;
 

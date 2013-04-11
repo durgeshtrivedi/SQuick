@@ -39,4 +39,8 @@ public class Constants {
     public static final String PERFORMANCE_TAG = "ContactsPerf";
 
     public static final String STRICT_MODE_TAG = "ContactsStrictMode";
+    
+    public static final int MAXCOUNT=21;
+    public static final String APPSHORTCUT="APPSHORTCUT";
+    public static final String DIRECTCALLMSG="DIRECTCALLMSGDIAL";
 }

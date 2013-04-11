@@ -79,4 +79,28 @@ public final class SQPrefs {
         return getSharedPrefApplication(context).getString(key, defaultValue);
     }
     
+    /**
+     * Set a String value in the preferences
+     **/
+    public static void setSharedPreferenceInt(final Context context, final String key, final int val) {
+        final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putInt(key, val);
+        editor.commit();
+    }
+
+    
+    /**
+     * Return a String value from the preferences.
+     **/
+    public static int getSharedPreferenceAsInt(final Context context, final String key, final int defaultValue) {
+        return getSharedPreferences(context).getInt(key, defaultValue);
+    }
+
+    /**
+     * Return a String value from the preferences.
+     **/
+    public static int getSharedPrefAppAsInt(final Context context, final String key, final int defaultValue) {
+        return getSharedPrefApplication(context).getInt(key, defaultValue);
+    }
+    
 }

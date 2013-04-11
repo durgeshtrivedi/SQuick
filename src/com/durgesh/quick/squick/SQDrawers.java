@@ -26,16 +26,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.durgesh.R;
+import com.durgesh.pref.SQPrefs;
 import com.durgesh.service.SQService;
 import com.durgesh.util.Constants;
 import com.sileria.android.view.HorzListView;
@@ -46,7 +46,7 @@ import com.sileria.android.view.SlidingTray;
  * 
  * @author durgesht
  */
-public class SQDrawers extends Activity {
+public abstract class SQDrawers extends Activity {
     // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
     public int selector;
     protected SQTapListener sqTapListener;
@@ -61,14 +61,13 @@ public class SQDrawers extends Activity {
     // Position of the item in the main list which is represent by adapter passed from subclass
     protected View currentItem;
     protected List<View> itemList;
+    protected String PREFIX;
+    protected int shortcutCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawerscontainer);
-        itemList = new ArrayList<View>();
-        selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
-        sqTapListener = new SQTapListener(this);
         init();
         stopService(new Intent(this, SQService.class));
     }
@@ -80,55 +79,44 @@ public class SQDrawers extends Activity {
     }
 
     /**
-     * Fill the drawers from the item of main list
-     * 
-     * @param drawerItemList
-     *            Main list to hold all the shortcuts
+     * Fill the drawers the item
      */
-    protected void fillAllDrawerItem(BaseAdapter drawerItemList) {
-        int size = drawerItemList.getCount();
-        for (int listItem = 0; listItem < size; listItem++) {
-            if (listItem < 6) {
+    protected void fillAllDrawerItem(ItemClickListener listener) {
+        int size = getShortCutsCount();
+        for (int listItem = getCurrentPosition(currentItem); listItem <= size; listItem++) {
+            if (listItem <= 6) {
                 if (leftDrawerContent == null) {
                     initLeftDrawerContent();
                 }
-                leftAdapterList.add((View) drawerItemList.getView(listItem, null, null));
-                leftDrawerAdapter.notifyDataSetChanged();
-            } else if (listItem >= 6 && listItem <= 11) {
+                setItem(getView(Tag(listItem, leftAdapterList, leftDrawerAdapter)));
+            } else if (listItem > 6 && listItem <= 11) {
                 if (bottomDrawerContent == null) {
                     initBottomDrawerContent();
                 }
-                bottomAdapterList.add((View) drawerItemList.getView(listItem, null, null));
-                bottomDrawerAdapter.notifyDataSetChanged();
+
+                setItem(getView(Tag(listItem, bottomAdapterList, bottomDrawerAdapter)));
             } else if (listItem > 11 && listItem <= 17) {
                 if (rightDrawerContent == null) {
                     initRightDrawerContent();
                 }
-                rightAdapterList.add((View) drawerItemList.getView(listItem, null, null));
-                rightDrawerAdapter.notifyDataSetChanged();
+                setItem(getView(Tag(listItem, rightAdapterList, rightDrawerAdapter)));
             } else if (listItem > 17 && listItem <= 21) {
                 if (topDrawerContent == null) {
                     initTopDrawerContent();
                 }
-                topAdapterList.add((View) drawerItemList.getView(listItem, null, null));
-                topDrawerAdapter.notifyDataSetChanged();
+                setItem(getView(Tag(listItem, topAdapterList, topDrawerAdapter)));
             }
         }
+        openDrawer();
+        setOnItemListener(listener);
 
     }
 
     private void init() {
-        initDrawerContainer();
-    }
-
-    /**
-     * Initialize the Container for left,right ,top and bottom drawer
-     */
-    private void initDrawerContainer() {
-        leftDrawerContainer = (FrameLayout) findViewById(R.id.left_drawer_container);
-        rightDrawerContainer = (FrameLayout) findViewById(R.id.right_drawer_container);
-        topDrawerContainer = (FrameLayout) findViewById(R.id.top_drawer_container);
-        bottomDrawerContainer = (FrameLayout) findViewById(R.id.bottom_drawer_container);
+        itemList = new ArrayList<View>();
+        selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
+        sqTapListener = new SQTapListener(this);
+        getShortCutsCount();
     }
 
     /**
@@ -140,7 +128,7 @@ public class SQDrawers extends Activity {
         leftDrawerAdapter = new CustomAdapter(this, R.layout.leftright_drawer_item, leftAdapterList);
         leftDraweritemList = (ListView) leftDrawerContent.findViewById(R.id.leftright_drawer_list);
         leftDraweritemList.setAdapter(leftDrawerAdapter);
-       
+
     }
 
     /**
@@ -190,25 +178,52 @@ public class SQDrawers extends Activity {
         return slidedrawer;
     }
 
-    protected void openDrawer() {
-        if (leftDrawerContent != null) {
+    private void openDrawer() {
+
+        openLefDrawer();
+        openRightDrawer();
+        openTopDrawer();
+        openBottomDrawer();
+
+    }
+
+    // Left drawer
+    private void openLefDrawer() {
+        if (leftDrawerContainer == null && leftDrawerContent != null) {
+            leftDrawerContainer = (FrameLayout) findViewById(R.id.left_drawer_container);
             leftDrawer = initDrawer(SlidingTray.LEFT, leftDrawerContent);
             leftDrawerContainer.addView(leftDrawer);
             leftDrawer.animateOpen();
         }
-        if (rightDrawerContent != null) {
+    }
+
+    // Right drawer
+    private void openRightDrawer() {
+        if (rightDrawerContainer == null && rightDrawerContent != null) {
+            rightDrawerContainer = (FrameLayout) findViewById(R.id.right_drawer_container);
             // Currently the drawer not open right to left need some changes to be made in SlidingTray
             // so keeping the drawer direction as LEFT in place of right
             rightDrawer = initDrawer(SlidingTray.LEFT, rightDrawerContent);
             rightDrawerContainer.addView(rightDrawer);
             rightDrawer.animateOpen();
         }
-        if (bottomDrawerContent != null) {
+
+    }
+
+    // Bottom drawer
+    private void openBottomDrawer() {
+        if (bottomDrawerContainer == null && bottomDrawerContent != null) {
+            bottomDrawerContainer = (FrameLayout) findViewById(R.id.bottom_drawer_container);
             bottomDrawer = initDrawer(SlidingTray.TOP, bottomDrawerContent);
             bottomDrawerContainer.addView(bottomDrawer);
             bottomDrawer.animateOpen();
         }
-        if (topDrawerContent != null) {
+    }
+
+    // Top drawer
+    private void openTopDrawer() {
+        if (topDrawerContainer == null && topDrawerContent != null) {
+            topDrawerContainer = (FrameLayout) findViewById(R.id.top_drawer_container);
             // Currently the drawer not open bottom to top need some changes to be made in SlidingTray
             // so keeping the drawer direction as TOP in place of bottom
             topDrawer = initDrawer(SlidingTray.TOP, topDrawerContent);
@@ -245,7 +260,7 @@ public class SQDrawers extends Activity {
      * 
      * @param itemClick
      */
-    protected void setOnItemListener(ItemClickListener itemClick) {
+    private void setOnItemListener(ItemClickListener itemClick) {
         if (leftDraweritemList != null) {
             leftDraweritemList.setOnItemClickListener(itemClick);
             leftDraweritemList.setOnItemLongClickListener(itemClick);
@@ -265,6 +280,55 @@ public class SQDrawers extends Activity {
 
     }
 
+    protected abstract View getView(Object[] tag);
+
+    /**
+     * Represent a object[] which is stored as a tag to a list view item.Store information of its position,list and adapter for its drawer
+     * 
+     * @param itemno
+     *            position of item in the list
+     * @param list
+     *            in a drawer to which the item belong
+     * @param adapter
+     *            adapter for the listview to which the item belong
+     * @return
+     */
+    private Object[] Tag(Integer itemno, List<View> list, CustomAdapter adapter) {
+        Object itemTag[] = new Object[3];
+        itemTag[0] = itemno;
+        itemTag[1] = list;
+        itemTag[2] = adapter;
+        return itemTag;
+    }
+
+    /**
+     * Set the item in to the list
+     * 
+     * @param view
+     */
+    private void setItem(View view) {
+        Object[] itemTag = (Object[]) view.getTag();
+        List<View> list = (List<View>) itemTag[1];
+        list.add(view);
+        CustomAdapter adapter = (CustomAdapter) itemTag[2];
+        adapter.notifyDataSetChanged();
+
+    }
+
+    /**
+     * Get the current position of item in the list
+     * 
+     * @param view
+     * @return postion of item
+     */
+    protected int getCurrentPosition(View view) {
+        if (view != null) {
+            Object itemTag[] = (Object[]) view.getTag();
+            return (Integer) itemTag[0];
+        }
+        return 1;
+    }
+
     /**
      * Interface to be implemented for OnItemLongClickListener and OnItemClickListener
      * 
@@ -272,5 +336,27 @@ public class SQDrawers extends Activity {
      */
     interface ItemClickListener extends OnItemLongClickListener, OnItemClickListener {
 
+    }
+
+    /**
+     * Get the total number of shortcut created
+     * 
+     * @return count
+     */
+    private int getShortCutsCount() {
+        shortcutCount = SQPrefs.getSharedPreferenceAsInt(context, PREFIX, 1);
+        return shortcutCount;
+    }
+
+    /**
+     * Set animation for the drawer item
+     * 
+     * @param view
+     */
+    protected void setAnimation(View view) {
+        TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+        anim.setDuration(1500);
+        view.startAnimation(anim);
     }
 }
