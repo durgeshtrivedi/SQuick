@@ -22,10 +22,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -35,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -69,6 +72,9 @@ public abstract class SQDrawers extends Activity {
     private int tbDrawerHeight;
     private int lrDrawerHeight;
     private int lrDrawerWidth;
+    private OrientationEventListener sqOrientationListener;
+    private int noLeftDrawerItem;
+    private int noBottomDrawerItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,22 +96,22 @@ public abstract class SQDrawers extends Activity {
     protected void fillAllDrawerItem(ItemClickListener listener) {
         int size = getShortCutsCount();
         for (int listItem = getCurrentPosition(currentItem); listItem <= size; listItem++) {
-            if (listItem <= 6) {
+            if (listItem <= noLeftDrawerItem) {
                 if (leftDrawerContent == null) {
                     initLeftDrawerContent();
                 }
                 setItem(getView(Tag(listItem, leftAdapterList, leftDrawerAdapter)));
-            } else if (listItem > 6 && listItem <= 11) {
+            } else if (listItem > noLeftDrawerItem && listItem <= 11) {
                 if (bottomDrawerContent == null) {
                     initBottomDrawerContent();
                 }
                 setItem(getView(Tag(listItem, bottomAdapterList, bottomDrawerAdapter)));
-            } else if (listItem > 11 && listItem <= 17) {
+            } else if (listItem > 11 && listItem <= 11 + noBottomDrawerItem) {
                 if (rightDrawerContent == null) {
                     initRightDrawerContent();
                 }
                 setItem(getView(Tag(listItem, rightAdapterList, rightDrawerAdapter)));
-            } else if (listItem > 17 && listItem <= 21) {
+            } else if (listItem > 17 && listItem <= 17 + noBottomDrawerItem) {
                 if (topDrawerContent == null) {
                     initTopDrawerContent();
                 }
@@ -121,8 +127,30 @@ public abstract class SQDrawers extends Activity {
         selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
         sqTapListener = new SQTapListener(this);
         getShortCutsCount();
-        lrDrawerHeight = (int) getDrawerHeighWidth(Constants.NOLRDRAWERITEM);
-        tbDrawerWidth = (int) getDrawerHeighWidth(Constants.NOLRDRAWERITEM);
+        sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                initOrientation();
+            }
+        };
+        sqOrientationListener.enable();
+        initOrientation();
+    }
+
+    private void initOrientation() {
+        WindowManager windowsmanger = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowsmanger.getDefaultDisplay();
+        int screenHeight = display.getHeight();
+        int screenWidth = display.getWidth();
+        if (screenHeight > screenWidth) {
+            noLeftDrawerItem = Constants.NOLRDRAWERITEM;
+            noBottomDrawerItem = Constants.NOTBDRAWERITEM;
+        } else {
+            noLeftDrawerItem = Constants.NOTBDRAWERITEM;
+            noBottomDrawerItem = Constants.NOLRDRAWERITEM;
+        }
+        tbDrawerWidth = (int) getDrawerHeighWidth(noBottomDrawerItem);
+        lrDrawerHeight = (int) getDrawerHeighWidth(noLeftDrawerItem);
         tbDrawerHeight = lrDrawerWidth = getResources().getDimensionPixelSize(R.dimen.drawer_item_size) + 2
                 * getResources().getDimensionPixelSize(R.dimen.drawer_item_padding);
     }
@@ -315,10 +343,14 @@ public abstract class SQDrawers extends Activity {
      * @return
      */
     private Object[] Tag(Integer itemno, List<View> list, CustomAdapter adapter) {
-        Object itemTag[] = new Object[3];
+        Object itemTag[] = new Object[5];
         itemTag[0] = itemno;
         itemTag[1] = list;
         itemTag[2] = adapter;
+        itemTag[3] = null;
+        itemTag[4] = null;// hold intent data to start the activity
+        // At array position 4 store info for already existing drawer item
+        // It will helpful to update a existing item without updating total number of item in the list
         return itemTag;
     }
 
@@ -334,6 +366,22 @@ public abstract class SQDrawers extends Activity {
         CustomAdapter adapter = (CustomAdapter) itemTag[2];
         adapter.notifyDataSetChanged();
 
+    }
+
+    protected void addItem(ItemClickListener listener, Intent intent) {
+        Object[] tag = (Object[]) currentItem.getTag();
+        //notify the change into adapter
+        CustomAdapter adapter = (CustomAdapter) tag[2];
+        adapter.notifyDataSetChanged();
+        if (shortcutCount < Constants.MAXCOUNT && tag[3] == null) {
+            SQPrefs.setSharedPreferenceInt(this, PREFIX, shortcutCount + 1);
+            // update the new item position in the list
+            tag[0] = (Integer) tag[0] + 1;
+            // Represent a existing drawer item help in update a item in drawer
+            tag[3] = "DRAWERITEM";
+            tag[4] = intent;// hold intent to start a shortcut Activity
+            fillAllDrawerItem(listener);
+        }
     }
 
     /**
@@ -384,20 +432,31 @@ public abstract class SQDrawers extends Activity {
     private float getDrawerHeighWidth(int noofItem) {
         WindowManager windowsmanger = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = windowsmanger.getDefaultDisplay();
-        float lrDrawerHeight = 0;
-        int sqScreenHeight = display.getHeight();
-        LayoutInflater ll = LayoutInflater.from(this);
+        float drawerHeight = 0;
+        int screenHeight;
+        if (display.getHeight() > display.getWidth()) {
+            screenHeight = display.getHeight();
+        } else {
+            screenHeight = display.getWidth();
+        }
         float itemHeighWidth = 0;
         Resources res = getResources();
-        if (noofItem == Constants.NOLRDRAWERITEM) {
-            itemHeighWidth = res.getDimensionPixelSize(R.dimen.drawer_item_size) + 3 * res.getDimensionPixelSize(R.dimen.drawer_item_padding);
-        } else itemHeighWidth = res.getDimensionPixelSize(R.dimen.drawer_item_size) + 3 * res.getDimensionPixelSize(R.dimen.drawer_item_padding);
+        itemHeighWidth = res.getDimensionPixelSize(R.dimen.drawer_item_size) + 3 * res.getDimensionPixelSize(R.dimen.drawer_item_padding);
         for (int item = 0; item < noofItem; item++) {
-            if (lrDrawerHeight < sqScreenHeight) {
-                lrDrawerHeight += itemHeighWidth;
+            if (drawerHeight < screenHeight) {
+                drawerHeight += itemHeighWidth;
             }
         }
-        return lrDrawerHeight;
+        return drawerHeight;
+    }
+    /**
+     * Add a default image for the drawer Item
+     * @param view imageView
+     */
+    protected void addDefaultImage(View view) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.shortcut_item_img);
+        imageView.setBackgroundResource(R.drawable.addshortcuts);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
 }

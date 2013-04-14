@@ -22,6 +22,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/drawerbg"
     android:layout_gravity="center_vertical"
+    android:paddingTop="@dimen/drawer_content_lef_top_padding"
     android:orientation="vertical" >
 
     <ListView

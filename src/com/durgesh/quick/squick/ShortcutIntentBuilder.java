@@ -15,6 +15,7 @@
  */
 package com.durgesh.quick.squick;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,8 +31,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
-import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -46,7 +47,9 @@ import com.durgesh.util.Constants;
  */
 public class ShortcutIntentBuilder {
 
-    private static final String[] CONTACT_COLUMNS = { Contacts.DISPLAY_NAME, Contacts.PHOTO_ID, };
+    private static final String[] CONTACT_COLUMNS = { ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.PHOTO_ID, ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.LABEL };
     private static final int CONTACT_DISPLAY_NAME_COLUMN_INDEX = 0;
     private static final int CONTACT_PHOTO_ID_COLUMN_INDEX = 1;
     private static final String[] PHOTO_COLUMNS = { Photo.PHOTO, };
@@ -54,6 +57,7 @@ public class ShortcutIntentBuilder {
     private static final String PHOTO_SELECTION = Photo._ID + "=?";
     private OnShortcutIntentCreatedListener mListener = null;
     private final Context mContext;
+    private final Activity context;
     private int mIconSize;
     private final int mBorderWidth;
     private final int mBorderColor;
@@ -81,8 +85,8 @@ public class ShortcutIntentBuilder {
         void onShortcutIntentCreated(Uri uri, Intent shortcutIntent);
     }
 
-    public ShortcutIntentBuilder(Context context, OnShortcutIntentCreatedListener listener) {
-        mContext = context;
+    public ShortcutIntentBuilder(Activity context, OnShortcutIntentCreatedListener listener) {
+        mContext = this.context = context;
         mListener = listener;
         final Resources r = context.getResources();
         mIconSize = r.getDimensionPixelSize(R.dimen.drawer_item_size);
@@ -156,34 +160,30 @@ public class ShortcutIntentBuilder {
         @Override
         protected void loadData() {
             if (!readContactFromPref()) {
-                Cursor cursor = mContext.getContentResolver().query(mUri, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1", null, null);
-                while (cursor.moveToNext()) {
-                    String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    Cursor phones = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                    while (phones.moveToNext()) {
-                        mDisplayName = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                        mPhotoId = phones.getLong(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_ID));
-                        mPhoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        mPhoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                        mPhoneLabel = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
-                        phones.close();
-                        break;
-                    }
-                    cursor.close();
+                Cursor phones = mContext.getContentResolver().query(mUri, CONTACT_COLUMNS, null, null, null);
+                while (phones.moveToNext()) {
+                    mDisplayName = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    mPhotoId = phones.getLong(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_ID));
+                    mPhoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    mPhoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                    mPhoneLabel = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+                    phones.close();
                     break;
                 }
-                SQPrefs.setSharedPreference(mContext, mUri.toString(), mDisplayName + ',' + mPhoneNumber + ',' + mPhotoId);
+                if (mPhoneNumber != null && mDisplayName != null && !mPhoneNumber.equals("null") && !mDisplayName.equals("null")) {
+                    SQPrefs.setSharedPreference(mContext, mUri.toString(), mDisplayName + ',' + mPhoneNumber + ',' + mPhotoId);
+                }
+
             }
+
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            if (mPhoneNumber == null) {
+            if (mPhoneNumber == null || mDisplayName == null || mPhoneNumber.equals("null") || mDisplayName.equals("null")) {
                 mListener.onShortcutIntentCreated(null, null);
                 return;
             }
-
             if (directCallorMessage == Constants.PHONE_CALL)
                 createPhoneNumberShortcutIntent(mUri, mDisplayName, mBitmapData, mPhoneNumber, mPhoneType, mPhoneLabel, Intent.ACTION_CALL);
             else {

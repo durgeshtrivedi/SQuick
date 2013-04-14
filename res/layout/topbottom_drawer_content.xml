@@ -22,7 +22,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/drawerbg" 
     android:gravity="center"
-    android:paddingLeft="@dimen/horizontal_drawer_content_padding"
+    android:paddingLeft="@dimen/drawer_content_lef_top_padding"
     android:orientation="horizontal">
 
     <com.sileria.android.view.HorzListView

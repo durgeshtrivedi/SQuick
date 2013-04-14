@@ -54,10 +54,16 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View item, int position, long arg3) {
-        String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(getCurrentPosition(item)), Constants.DEFAULTURI);
-        if (!apppkg.equals(Constants.DEFAULTURI)) {
-            PackageManager pm = getPackageManager();
-            startActivity(pm.getLaunchIntentForPackage(apppkg));
+        Object[] tag = (Object[]) item.getTag();
+        if (tag != null && tag[3] != null) {
+            Intent intent = (Intent) tag[4];
+            String pkg = intent.getStringExtra("PKG");
+            if (pkg != null) {
+                PackageManager pm = getPackageManager();
+                startActivity(pm.getLaunchIntentForPackage(pkg));
+            } else {
+                startActivity(intent);
+            }
             finish();
         }
     }
@@ -75,35 +81,26 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
         if (requestCode == Constants.APP) {
+            setImage(data.getComponent().getPackageName(), currentItem);
             SQPrefs.setSharedPreferenceApp(this, String.valueOf(getCurrentPosition(currentItem)), data.getComponent().getPackageName());
-            setAppShortCuts(data.getComponent().getPackageName(), currentItem);
-            if (shortcutCount < Constants.MAXCOUNT) {
-                SQPrefs.setSharedPreferenceInt(this, PREFIX, shortcutCount + 1);
-                Object[] tag = (Object[]) currentItem.getTag();
-                // update the new item in the list
-                tag[0] = (Integer) tag[0] + 1;
-                fillAllDrawerItem(this);
-            }
+            //add or update new item in to the drawer
+            addItem(this, data);
         }
     }
 
     /**
-     * Set the Shortcut for the Application and update the app image
+     * Set the image
      * 
      * @param info
+     *            package info to get app image from pkg manager
      * @param view
      */
-    public void setAppShortCuts(String info, View view) {
+    public void setImage(String info, View view) {
         PackageManager pm = getPackageManager();
-        ApplicationInfo appInfo;
         try {
-            appInfo = pm.getApplicationInfo(info, PackageManager.PERMISSION_GRANTED);
             ImageView image = (ImageView) view.findViewById(R.id.shortcut_item_img);
             Drawable icon = pm.getApplicationIcon(info);
-            Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
-            image.setImageBitmap(bitmap);
-            // TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
-            // text.setText(appInfo.loadLabel(pm));
+            image.setBackgroundDrawable(icon);
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -113,16 +110,20 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         LayoutInflater li = LayoutInflater.from(this);
         View itemView = li.inflate(R.layout.drawer_item, null);
         Integer position = (Integer) tag[0];
-        itemView.setTag(tag);
+
         String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
-            setAppShortCuts(apppkg, itemView);
+            setImage(apppkg, itemView);
+            // Represent a already existing drawer item
+            tag[3] = "DRAWERITEM";
+            Intent intent = new Intent();
+            intent.putExtra("PKG", apppkg);
+            tag[4] = intent;
         } else {
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.shortcut_item_img);
-            imageView.setImageBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.addshortcuts)).getBitmap());
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            addDefaultImage(itemView);
         }
         setAnimation(itemView);
+        itemView.setTag(tag);
         return itemView;
     }
 
@@ -136,7 +137,6 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
         pickIntent.putExtra(Intent.EXTRA_INTENT, mainIntent);
-        // rename Main to your class or activity
         startActivityForResult(pickIntent, selector);
         return true;
     }

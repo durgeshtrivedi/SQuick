@@ -29,7 +29,7 @@
     <!-- Extra vertical padding for darkened background behind shortcut icon overlay text -->
     <dimen name="shortcut_overlay_text_background_padding">1dp</dimen>
     <dimen name="drawer_item_padding">5dip</dimen>
-     <dimen name="horizontal_drawer_content_padding">40dip</dimen>
+     <dimen name="drawer_content_lef_top_padding">15dip</dimen>
     <dimen name="drawer_height">400dip</dimen>
      <dimen name="drawer_width">60dip</dimen>
 </resources>

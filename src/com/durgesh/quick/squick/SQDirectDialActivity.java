@@ -20,15 +20,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
@@ -52,15 +49,12 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
         if (shortcutIntent == null) {
             noNumberAlert();
         } else {
+
+            setImage(currentItem, shortcutIntent);
+            //update the drawer item with new item  
             SQPrefs.setSharedPreference(this, String.valueOf(getCurrentPosition(currentItem)), contactUri);
-            setContactImage(currentItem, shortcutIntent);
-            if (shortcutCount < Constants.MAXCOUNT) {
-                SQPrefs.setSharedPreferenceInt(this, PREFIX, shortcutCount + 1);
-                Object[] tag = (Object[]) currentItem.getTag();
-                // update the new item in the list
-                tag[0] = (Integer) tag[0] + 1;
-                fillAllDrawerItem(this);
-            }
+            //add or update new item in to the drawer
+            addItem(this,shortcutIntent);
         }
     }
 
@@ -73,20 +67,12 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View item, int position, long arg3) {
-
-        String uri = SQPrefs.getSharedPreferenceAsStr(this, String.valueOf(getCurrentPosition(item)), Constants.DEFAULTURI);
-        if (!uri.equals(Constants.DEFAULTURI)) {
-            ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, new OnShortcutIntentCreatedListener() {
-                @Override
-                public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-                    Intent intent = (Intent) shortcutIntent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-                    intent.getData();
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            builder.createShortcutIntent(Uri.parse(uri), selector);
-        }
+        Object[] tag =(Object[])item.getTag();
+           if(tag!=null && tag[3]!=null){
+               Intent intent = ((Intent)tag[4]).getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+               startActivity(intent);
+               finish();
+           }
     }
 
     @Override
@@ -124,7 +110,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
         });
         // Create the AlertDialog object and return it
         builder.show();
-        setContactImageDefault(currentItem);
+        addDefaultImage(currentItem);
     }
 
     /**
@@ -134,7 +120,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
      */
     public void setContactImageDefault(View view) {
         ImageView imageView = (ImageView) view.findViewById(R.id.shortcut_item_img);
-        imageView.setImageBitmap(((BitmapDrawable) this.getResources().getDrawable(R.drawable.ic_contact_picture)).getBitmap());
+        imageView.setBackgroundResource(R.drawable.ic_contact_picture);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
@@ -143,12 +129,9 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
      * 
      * @param view
      */
-    public void setContactImage(View view, Intent intent) {
-        String name = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+    public void setImage(View view, Intent intent) {
         ImageView image = (ImageView) view.findViewById(R.id.shortcut_item_img);
         image.setImageBitmap((Bitmap) intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON));
-        // TextView text = (TextView) view.findViewById(R.id.shortcut_item_name);
-        // text.setText(name);
     }
 
     /**
@@ -157,8 +140,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
      * @param item
      */
     private boolean launchContactSelector() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
         startActivityForResult(intent, selector);
         return true;
 
@@ -169,33 +151,28 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
         return sqTapListener.gestureDetector.onTouchEvent(event);
     }
 
-    public View getView(Object[] tag) {
+    public View getView(final Object[] tag) {
         final View currentitem;
         LayoutInflater li = LayoutInflater.from(this);
         View itemView = li.inflate(R.layout.drawer_item, null);
         Integer position = (Integer) tag[0];
-        itemView.setTag(tag);
         currentitem = itemView;
         String uri = SQPrefs.getSharedPreferenceAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
         if (!uri.equals(Constants.DEFAULTURI)) {
             ShortcutIntentBuilder builder = new ShortcutIntentBuilder(this, new OnShortcutIntentCreatedListener() {
-
                 @Override
                 public void onShortcutIntentCreated(Uri uri, Intent shortcutIntent) {
-                    if (shortcutIntent == null) {
-                        setContactImageDefault(currentitem);
-
-                    } else {
-                        setContactImage(currentitem, shortcutIntent);
-                    }
+                    setImage(currentitem, shortcutIntent);
+                    // Represent a already existing drawer item
+                    tag[3] = "DRAWERITEM";
+                    tag[4]=shortcutIntent;
                 }
             });
             builder.createShortcutIntent(Uri.parse(uri), selector);
         } else {
-            ImageView imageView = (ImageView) currentitem.findViewById(R.id.shortcut_item_img);
-            imageView.setImageBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.addshortcuts)).getBitmap());
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            addDefaultImage(currentitem);
         }
+        itemView.setTag(tag);
         setAnimation(itemView);
         return itemView;
     }
