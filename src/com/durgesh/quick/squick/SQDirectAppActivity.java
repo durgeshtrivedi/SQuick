@@ -72,7 +72,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         PREFIX = Constants.APPSHORTCUT;
-        fillAllDrawerItem(this);
+        fillAllDrawerItem(this,0);
 
     }
 

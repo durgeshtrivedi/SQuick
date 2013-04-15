@@ -49,7 +49,6 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
         if (shortcutIntent == null) {
             noNumberAlert();
         } else {
-
             setImage(currentItem, shortcutIntent);
             //update the drawer item with new item  
             SQPrefs.setSharedPreference(this, String.valueOf(getCurrentPosition(currentItem)), contactUri);
@@ -79,7 +78,7 @@ public class SQDirectDialActivity extends SQDrawers implements ItemClickListener
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         PREFIX = Constants.DIRECTCALLMSG;
-        fillAllDrawerItem(this);
+        fillAllDrawerItem(this,0);
     }
 
     @Override

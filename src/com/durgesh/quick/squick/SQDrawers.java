@@ -93,9 +93,10 @@ public abstract class SQDrawers extends Activity {
     /**
      * Fill the drawers the item
      */
-    protected void fillAllDrawerItem(ItemClickListener listener) {
+    protected void fillAllDrawerItem(ItemClickListener listener, int position) {
         int size = getShortCutsCount();
-        for (int listItem = getCurrentPosition(currentItem); listItem <= size; listItem++) {
+        int listItem = position != 0 ? position : getCurrentPosition(currentItem);
+        for (; listItem <= size; listItem++) {
             if (listItem <= noLeftDrawerItem) {
                 if (leftDrawerContent == null) {
                     initLeftDrawerContent();
@@ -106,12 +107,12 @@ public abstract class SQDrawers extends Activity {
                     initBottomDrawerContent();
                 }
                 setItem(getView(Tag(listItem, bottomAdapterList, bottomDrawerAdapter)));
-            } else if (listItem > 11 && listItem <= 11 + noBottomDrawerItem) {
+            } else if (listItem > 11 && listItem <= 11 + noLeftDrawerItem) {
                 if (rightDrawerContent == null) {
                     initRightDrawerContent();
                 }
                 setItem(getView(Tag(listItem, rightAdapterList, rightDrawerAdapter)));
-            } else if (listItem > 17 && listItem <= 17 + noBottomDrawerItem) {
+            } else if (listItem > 11 + noLeftDrawerItem && listItem <= 22) {
                 if (topDrawerContent == null) {
                     initTopDrawerContent();
                 }
@@ -370,17 +371,17 @@ public abstract class SQDrawers extends Activity {
 
     protected void addItem(ItemClickListener listener, Intent intent) {
         Object[] tag = (Object[]) currentItem.getTag();
-        //notify the change into adapter
+        // notify the change into adapter
         CustomAdapter adapter = (CustomAdapter) tag[2];
         adapter.notifyDataSetChanged();
         if (shortcutCount < Constants.MAXCOUNT && tag[3] == null) {
             SQPrefs.setSharedPreferenceInt(this, PREFIX, shortcutCount + 1);
-            // update the new item position in the list
-            tag[0] = (Integer) tag[0] + 1;
+            // update the add button to new position in the list
+            int position = (Integer) tag[0] +1;
             // Represent a existing drawer item help in update a item in drawer
             tag[3] = "DRAWERITEM";
             tag[4] = intent;// hold intent to start a shortcut Activity
-            fillAllDrawerItem(listener);
+            fillAllDrawerItem(listener,position);
         }
     }
 
@@ -449,9 +450,12 @@ public abstract class SQDrawers extends Activity {
         }
         return drawerHeight;
     }
+
     /**
      * Add a default image for the drawer Item
-     * @param view imageView
+     * 
+     * @param view
+     *            imageView
      */
     protected void addDefaultImage(View view) {
         ImageView imageView = (ImageView) view.findViewById(R.id.shortcut_item_img);
