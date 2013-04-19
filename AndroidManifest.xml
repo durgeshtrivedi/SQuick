@@ -86,6 +86,8 @@
         </receiver>
 
         <service android:name=".service.SQService" />
+         <provider android:name="com.durgesh.model.ContactIconProvider"
+                  android:authorities="com.durgesh.quick"/>
     </application>
 
 </manifest>

@@ -81,7 +81,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
         if (requestCode == Constants.APP) {
-            setImage(data.getComponent().getPackageName(), currentItem);
+            setImage(data.getComponent().getPackageName());
             SQPrefs.setSharedPreferenceApp(this, String.valueOf(getCurrentPosition(currentItem)), data.getComponent().getPackageName());
             //add or update new item in to the drawer
             addItem(this, data);
@@ -95,10 +95,10 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
      *            package info to get app image from pkg manager
      * @param view
      */
-    public void setImage(String info, View view) {
+    public void setImage(String info) {
         PackageManager pm = getPackageManager();
         try {
-            ImageView image = (ImageView) view.findViewById(R.id.shortcut_item_img);
+            ImageView image = (ImageView) currentItem.findViewById(R.id.shortcut_item_img);
             Drawable icon = pm.getApplicationIcon(info);
             image.setBackgroundDrawable(icon);
         } catch (NameNotFoundException e) {
@@ -108,23 +108,23 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
 
     public View getView(Object[] tag) {
         LayoutInflater li = LayoutInflater.from(this);
-        View itemView = li.inflate(R.layout.drawer_item, null);
+        currentItem = li.inflate(R.layout.drawer_item, null);
         Integer position = (Integer) tag[0];
 
         String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
-            setImage(apppkg, itemView);
+            setImage(apppkg);
             // Represent a already existing drawer item
             tag[3] = "DRAWERITEM";
             Intent intent = new Intent();
             intent.putExtra("PKG", apppkg);
             tag[4] = intent;
         } else {
-            addDefaultImage(itemView);
+            addDefaultImage(currentItem);
         }
-        setAnimation(itemView);
-        itemView.setTag(tag);
-        return itemView;
+        setAnimation(currentItem);
+        currentItem.setTag(tag);
+        return currentItem;
     }
 
     /**

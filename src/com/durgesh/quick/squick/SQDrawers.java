@@ -217,7 +217,6 @@ public abstract class SQDrawers extends Activity {
     }
 
     private void openDrawer() {
-
         openLefDrawer();
         openRightDrawer();
         openTopDrawer();
