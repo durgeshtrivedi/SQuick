@@ -108,7 +108,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     private void inflateView() {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         sqView = this;
-        sqView.setBackgroundColor(Color.LTGRAY);
+        //sqView.setBackgroundColor(Color.LTGRAY);
         sqView.setOnTouchListener(this);
         windowsmanger.addView(sqView, makeOverlayParams());
     }
@@ -188,12 +188,16 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     public void viewSelector(String selector) {
         if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
             shortcutSelector = Constants.PHONE_CALL;
+            sqView.setBackgroundColor(Color.GREEN);
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
             shortcutSelector = Constants.MESSAGE;
+            sqView.setBackgroundColor(Color.YELLOW);
         } else if (selector.equals(context.getResources().getString(R.string.pref_leftbottombar_title))) {
             shortcutSelector = Constants.CONTACT;
+            sqView.setBackgroundColor(Color.BLUE);
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbottombar_title))) {
             shortcutSelector = Constants.APP;
+            sqView.setBackgroundColor(Color.RED);
         }
     }
 

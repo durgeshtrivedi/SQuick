@@ -54,8 +54,8 @@ public class ShortcutIntentBuilder {
     private int mIconSize;
     private final int mBorderWidth;
     private final int mBorderColor;
-    private final String PREFIX = "CONTACT";
-
+    protected Intent contactinfo;
+    String directCallorMessage;
     /**
      * This is a hidden API of the launcher in JellyBean that allows us to disable the animation that it would usually do, because it interferes with
      * our own animation for QuickContact
@@ -86,6 +86,8 @@ public class ShortcutIntentBuilder {
     }
 
     public void createShortcutIntent(Intent contactinfo, String shortcutSelector) {
+        directCallorMessage = shortcutSelector;
+        this.contactinfo = contactinfo;
         new PhoneNumberLoadingAsyncTask(contactinfo, shortcutSelector);
     }
 
@@ -93,14 +95,10 @@ public class ShortcutIntentBuilder {
      * An asynchronous task that loads name, photo and other data from the database.
      */
     private abstract class LoadingAsyncTask {
-        protected Intent contactinfo;
         protected String mDisplayName;
         protected Bitmap mBitmapData;
-        String directCallorMessage;
 
         public LoadingAsyncTask(Intent contact, String callorMessage) {
-            contactinfo = contact;
-            directCallorMessage = callorMessage;
             loadData();
         }
 
@@ -110,8 +108,7 @@ public class ShortcutIntentBuilder {
 
     private final class PhoneNumberLoadingAsyncTask extends LoadingAsyncTask {
         private String mPhoneNumber;
-        private int mPhoneType;
-        private String mPhoneLabel;
+        String position;
 
         public PhoneNumberLoadingAsyncTask(Intent contactinfo, String callorMessage) {
             super(contactinfo, callorMessage);
@@ -119,6 +116,8 @@ public class ShortcutIntentBuilder {
 
         @Override
         protected void loadData() {
+            // Get current position of item where to update
+            position = String.valueOf(contactinfo.getIntExtra(Constants.POSITION, 0));
             if (!readContactFromPref()) {
                 mDisplayName = contactinfo.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
                 mPhoneNumber = getPhoneNumber(contactinfo);
@@ -126,9 +125,11 @@ public class ShortcutIntentBuilder {
                     mListener.onShortcutIntentCreated(null);
                     return;
                 }
-                SQPrefs.setSharedPreference(mContext, String.valueOf(contactinfo.getIntExtra("POSITION", 0)), mDisplayName + ',' + mPhoneNumber);
+                // associate item with type message or call and position
+                SQPrefs.setSharedPreference(mContext, directCallorMessage + position, mDisplayName + ',' + mPhoneNumber);
                 mBitmapData = (Bitmap) contactinfo.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-                ContactIconHelper.setContactImage(mPhoneNumber, mBitmapData, mContext);
+                // associate image with type message or call and position
+                ContactIconHelper.setContactImage(directCallorMessage + position, mBitmapData, mContext);
             }
             // Need to see how to overlay contact name on image
             createPhoneNumberShortcutIntent(mDisplayName, mBitmapData, mPhoneNumber, directCallorMessage);
@@ -141,12 +142,12 @@ public class ShortcutIntentBuilder {
          * @return
          */
         boolean readContactFromPref() {
-            String info = contactinfo.getStringExtra("CONTACTINFO");
+            String info = contactinfo.getStringExtra(Constants.CONTACTINFO);
             if (info != null) {
                 String[] contactinfo = info.split(",");
                 mDisplayName = contactinfo[0];
                 mPhoneNumber = contactinfo[1];
-                mBitmapData = ContactIconHelper.getContactImage(mPhoneNumber, mContext);
+                mBitmapData = ContactIconHelper.getContactImage(directCallorMessage + position, mContext);
                 return true;
             }
             return false;
@@ -156,10 +157,23 @@ public class ShortcutIntentBuilder {
     private String getPhoneNumber(Intent contactinfo) {
         Uri uri = ((Intent) contactinfo.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT)).getData();
         String number = uri.toString();
-        if (number.contains("tel:%2B")) {
-            number = number.substring(7); // tel:%2B so sub string from 7th position
-        } else {
-            number = number.substring(4); // tel: so sub string from 7th position
+        // if there is space between numbers remove that
+        number = number.replace("%20", "");
+        if (directCallorMessage == Intent.ACTION_CALL) {
+            if (number.contains("tel:%2B")) {
+                number = number.substring(7); // In place of "+" sign has string "%2B" tel:%2B so sub string from 7th position
+                number = "+" + number;
+            } else {
+                number = number.substring(4); // tel: so sub string from 4th position
+            }
+
+        } else if (directCallorMessage == Intent.ACTION_SENDTO) {
+            if (number.contains("smsto:%2B")) {
+                number = number.substring(9); // In place of "+" sign has string "%2B" smsto:%2B so sub string from 9th position
+                number = "+" + number;
+            } else {
+                number = number.substring(6); // smsto: so sub string from 6th position
+            }
         }
         return number;
     }

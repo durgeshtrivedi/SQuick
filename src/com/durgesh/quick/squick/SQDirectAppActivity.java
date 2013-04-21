@@ -79,12 +79,17 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK) return;
+        if (resultCode != Activity.RESULT_OK) {
+            finish();
+            return;
+        }
         if (requestCode == Constants.APP) {
             setImage(data.getComponent().getPackageName());
             SQPrefs.setSharedPreferenceApp(this, String.valueOf(getCurrentPosition(currentItem)), data.getComponent().getPackageName());
-            //add or update new item in to the drawer
+            // add or update new item in to the drawer
             addItem(this, data);
+        } else {
+            finish();
         }
     }
 
@@ -115,7 +120,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         if (!apppkg.equals(Constants.DEFAULTURI)) {
             setImage(apppkg);
             // Represent a already existing drawer item
-            tag[3] = "DRAWERITEM";
+            tag[3] = Constants.DRAWERITEM;
             Intent intent = new Intent();
             intent.putExtra("PKG", apppkg);
             tag[4] = intent;

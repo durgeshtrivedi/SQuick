@@ -75,6 +75,15 @@ public abstract class SQDrawers extends Activity {
     private OrientationEventListener sqOrientationListener;
     private int noLeftDrawerItem;
     private int noBottomDrawerItem;
+    
+    public static int MAXDRAWERITEMS=22;
+    public static final int MAXDRAWERITEMSSMALLSCREEN=18;
+    public static  int LAGERSCREENITEMCOUNT=11;
+    public static final int SMALLSCREENITEMCOUNT=10;
+    public static  int NOLRDRAWERITEM  =6;
+    public static  int NOTBDRAWERITEM  =5;
+    public static final int NOLRDRAWERITEMSMALSCRN  =5;
+    public static final int NOTBDRAWERITEMSMALLSCRN  =4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,17 +111,17 @@ public abstract class SQDrawers extends Activity {
                     initLeftDrawerContent();
                 }
                 setItem(getView(Tag(listItem, leftAdapterList, leftDrawerAdapter)));
-            } else if (listItem > noLeftDrawerItem && listItem <= 11) {
+            } else if (listItem > noLeftDrawerItem && listItem <= LAGERSCREENITEMCOUNT) {
                 if (bottomDrawerContent == null) {
                     initBottomDrawerContent();
                 }
                 setItem(getView(Tag(listItem, bottomAdapterList, bottomDrawerAdapter)));
-            } else if (listItem > 11 && listItem <= 11 + noLeftDrawerItem) {
+            } else if (listItem > LAGERSCREENITEMCOUNT && listItem <= LAGERSCREENITEMCOUNT + noLeftDrawerItem) {
                 if (rightDrawerContent == null) {
                     initRightDrawerContent();
                 }
                 setItem(getView(Tag(listItem, rightAdapterList, rightDrawerAdapter)));
-            } else if (listItem > 11 + noLeftDrawerItem && listItem <= 22) {
+            } else if (listItem > LAGERSCREENITEMCOUNT + noLeftDrawerItem && listItem <= MAXDRAWERITEMS) {
                 if (topDrawerContent == null) {
                     initTopDrawerContent();
                 }
@@ -126,6 +135,7 @@ public abstract class SQDrawers extends Activity {
 
     private void init() {
         selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
+        PREFIX = selector == Constants.PHONE_CALL ? Intent.ACTION_CALL : Intent.ACTION_SENDTO;
         sqTapListener = new SQTapListener(this);
         getShortCutsCount();
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
@@ -142,13 +152,22 @@ public abstract class SQDrawers extends Activity {
         WindowManager windowsmanger = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = windowsmanger.getDefaultDisplay();
         int screenHeight = display.getHeight();
+        
         int screenWidth = display.getWidth();
+        
+        // change the number of drawer item as per screen size
+        if (screenHeight < 600 && screenWidth < 300) {
+            NOLRDRAWERITEM = NOLRDRAWERITEMSMALSCRN;
+            NOTBDRAWERITEM = NOTBDRAWERITEMSMALLSCRN;
+            MAXDRAWERITEMS = MAXDRAWERITEMSSMALLSCREEN;
+            LAGERSCREENITEMCOUNT = SMALLSCREENITEMCOUNT;
+        }
         if (screenHeight > screenWidth) {
-            noLeftDrawerItem = Constants.NOLRDRAWERITEM;
-            noBottomDrawerItem = Constants.NOTBDRAWERITEM;
+            noLeftDrawerItem = NOLRDRAWERITEM;
+            noBottomDrawerItem = NOTBDRAWERITEM;
         } else {
-            noLeftDrawerItem = Constants.NOTBDRAWERITEM;
-            noBottomDrawerItem = Constants.NOLRDRAWERITEM;
+            noLeftDrawerItem = NOTBDRAWERITEM;
+            noBottomDrawerItem = NOLRDRAWERITEM;
         }
         tbDrawerWidth = (int) getDrawerHeighWidth(noBottomDrawerItem);
         lrDrawerHeight = (int) getDrawerHeighWidth(noLeftDrawerItem);
@@ -370,15 +389,17 @@ public abstract class SQDrawers extends Activity {
 
     protected void addItem(ItemClickListener listener, Intent intent) {
         Object[] tag = (Object[]) currentItem.getTag();
+        //update the new intent from old 
+        tag[4]=intent;
         // notify the change into adapter
         CustomAdapter adapter = (CustomAdapter) tag[2];
         adapter.notifyDataSetChanged();
-        if (shortcutCount < Constants.MAXCOUNT && tag[3] == null) {
+        if (shortcutCount < MAXDRAWERITEMS && tag[3] == null) {
             SQPrefs.setSharedPreferenceInt(this, PREFIX, shortcutCount + 1);
             // update the add button to new position in the list
             int position = (Integer) tag[0] +1;
             // Represent a existing drawer item help in update a item in drawer
-            tag[3] = "DRAWERITEM";
+            tag[3] = Constants.DRAWERITEM;
             tag[4] = intent;// hold intent to start a shortcut Activity
             fillAllDrawerItem(listener,position);
         }
