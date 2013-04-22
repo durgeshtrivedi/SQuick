@@ -72,7 +72,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         PREFIX = Constants.APPSHORTCUT;
-        fillAllDrawerItem(this,0);
+        fillAllDrawerItem(this, 0);
 
     }
 
@@ -85,7 +85,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         }
         if (requestCode == Constants.APP) {
             setImage(data.getComponent().getPackageName());
-            SQPrefs.setSharedPreferenceApp(this, String.valueOf(getCurrentPosition(currentItem)), data.getComponent().getPackageName());
+            SQPrefs.setSharedPreferenceApp(this, PREFIX + String.valueOf(getCurrentPosition(currentItem)), data.getComponent().getPackageName());
             // add or update new item in to the drawer
             addItem(this, data);
         } else {
@@ -116,7 +116,7 @@ public class SQDirectAppActivity extends SQDrawers implements ItemClickListener 
         currentItem = li.inflate(R.layout.drawer_item, null);
         Integer position = (Integer) tag[0];
 
-        String apppkg = SQPrefs.getSharedPrefAppAsStr(this, String.valueOf(position), Constants.DEFAULTURI);
+        String apppkg = SQPrefs.getSharedPrefAppAsStr(this, PREFIX + String.valueOf(position), Constants.DEFAULTURI);
         if (!apppkg.equals(Constants.DEFAULTURI)) {
             setImage(apppkg);
             // Represent a already existing drawer item
