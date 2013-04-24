@@ -394,7 +394,7 @@ public abstract class SQDrawers extends Activity {
         // notify the change into adapter
         CustomAdapter adapter = (CustomAdapter) tag[2];
         adapter.notifyDataSetChanged();
-        if (shortcutCount < MAXDRAWERITEMS && tag[3] == null) {
+        if (shortcutCount <= MAXDRAWERITEMS && tag[3] == null) {
             SQPrefs.setSharedPreferenceInt(this, PREFIX, shortcutCount + 1);
             // update the add button to new position in the list
             int position = (Integer) tag[0] +1;

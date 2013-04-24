@@ -17,8 +17,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.durgesh"
-    android:versionCode="2"
-    android:versionName="1.01" >
+    android:versionCode="3"
+    android:versionName="1.6" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -40,7 +40,7 @@
             android:label="@string/application_name"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
-            android:theme="@style/Floating" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
