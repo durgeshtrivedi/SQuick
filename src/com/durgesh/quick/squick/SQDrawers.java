@@ -184,7 +184,7 @@ public abstract class SQDrawers extends Activity {
         leftDrawerAdapter = new CustomAdapter(this, R.layout.drawer_item, leftAdapterList);
         leftDraweritemList = (ListView) leftDrawerContent.findViewById(R.id.leftright_drawer_list);
         leftDraweritemList.setAdapter(leftDrawerAdapter);
-        leftDraweritemList.setScrollContainer(false);
+        leftDraweritemList.setSelector(R.drawable.drawerbg);
 
     }
 
@@ -197,6 +197,7 @@ public abstract class SQDrawers extends Activity {
         rightDrawerAdapter = new CustomAdapter(this, R.layout.drawer_item, rightAdapterList);
         rightDraweritemList = (ListView) rightDrawerContent.findViewById(R.id.leftright_drawer_list);
         rightDraweritemList.setAdapter(rightDrawerAdapter);
+        rightDraweritemList.setSelector(R.drawable.drawerbg);
     }
 
     /**

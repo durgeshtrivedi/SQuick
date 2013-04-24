@@ -28,17 +28,19 @@ public class SQBootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         String param =intent.getAction();
-        Log.e("superquick_service", "SERVICE SQBootReceiver");
+       // Log.e("superquick_service", "SERVICE SQBootReceiver");
         if (settings.getBoolean("superquick_service", true)) {
             if (TextUtils.equals(Intent.ACTION_BOOT_COMPLETED,param)) {
                 context.startService(new Intent(context, SQService.class));
-            } else if (TextUtils.equals(Intent.ACTION_SCREEN_OFF,param)) {
-                context.stopService(new Intent(context, SQService.class));
-                Log.e("superquick_service", "SERVICE STOP");
-            } else if (TextUtils.equals(Intent.ACTION_SCREEN_ON,param)) {
-                context.startService(new Intent(context, SQService.class));
-                Log.e("superquick_service", "SERVICE START");
             }
+              //Need to test it why it is not working 
+//            else if (TextUtils.equals(Intent.ACTION_SCREEN_OFF,param)) {
+//                context.stopService(new Intent(context, SQService.class));
+//                Log.e("superquick_service", "SERVICE STOP");
+//            } else if (TextUtils.equals(Intent.ACTION_SCREEN_ON,param)) {
+//                context.startService(new Intent(context, SQService.class));
+//                Log.e("superquick_service", "SERVICE START");
+//            }
         }
     }
 }

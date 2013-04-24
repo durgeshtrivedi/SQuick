@@ -16,9 +16,11 @@
 package com.durgesh.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -30,6 +32,8 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 
 import com.durgesh.R;
+import com.durgesh.quick.squick.SQDirectAppActivity;
+import com.durgesh.quick.squick.SQDirectDialActivity;
 import com.durgesh.util.Constants;
 
 /**
@@ -100,10 +104,41 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      */
     public abstract void updateViewParameter();
 
+    
+    
     /**
      * Launch the shortcut selector base on the view on which the finger is swap
      */
-    public abstract void launchShorcut();
+    protected void launchShorcut() {
+        switch (shortcutSelector) {
+        case Constants.PHONE_CALL:
+        case Constants.MESSAGE: {
+            Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
+            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
+            context.startActivity(dialerActivity);
+            break;
+        }
+        case Constants.APP: {
+            Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
+            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
+            context.startActivity(dialerActivity);
+            break;
+        }
+        case Constants.CONTACT: {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("content://contacts/people/"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            context.startActivity(intent);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
 
     private void inflateView() {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

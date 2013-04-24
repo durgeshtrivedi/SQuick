@@ -17,13 +17,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
 
 import com.durgesh.R;
-import com.durgesh.quick.squick.SQDirectDialActivity;
 import com.durgesh.util.Constants;
 
 /**
@@ -33,7 +31,6 @@ import com.durgesh.util.Constants;
  */
 public class TopLeftView extends SQMainVeiw {
 
-    
     public TopLeftView(Context context) {
         super(context);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -64,13 +61,4 @@ public class TopLeftView extends SQMainVeiw {
     public void updateViewParameter() {
         updateView(0, Constants.SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
     }
-    
-    public void launchShorcut()
-    {
-        Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-        context.startActivity(dialerActivity);
-    }
-
 }

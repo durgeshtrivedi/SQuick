@@ -16,14 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package com.durgesh.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.durgesh.R;
-import com.durgesh.quick.squick.SQDirectAppActivity;
 import com.durgesh.util.Constants;
-
 
 public class BottomRightView extends SQMainVeiw {
 
@@ -57,15 +54,5 @@ public class BottomRightView extends SQMainVeiw {
     @Override
     public void updateViewParameter() {
         updateView(1, Constants.SQ_BOTTOM_VIEW_POSITION_RATIO, -10);
-
     }
-    
-    public void launchShorcut()
-    {
-        Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
-        dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-        context.startActivity(dialerActivity);
-    }
-    
 }

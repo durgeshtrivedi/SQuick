@@ -15,12 +15,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.durgesh.view;
 
+import java.util.ArrayList;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ListView;
 
 import com.durgesh.R;
 import com.durgesh.util.Constants;
@@ -41,34 +43,21 @@ public class BottomLeftView extends SQMainVeiw {
 
     @Override
     public void onLeftToRight() {
-      launchShorcut();
+        launchShorcut();
     }
 
     @Override
     public void onBottomToTop() {
-     launchShorcut();
+        launchShorcut();
     }
 
     @Override
     public void onTopToBottom() {
-
-      launchShorcut();
-       
+        launchShorcut();
     }
 
     @Override
     public void updateViewParameter() {
         updateView(0, Constants.SQ_BOTTOM_VIEW_POSITION_RATIO, Gravity.LEFT);
-
     }
-    
-    public void launchShorcut()
-    {
-         Intent intent = new Intent();
-         intent.setAction(Intent.ACTION_VIEW);
-         intent.setData(Uri.parse("content://contacts/people/"));
-         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-         context.startActivity(intent);
-    }
-    
 }
