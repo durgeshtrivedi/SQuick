@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class SQBootReceiver extends BroadcastReceiver {
     @Override
@@ -30,17 +29,9 @@ public class SQBootReceiver extends BroadcastReceiver {
         String param =intent.getAction();
        // Log.e("superquick_service", "SERVICE SQBootReceiver");
         if (settings.getBoolean("superquick_service", true)) {
-            if (TextUtils.equals(Intent.ACTION_BOOT_COMPLETED,param)) {
+            if (TextUtils.equals(Intent.ACTION_BOOT_COMPLETED, param)) {
                 context.startService(new Intent(context, SQService.class));
             }
-              //Need to test it why it is not working 
-//            else if (TextUtils.equals(Intent.ACTION_SCREEN_OFF,param)) {
-//                context.stopService(new Intent(context, SQService.class));
-//                Log.e("superquick_service", "SERVICE STOP");
-//            } else if (TextUtils.equals(Intent.ACTION_SCREEN_ON,param)) {
-//                context.startService(new Intent(context, SQService.class));
-//                Log.e("superquick_service", "SERVICE START");
-//            }
         }
     }
 }
