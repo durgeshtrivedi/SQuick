@@ -15,6 +15,7 @@
  */
 package com.durgesh.service;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -46,10 +47,9 @@ public class SQService extends Service {
     Context context;
     private OrientationEventListener sqOrientationListener;
     
-
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
         context = getApplicationContext();
         Kit.init(context);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -81,7 +81,8 @@ public class SQService extends Service {
         };
         sqOrientationListener.enable();
         initOrientation();
-        
+
+        return START_STICKY;
     }
 
     /**
@@ -118,6 +119,7 @@ public class SQService extends Service {
         sqTopRightView = null;
         sqBottomLeftView = null;
         sqBottomRightView = null;
+        Kit.destroy();
 
     }
 
@@ -130,7 +132,7 @@ public class SQService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
+
 }
