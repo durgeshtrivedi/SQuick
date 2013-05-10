@@ -59,6 +59,6 @@ public class TopLeftView extends SQMainVeiw {
     }
 
     public void updateViewParameter() {
-        updateView(0, Constants.SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
+        updateView(0, Constants.SCREEN_RATIO, Gravity.LEFT | Gravity.TOP);
     }
 }

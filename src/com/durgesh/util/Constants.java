@@ -33,8 +33,7 @@ public class Constants {
     public static final String TRANSPARENCY = "transparency";
     public static final int TRANSPARENCY_DEFAULT = 100;
     // Position TOP view LEFT and RIGHT
-    public final static int SQ_TOP_VIEW_POSITION_RATIO = 5;
-    public final static int SQ_BOTTOM_VIEW_POSITION_RATIO = 4;
+    public final static int SCREEN_RATIO = 80;
 
     public static final String PERFORMANCE_TAG = "ContactsPerf";
 

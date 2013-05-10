@@ -47,7 +47,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
     private int sqScreenWidth;
     private int sqScreenHeight;
     private static float barSize = 18;
-    private static final int SQ_VIEW_HEIGHT = 25;
+    private static final int SQ_VIEW_HEIGHT = 20;
     // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
     int shortcutSelector;
     WindowManager windowsmanger;

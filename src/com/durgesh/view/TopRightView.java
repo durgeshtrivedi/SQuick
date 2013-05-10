@@ -54,6 +54,6 @@ public class TopRightView extends SQMainVeiw {
 
     @Override
     public void updateViewParameter() {
-        updateView(1, Constants.SQ_TOP_VIEW_POSITION_RATIO, Gravity.TOP);
+        updateView(1, Constants.SCREEN_RATIO, Gravity.TOP);
     }
 }
